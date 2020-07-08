@@ -1,0 +1,60 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v3.1",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v3.1": {
+      "WpfGraphControl/1.0.0": {
+        "dependencies": {
+          "AutomaticGraphLayout": "1.1.7",
+          "AutomaticGraphLayout.Drawing": "1.1.7"
+        },
+        "runtime": {
+          "WpfGraphControl.dll": {}
+        }
+      },
+      "AutomaticGraphLayout/1.1.7": {
+        "runtime": {
+          "lib/netstandard2.0/AutomaticGraphLayout.dll": {
+            "assemblyVersion": "0.0.0.0",
+            "fileVersion": "0.0.0.0"
+          }
+        }
+      },
+      "AutomaticGraphLayout.Drawing/1.1.7": {
+        "dependencies": {
+          "AutomaticGraphLayout": "1.1.7"
+        },
+        "runtime": {
+          "lib/netstandard2.0/AutomaticGraphLayout.Drawing.dll": {
+            "assemblyVersion": "0.0.0.0",
+            "fileVersion": "0.0.0.0"
+          }
+        }
+      }
+    }
+  },
+  "libraries": {
+    "WpfGraphControl/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "AutomaticGraphLayout/1.1.7": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-i3aYujZpplYMkaMMpk9TjIvEVc9V7GOBKjC4PkuqjnHisTnrobm3A6sX3HByK5BziUgsxGjVZphUj4egnd74rw==",
+      "path": "automaticgraphlayout/1.1.7",
+      "hashPath": "automaticgraphlayout.1.1.7.nupkg.sha512"
+    },
+    "AutomaticGraphLayout.Drawing/1.1.7": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-m1pBPZR1E/NNnGVwLHzugJcGHHyTb7pdPd1wbjX6lyJf0lZcmY+G5JgCqYW7d5hB5sC3QgRgss49UA1qUg+mPw==",
+      "path": "automaticgraphlayout.drawing/1.1.7",
+      "hashPath": "automaticgraphlayout.drawing.1.1.7.nupkg.sha512"
+    }
+  }
+}
