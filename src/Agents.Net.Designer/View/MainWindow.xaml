@@ -1,0 +1,61 @@
+﻿<Window x:Class="Agents.Net.Designer.View.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+          xmlns:wpfGraphControl="http://mlsagl"
+
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:viewModel="clr-namespace:Agents.Net.Designer.ViewModel"
+        mc:Ignorable="d"
+        TextElement.Foreground="{DynamicResource MaterialDesignBody}"
+        TextElement.FontWeight="Regular"
+        TextElement.FontSize="13"
+        TextOptions.TextFormattingMode="Ideal" 
+        TextOptions.TextRenderingMode="Auto"        
+        Background="{DynamicResource MaterialDesignPaper}"
+        FontFamily="{DynamicResource MaterialDesignFont}"
+          Title="MainWindow" Height="350" Width="525">
+
+    <DockPanel>
+        <Menu IsMainMenu="True" DockPanel.Dock="Top">
+            <MenuItem
+                Header="_File">
+                <MenuItem
+                    Header="Open Model">
+                    <MenuItem.Icon>
+                        <materialDesign:PackIcon
+                            Kind="Openid" />
+                    </MenuItem.Icon>
+                </MenuItem>
+            </MenuItem>
+        </Menu>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="2" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <materialDesign:Card Padding="32" Margin="16,16,10,16" Grid.Column="0">
+                <TextBox    TextWrapping="Wrap"
+                            VerticalAlignment="Stretch"
+                            MinWidth="280"
+                            AcceptsReturn="True"
+                            AcceptsTab="True"
+                            VerticalScrollBarVisibility="Auto"
+                            SpellCheck.IsEnabled="True"
+                            materialDesign:HintAssist.Hint="Json model"
+                            HorizontalAlignment="Stretch"
+                            x:Name="JsonTextBox"
+                            Text="{Binding Text}" 
+                            d:DataContext="{d:DesignInstance viewModel:JsonViewModel, IsDesignTimeCreatable=True}" />
+            </materialDesign:Card>
+            <GridSplitter Grid.Column="1" ResizeDirection="Columns"
+                          ResizeBehavior="PreviousAndNext"
+                          HorizontalAlignment="Stretch"/>
+            <materialDesign:Card Padding="32" Margin="10,16,16,16" Grid.Column="2">
+                <DockPanel x:Name="GraphViewerPanel" ClipToBounds="True" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
+            </materialDesign:Card>
+        </Grid>
+    </DockPanel>
+</Window>
