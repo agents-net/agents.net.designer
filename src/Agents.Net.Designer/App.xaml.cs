@@ -20,6 +20,13 @@ namespace Agents.Net.Designer
     public partial class App : Application
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+        private IContainer container;
+
+        protected override void OnExit(ExitEventArgs e)
+        {
+            container?.Dispose();
+            base.OnExit(e);
+        }
 
         private void OnStartup(object sender, StartupEventArgs e)
         {
@@ -30,7 +37,7 @@ namespace Agents.Net.Designer
             //Create container
             ContainerBuilder builder = new ContainerBuilder();
             builder.RegisterModule(new DesignerModule());
-            using IContainer container = builder.Build();
+            container = builder.Build();
 
             //Start agent community
             try

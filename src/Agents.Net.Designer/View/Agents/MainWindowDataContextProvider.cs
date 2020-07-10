@@ -16,7 +16,11 @@ namespace Agents.Net.Designer.View.Agents
                                       GraphViewModelCreated.GraphViewModelCreatedDefinition,
                                       MainWindowCreated.MainWindowCreatedDefinition
                                   },
-                                  Array.Empty<MessageDefinition>());
+                                  new []
+                                  {
+                                      GraphViewModelApplied.GraphViewModelAppliedDefinition,
+                                      JsonViewModelApplied.JsonViewModelAppliedDefinition
+                                  });
 
         #endregion
 
@@ -32,6 +36,8 @@ namespace Agents.Net.Designer.View.Agents
                 set.Message3.Window.DataContext = set.Message2.ViewModel;
                 set.Message3.Window.JsonTextBox.DataContext = set.Message1.ViewModel;
             });
+            OnMessage(new GraphViewModelApplied(set.Message2.ViewModel, set));
+            OnMessage(new JsonViewModelApplied(set.Message1.ViewModel, set));
         }
 
         private readonly MessageCollector<JsonViewModelCreated, GraphViewModelCreated, MainWindowCreated> collector;

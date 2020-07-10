@@ -15,7 +15,7 @@
         TextOptions.TextRenderingMode="Auto"        
         Background="{DynamicResource MaterialDesignPaper}"
         FontFamily="{DynamicResource MaterialDesignFont}"
-          Title="MainWindow" Height="350" Width="525">
+          Title="MainWindow" Height="700" Width="800">
 
     <DockPanel>
         <Menu IsMainMenu="True" DockPanel.Dock="Top">
@@ -25,8 +25,19 @@
                     Header="Open Model">
                     <MenuItem.Icon>
                         <materialDesign:PackIcon
-                            Kind="Openid" />
+                            Kind="FileDocumentBox" />
                     </MenuItem.Icon>
+                </MenuItem>
+            </MenuItem>
+            <MenuItem
+                Header="_Edit">
+                <MenuItem
+                    Header="Add Agent"
+                    Click="AddAgentOnClick">
+                </MenuItem>
+                <MenuItem
+                    Header="Add Message"
+                    Click="AddMessageOnClick">
                 </MenuItem>
             </MenuItem>
         </Menu>
@@ -47,7 +58,7 @@
                             materialDesign:HintAssist.Hint="Json model"
                             HorizontalAlignment="Stretch"
                             x:Name="JsonTextBox"
-                            Text="{Binding Text}" 
+                            Text="{Binding Text, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" 
                             d:DataContext="{d:DesignInstance viewModel:JsonViewModel, IsDesignTimeCreatable=True}" />
             </materialDesign:Card>
             <GridSplitter Grid.Column="1" ResizeDirection="Columns"

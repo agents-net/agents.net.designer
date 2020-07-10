@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Windows;
 using System.Windows.Input;
 using Agents.Net.Designer.ViewModel;
@@ -10,7 +11,7 @@ namespace Agents.Net.Designer.View
 {
     public partial class MainWindow : IDisposable
     {
-        private readonly GraphViewer graphViewer = new GraphViewer();
+        public GraphViewer GraphViewer { get; } = new GraphViewer();
 
         public MainWindow()
         {
@@ -28,7 +29,7 @@ namespace Agents.Net.Designer.View
 
         private static void GraphChangedCallback(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            ((MainWindow)d).graphViewer.Graph = (Graph) e.NewValue;
+            ((MainWindow)d).GraphViewer.Graph = (Graph) e.NewValue;
         }
 
         public Graph Graph
@@ -39,7 +40,30 @@ namespace Agents.Net.Designer.View
 
         private void OnLoaded(object sender, RoutedEventArgs e)
         {
-            graphViewer.BindToPanel(GraphViewerPanel);
+            GraphViewer.BindToPanel(GraphViewerPanel);
+        }
+
+        private void AddAgentOnClick(object sender, RoutedEventArgs e)
+        {
+            OnAddAgentClicked();
+        }
+
+        private void AddMessageOnClick(object sender, RoutedEventArgs e)
+        {
+            OnAddMessageClicked();
+        }
+
+        public event EventHandler<EventArgs> AddMessageClicked; 
+        public event EventHandler<EventArgs> AddAgentClicked;
+
+        protected virtual void OnAddMessageClicked()
+        {
+            AddMessageClicked?.Invoke(this, EventArgs.Empty);
+        }
+
+        protected virtual void OnAddAgentClicked()
+        {
+            AddAgentClicked?.Invoke(this, EventArgs.Empty);
         }
 
         public void Dispose()

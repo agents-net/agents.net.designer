@@ -9,11 +9,6 @@ namespace Agents.Net.Designer.ViewModel
 {
     public class JsonViewModel : INotifyPropertyChanged
     {
-        public JsonViewModel()
-        {
-            text = "Hello";
-        }
-
         private string text;
 
         public string Text

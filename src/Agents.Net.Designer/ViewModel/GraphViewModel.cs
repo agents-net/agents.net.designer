@@ -10,12 +10,6 @@ namespace Agents.Net.Designer.ViewModel
 {
     public class GraphViewModel : INotifyPropertyChanged
     {
-        public GraphViewModel()
-        {
-            graph = new Graph("fooba");
-            graph.AddEdge("A", "B");
-        }
-
         private Graph graph;
 
         public Graph Graph
