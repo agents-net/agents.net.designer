@@ -12,9 +12,10 @@ namespace Agents.Net.Designer
     {
         protected override void Load(ContainerBuilder builder)
         {
-            //TODO Feature: Load/Save and update model file
             //TODO Feature: Export picture
             //TODO Feature: Generate classes
+            //TODO Feature: Statusbar Synchronized/Connected position etc.
+            //TODO Feature: Block ui text update events until graph synchronized and file saved
             builder.RegisterType<MainWindow>().AsSelf().InstancePerLifetimeScope();
             builder.RegisterType<MessageBoard>().As<IMessageBoard>().InstancePerLifetimeScope();
             builder.RegisterType<Community>().As<Community>().InstancePerLifetimeScope();
@@ -34,6 +35,10 @@ namespace Agents.Net.Designer
             builder.RegisterType<JsonTextUpdater>().As<Agent>().InstancePerLifetimeScope();
             builder.RegisterType<JsonModelSerializer>().As<Agent>().InstancePerLifetimeScope();
             builder.RegisterType<CommandModelUpdater>().As<Agent>().InstancePerLifetimeScope();
+            builder.RegisterType<FileVerifier>().As<Agent>().InstancePerLifetimeScope();
+            builder.RegisterType<JsonFileCreator>().As<Agent>().InstancePerLifetimeScope();
+            builder.RegisterType<JsonFileLoader>().As<Agent>().InstancePerLifetimeScope();
+            builder.RegisterType<JsonFileSynchronizer>().As<Agent>().InstancePerLifetimeScope();
         }
     }
 }

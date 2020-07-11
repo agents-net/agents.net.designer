@@ -11,30 +11,9 @@ namespace Agents.Net.Designer.ViewModel.Agents
    ""Messages"":[
       {
          ""Name"":""InitializeMessage""
-      },
-      {
-         ""Name"":""MessageA""
       }
    ],
    ""Agents"":[
-      {
-         ""Name"":""AgentA"",
-         ""ConsumingMessages"":[
-            ""InitializeMessage""
-         ],
-         ""ProducingMessages"":[
-            ""MessageA""
-         ]
-      },
-      {
-         ""Name"":""AgentB"",
-         ""ConsumingMessages"":[
-            ""MessageA""
-         ],
-         ""ProducingMessages"":[
-
-         ]
-      }
    ]
 }";
         #region Definition

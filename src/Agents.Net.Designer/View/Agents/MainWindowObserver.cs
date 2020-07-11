@@ -69,6 +69,12 @@ namespace Agents.Net.Designer.View.Agents
             mainWindowCreated.Window.GraphViewer.GraphChanged += GraphViewerOnGraphChanged;
             mainWindowCreated.Window.AddAgentClicked += WindowOnAddAgentClicked;
             mainWindowCreated.Window.AddMessageClicked += WindowOnAddMessageClicked;
+            mainWindowCreated.Window.ConnectFileClicked += WindowOnConnectFileClicked;
+        }
+
+        private void WindowOnConnectFileClicked(object? sender, ConnectFileArgs e)
+        {
+            OnMessage(new ConnectFileRequested(e.FileName, mainWindowCreated));
         }
 
         private void WindowOnAddMessageClicked(object? sender, EventArgs e)
@@ -87,6 +93,9 @@ namespace Agents.Net.Designer.View.Agents
             foreach (IViewerObject subscribedObject in subscribedObjects)
             {
                 subscribedObject.MarkedForDraggingEvent -= SubscribedObjectOnMarkedForDraggingEvent;
+                mainWindowCreated.Window.AddAgentClicked -= WindowOnAddAgentClicked;
+                mainWindowCreated.Window.AddMessageClicked -= WindowOnAddMessageClicked;
+                mainWindowCreated.Window.ConnectFileClicked -= WindowOnConnectFileClicked;
             }
         }
     }

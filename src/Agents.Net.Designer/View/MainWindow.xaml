@@ -22,10 +22,11 @@
             <MenuItem
                 Header="_File">
                 <MenuItem
-                    Header="Open Model">
+                    Header="Connect to File"
+                    Click="ConnectFileOnClick">
                     <MenuItem.Icon>
                         <materialDesign:PackIcon
-                            Kind="FileDocumentBox" />
+                            Kind="CarConnected" />
                     </MenuItem.Icon>
                 </MenuItem>
             </MenuItem>
@@ -58,7 +59,7 @@
                             materialDesign:HintAssist.Hint="Json model"
                             HorizontalAlignment="Stretch"
                             x:Name="JsonTextBox"
-                            Text="{Binding Text, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" 
+                            Text="{Binding Text, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay, Delay=500}" 
                             d:DataContext="{d:DesignInstance viewModel:JsonViewModel, IsDesignTimeCreatable=True}" />
             </materialDesign:Card>
             <GridSplitter Grid.Column="1" ResizeDirection="Columns"

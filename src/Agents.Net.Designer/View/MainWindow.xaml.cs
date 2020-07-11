@@ -6,6 +6,7 @@ using System.Windows.Input;
 using Agents.Net.Designer.ViewModel;
 using Microsoft.Msagl.Drawing;
 using Microsoft.Msagl.WpfGraphControl;
+using Microsoft.Win32;
 
 namespace Agents.Net.Designer.View
 {
@@ -53,8 +54,23 @@ namespace Agents.Net.Designer.View
             OnAddMessageClicked();
         }
 
+        private void ConnectFileOnClick(object sender, RoutedEventArgs e)
+        {
+            OpenFileDialog openFileDialog = new OpenFileDialog
+            {
+                Filter = "Agents Model File (*.amodel)|*.amodel", 
+                RestoreDirectory = true,
+                CheckFileExists = false
+            };
+            if (openFileDialog.ShowDialog(this) == true)
+            {
+                OnConnectFileClicked(new ConnectFileArgs(openFileDialog.FileName));
+            }
+        }
+
         public event EventHandler<EventArgs> AddMessageClicked; 
         public event EventHandler<EventArgs> AddAgentClicked;
+        public event EventHandler<ConnectFileArgs> ConnectFileClicked;
 
         protected virtual void OnAddMessageClicked()
         {
@@ -64,6 +80,11 @@ namespace Agents.Net.Designer.View
         protected virtual void OnAddAgentClicked()
         {
             AddAgentClicked?.Invoke(this, EventArgs.Empty);
+        }
+
+        protected virtual void OnConnectFileClicked(ConnectFileArgs e)
+        {
+            ConnectFileClicked?.Invoke(this, e);
         }
 
         public void Dispose()
