@@ -7,6 +7,7 @@ using Agents.Net.Designer.ViewModel;
 using Microsoft.Msagl.Drawing;
 using Microsoft.Msagl.WpfGraphControl;
 using Microsoft.Win32;
+using ModifierKeys = System.Windows.Input.ModifierKeys;
 
 namespace Agents.Net.Designer.View
 {
@@ -39,6 +40,41 @@ namespace Agents.Net.Designer.View
             set => SetValue(GraphProperty, value);
         }
 
+        protected override void OnKeyUp(KeyEventArgs e)
+        {
+            e.Handled = true;
+            switch (e.Key)
+            {
+                case Key.O:
+                    if (Keyboard.Modifiers == ModifierKeys.Control)
+                    {
+                        ConnectFile();
+                    }
+                    break;
+                case Key.E:
+                    if (Keyboard.Modifiers == ModifierKeys.Control)
+                    {
+                        ExportImage();
+                    }
+                    break;
+                case Key.A:
+                    if (Keyboard.Modifiers.HasFlag(ModifierKeys.Alt) && Keyboard.Modifiers.HasFlag(ModifierKeys.Control))
+                    {
+                        OnAddAgentClicked();
+                    }
+                    break;
+                case Key.M:
+                    if (Keyboard.Modifiers.HasFlag(ModifierKeys.Alt) && Keyboard.Modifiers.HasFlag(ModifierKeys.Control))
+                    {
+                        OnAddMessageClicked();
+                    }
+                    break;
+                default:
+                    e.Handled = false;
+                    break;
+            }
+        }
+
         private void OnLoaded(object sender, RoutedEventArgs e)
         {
             GraphViewer.BindToPanel(GraphViewerPanel);
@@ -56,9 +92,14 @@ namespace Agents.Net.Designer.View
 
         private void ConnectFileOnClick(object sender, RoutedEventArgs e)
         {
+            ConnectFile();
+        }
+
+        private void ConnectFile()
+        {
             OpenFileDialog openFileDialog = new OpenFileDialog
             {
-                Filter = "Agents Model File (*.amodel)|*.amodel", 
+                Filter = "Agents Model File (*.amodel)|*.amodel",
                 RestoreDirectory = true,
                 CheckFileExists = false
             };
@@ -66,6 +107,27 @@ namespace Agents.Net.Designer.View
             {
                 OnConnectFileClicked(new ConnectFileArgs(openFileDialog.FileName));
             }
+        }
+
+        private void ExportImageOnClick(object sender, RoutedEventArgs e)
+        {
+            ExportImage();
+        }
+
+        private void ExportImage()
+        {
+            OpenFileDialog openFileDialog = new OpenFileDialog
+            {
+                Filter = "Image (*.png)|*.png",
+                RestoreDirectory = true,
+                CheckFileExists = false,
+            };
+            if (openFileDialog.ShowDialog(this) == false)
+            {
+                return;
+            }
+
+            GraphViewer.DrawImage(openFileDialog.FileName);
         }
 
         public event EventHandler<EventArgs> AddMessageClicked; 

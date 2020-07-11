@@ -12,10 +12,10 @@ namespace Agents.Net.Designer
     {
         protected override void Load(ContainerBuilder builder)
         {
-            //TODO Feature: Export picture
             //TODO Feature: Generate classes
             //TODO Feature: Statusbar Synchronized/Connected position etc.
             //TODO Feature: Block ui text update events until graph synchronized and file saved
+            //TODO Feature: Connect to image
             builder.RegisterType<MainWindow>().AsSelf().InstancePerLifetimeScope();
             builder.RegisterType<MessageBoard>().As<IMessageBoard>().InstancePerLifetimeScope();
             builder.RegisterType<Community>().As<Community>().InstancePerLifetimeScope();

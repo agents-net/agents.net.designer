@@ -23,10 +23,20 @@
                 Header="_File">
                 <MenuItem
                     Header="Connect to File"
-                    Click="ConnectFileOnClick">
+                    Click="ConnectFileOnClick"
+                    InputGestureText="Crtl+O">
                     <MenuItem.Icon>
                         <materialDesign:PackIcon
-                            Kind="CarConnected" />
+                            Kind="Database" />
+                    </MenuItem.Icon>
+                </MenuItem>
+                <MenuItem
+                    Header="Export image"
+                    Click="ExportImageOnClick"
+                    InputGestureText="Crtl+E">
+                    <MenuItem.Icon>
+                        <materialDesign:PackIcon
+                            Kind="Image" />
                     </MenuItem.Icon>
                 </MenuItem>
             </MenuItem>
@@ -34,11 +44,13 @@
                 Header="_Edit">
                 <MenuItem
                     Header="Add Agent"
-                    Click="AddAgentOnClick">
+                    Click="AddAgentOnClick"
+                    InputGestureText="Crtl+Alt+A">
                 </MenuItem>
                 <MenuItem
                     Header="Add Message"
-                    Click="AddMessageOnClick">
+                    Click="AddMessageOnClick"
+                    InputGestureText="Crtl+Alt+M">
                 </MenuItem>
             </MenuItem>
         </Menu>
