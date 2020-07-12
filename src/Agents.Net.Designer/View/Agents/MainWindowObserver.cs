@@ -27,7 +27,8 @@ namespace Agents.Net.Designer.View.Agents
                                       AddAgentRequested.AddAgentRequestedDefinition,
                                       AddMessageRequested.AddMessageRequestedDefinition,
                                       ConnectFileRequested.ConnectFileRequestedDefinition,
-                                      GenerateFilesRequested.GenerateFilesRequestedDefinition
+                                      GenerateFilesRequested.GenerateFilesRequestedDefinition,
+                                      ExportImageRequested.ExportImageRequestedDefinition
                                   });
 
         #endregion
@@ -74,6 +75,12 @@ namespace Agents.Net.Designer.View.Agents
             mainWindowCreated.Window.AddMessageClicked += WindowOnAddMessageClicked;
             mainWindowCreated.Window.ConnectFileClicked += WindowOnConnectFileClicked;
             mainWindowCreated.Window.GenerateClassesClicked += WindowOnGenerateClassesClicked;
+            mainWindowCreated.Window.ExportImageClicked += WindowOnExportImageClicked;
+        }
+
+        private void WindowOnExportImageClicked(object? sender, ExportImageArgs e)
+        {
+            OnMessage(new ExportImageRequested(e.Path, mainWindowCreated));
         }
 
         private void WindowOnGenerateClassesClicked(object? sender, GenerateClassesArgs e)

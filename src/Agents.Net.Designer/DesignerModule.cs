@@ -17,7 +17,7 @@ namespace Agents.Net.Designer
             //TODO Feature: Statusbar Synchronized/Connected position etc.
             //TODO Feature: Json schema error as text box validation error.
             //TODO Feature: Avalon Edit with line breaks and highlighting.
-            //TODO Feature: Block ui text update events until graph synchronized and file saved
+            //TODO Feature: Block ui text update events until graph synchronized and file saved; exporting svg; generate files
             //TODO Feature: Connect to image
             //TODO Feature: Progressbar for file generation
             //TODO Feature: Include amodels -> Package view (Like one model per assembly)
@@ -53,6 +53,7 @@ namespace Agents.Net.Designer
             builder.RegisterType<TemplateFileLoader>().As<Agent>().InstancePerLifetimeScope();
             builder.RegisterType<TemplatesAggregator>().As<Agent>().InstancePerLifetimeScope();
             builder.RegisterType<TemplatesFinder>().As<Agent>().InstancePerLifetimeScope();
+            builder.RegisterType<GraphToSvgConverter>().As<Agent>().InstancePerLifetimeScope();
         }
     }
 }

@@ -1,6 +1,9 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.IO;
+using System.Linq;
+using System.Reflection;
 using System.Windows;
 using System.Windows.Input;
 using Agents.Net.Designer.ViewModel;
@@ -15,12 +18,14 @@ namespace Agents.Net.Designer.View
     public partial class MainWindow : IDisposable
     {
         public GraphViewer GraphViewer { get; } = new GraphViewer();
+        private readonly FieldInfo text;
 
         public MainWindow()
         {
             InitializeComponent();
             Loaded += OnLoaded;
             SetBinding(GraphProperty, "Graph");
+            text = typeof(VNode).GetField("FrameworkElementOfNodeForLabel", BindingFlags.Instance | BindingFlags.NonPublic);
         }
 
         public static readonly DependencyProperty GraphProperty =
@@ -33,6 +38,20 @@ namespace Agents.Net.Designer.View
         private static void GraphChangedCallback(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             ((MainWindow)d).GraphViewer.Graph = (Graph) e.NewValue;
+            ((MainWindow) d).PatchNodeLabelSize();
+        }
+
+        //For svg conversion
+        private void PatchNodeLabelSize()
+        {
+            foreach (VNode node in GraphViewer.Entities.OfType<VNode>())
+            {
+                if (text?.GetValue(node) is FrameworkElement element)
+                {
+                    ((Node) node.DrawingObject).Label.Width = element.Width;
+                    ((Node) node.DrawingObject).Label.Height = element.Height;
+                }
+            }
         }
 
         public Graph Graph
@@ -125,16 +144,14 @@ namespace Agents.Net.Designer.View
         {
             OpenFileDialog openFileDialog = new OpenFileDialog
             {
-                Filter = "Image (*.png)|*.png",
+                Filter = "Image (*.svg)|*.svg",
                 RestoreDirectory = true,
                 CheckFileExists = false,
             };
-            if (openFileDialog.ShowDialog(this) == false)
+            if (openFileDialog.ShowDialog(this) == true)
             {
-                return;
+                OnExportImageClicked(new ExportImageArgs(openFileDialog.FileName));
             }
-
-            GraphViewer.DrawImage(openFileDialog.FileName);
         }
 
         private void GenerateClassesOnClick(object sender, RoutedEventArgs e)
@@ -157,6 +174,7 @@ namespace Agents.Net.Designer.View
         public event EventHandler<EventArgs> AddMessageClicked; 
         public event EventHandler<EventArgs> AddAgentClicked;
         public event EventHandler<ConnectFileArgs> ConnectFileClicked;
+        public event EventHandler<ExportImageArgs> ExportImageClicked;
         public event EventHandler<GenerateClassesArgs> GenerateClassesClicked;
 
         protected virtual void OnAddMessageClicked()
@@ -177,6 +195,11 @@ namespace Agents.Net.Designer.View
         protected virtual void OnGenerateClassesClicked(GenerateClassesArgs e)
         {
             GenerateClassesClicked?.Invoke(this, e);
+        }
+
+        protected virtual void OnExportImageClicked(ExportImageArgs e)
+        {
+            ExportImageClicked?.Invoke(this, e);
         }
 
         public void Dispose()
