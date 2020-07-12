@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Agents.Net.Designer.Json.Messages;
 using Agents.Net.Designer.Model;
@@ -32,8 +33,17 @@ namespace Agents.Net.Designer.ViewModel.Agents
             collector = new MessageCollector<JsonModelValidated, SelectedModelObjectChanged>(OnMessagesCollected);
         }
 
+        private readonly HashSet<SelectedModelObjectChanged> processedMessages = new HashSet<SelectedModelObjectChanged>();
+
         private void OnMessagesCollected(MessageCollection<JsonModelValidated, SelectedModelObjectChanged> set)
         {
+            lock (processedMessages)
+            {
+                if (!processedMessages.Add(set.Message2))
+                {
+                    return;
+                }
+            }
             JToken token;
             switch (set.Message2.SelectedObject)
             {

@@ -8,6 +8,8 @@ namespace Agents.Net.Designer.Model
     {
         public string Name { get; set; }
 
+        public string Namespace { get; set; } = ".Agents";
+
         public string[] ConsumingMessages { get; set; } = new string[0];
 
         public string[] ProducingMessages { get; set; } = new string[0];
@@ -17,6 +19,7 @@ namespace Agents.Net.Designer.Model
             return new AgentModel
             {
                 Name = Name,
+                Namespace = Namespace,
                 ConsumingMessages = ConsumingMessages,
                 ProducingMessages = ProducingMessages
             };

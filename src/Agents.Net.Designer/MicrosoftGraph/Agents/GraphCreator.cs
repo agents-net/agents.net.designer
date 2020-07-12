@@ -60,6 +60,10 @@ namespace Agents.Net.Designer.MicrosoftGraph.Agents
                 graph.AddNode(agentNode);
                 foreach (string consumingMessage in agentModel.ConsumingMessages)
                 {
+                    if (string.IsNullOrEmpty(consumingMessage))
+                    {
+                        continue;
+                    }
                     Edge edge = graph.AddEdge(consumingMessage, agentModel.Name);
                     if (!messages.Contains(edge.SourceNode))
                     {
@@ -71,6 +75,10 @@ namespace Agents.Net.Designer.MicrosoftGraph.Agents
 
                 foreach (string producingMessage in agentModel.ProducingMessages)
                 {
+                    if (string.IsNullOrEmpty(producingMessage))
+                    {
+                        continue;
+                    }
                     Edge edge = graph.AddEdge(agentModel.Name, producingMessage);
                     if (!messages.Contains(edge.TargetNode))
                     {

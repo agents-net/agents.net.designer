@@ -8,9 +8,11 @@ namespace Agents.Net.Designer.ViewModel.Agents
     {
         private const string ExampleText = 
 @"{
+   ""Namespace"":""Base.Namespace"",
    ""Messages"":[
       {
-         ""Name"":""InitializeMessage""
+         ""Name"":""InitializeMessage"",
+         ""Namespace"":"".Messages""
       }
    ],
    ""Agents"":[

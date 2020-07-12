@@ -7,6 +7,7 @@ using Agents.Net.Designer.ViewModel;
 using Microsoft.Msagl.Drawing;
 using Microsoft.Msagl.WpfGraphControl;
 using Microsoft.Win32;
+using Ookii.Dialogs.Wpf;
 using ModifierKeys = System.Windows.Input.ModifierKeys;
 
 namespace Agents.Net.Designer.View
@@ -55,6 +56,12 @@ namespace Agents.Net.Designer.View
                     if (Keyboard.Modifiers == ModifierKeys.Control)
                     {
                         ExportImage();
+                    }
+                    break;
+                case Key.G:
+                    if (Keyboard.Modifiers == ModifierKeys.Control)
+                    {
+                        GenerateClasses();
                     }
                     break;
                 case Key.A:
@@ -130,9 +137,27 @@ namespace Agents.Net.Designer.View
             GraphViewer.DrawImage(openFileDialog.FileName);
         }
 
+        private void GenerateClassesOnClick(object sender, RoutedEventArgs e)
+        {
+            GenerateClasses();
+        }
+
+        private void GenerateClasses()
+        {
+            VistaFolderBrowserDialog openFileDialog = new VistaFolderBrowserDialog
+            {
+                ShowNewFolderButton = true
+            };
+            if (openFileDialog.ShowDialog(this) == true)
+            {
+                OnGenerateClassesClicked(new GenerateClassesArgs(openFileDialog.SelectedPath));
+            }
+        }
+
         public event EventHandler<EventArgs> AddMessageClicked; 
         public event EventHandler<EventArgs> AddAgentClicked;
         public event EventHandler<ConnectFileArgs> ConnectFileClicked;
+        public event EventHandler<GenerateClassesArgs> GenerateClassesClicked;
 
         protected virtual void OnAddMessageClicked()
         {
@@ -147,6 +172,11 @@ namespace Agents.Net.Designer.View
         protected virtual void OnConnectFileClicked(ConnectFileArgs e)
         {
             ConnectFileClicked?.Invoke(this, e);
+        }
+
+        protected virtual void OnGenerateClassesClicked(GenerateClassesArgs e)
+        {
+            GenerateClassesClicked?.Invoke(this, e);
         }
 
         public void Dispose()

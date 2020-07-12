@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Documents;
 using Agents.Net;
+using Agents.Net.Designer.Generator.Messages;
 using Agents.Net.Designer.Model.Messages;
 using Agents.Net.Designer.View.Messages;
 using Agents.Net.Designer.ViewModel.Messages;
@@ -24,7 +25,9 @@ namespace Agents.Net.Designer.View.Agents
                                   {
                                       SelectedObjectChanged.SelectedObjectChangedDefinition,
                                       AddAgentRequested.AddAgentRequestedDefinition,
-                                      AddMessageRequested.AddMessageRequestedDefinition
+                                      AddMessageRequested.AddMessageRequestedDefinition,
+                                      ConnectFileRequested.ConnectFileRequestedDefinition,
+                                      GenerateFilesRequested.GenerateFilesRequestedDefinition
                                   });
 
         #endregion
@@ -70,6 +73,12 @@ namespace Agents.Net.Designer.View.Agents
             mainWindowCreated.Window.AddAgentClicked += WindowOnAddAgentClicked;
             mainWindowCreated.Window.AddMessageClicked += WindowOnAddMessageClicked;
             mainWindowCreated.Window.ConnectFileClicked += WindowOnConnectFileClicked;
+            mainWindowCreated.Window.GenerateClassesClicked += WindowOnGenerateClassesClicked;
+        }
+
+        private void WindowOnGenerateClassesClicked(object? sender, GenerateClassesArgs e)
+        {
+            OnMessage(new GenerateFilesRequested(e.BaseDirectory, mainWindowCreated));
         }
 
         private void WindowOnConnectFileClicked(object? sender, ConnectFileArgs e)
@@ -96,6 +105,7 @@ namespace Agents.Net.Designer.View.Agents
                 mainWindowCreated.Window.AddAgentClicked -= WindowOnAddAgentClicked;
                 mainWindowCreated.Window.AddMessageClicked -= WindowOnAddMessageClicked;
                 mainWindowCreated.Window.ConnectFileClicked -= WindowOnConnectFileClicked;
+                mainWindowCreated.Window.GenerateClassesClicked -= WindowOnGenerateClassesClicked;
             }
         }
     }

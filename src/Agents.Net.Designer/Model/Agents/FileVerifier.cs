@@ -34,8 +34,6 @@ namespace Agents.Net.Designer.Model.Agents
                 return;
             }
             OnMessage(new FileConnectionVerified(fileRequested.FileName, File.Exists(fileRequested.FileName), messageData));
-            //TODO Create and save current document
-            //TODO Or Load Model afterward fileconnected and synchronize
         }
 
         private bool IsValidPath(string path, bool allowRelativePaths = false)

@@ -7,6 +7,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Templates\AgentTemplate.cs" />
+    <Compile Remove="Templates\MessageTemplate.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Agents.Net" Version="2020.6.0" />
     <PackageReference Include="Autofac" Version="5.2.0" />
     <PackageReference Include="AutomaticGraphLayout" Version="1.1.7" />
@@ -15,10 +20,19 @@
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
     <PackageReference Include="Newtonsoft.Json.Schema" Version="3.0.13" />
     <PackageReference Include="NLog" Version="4.7.2" />
+    <PackageReference Include="Ookii.Dialogs.Wpf.NETCore" Version="2.1.0" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="WpfGraphControl">
       <HintPath>..\Dependencies\WpfGraphControl.dll</HintPath>
     </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Templates\AgentTemplate.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Templates\MessageTemplate.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 </Project>

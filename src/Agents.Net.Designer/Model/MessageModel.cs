@@ -8,9 +8,15 @@ namespace Agents.Net.Designer.Model
     {
         public string Name { get; set; }
 
+        public string Namespace { get; set; } = ".Messages";
+
         public MessageModel Clone()
         {
-            return new MessageModel{Name = Name};
+            return new MessageModel
+            {
+                Name = Name,
+                Namespace = Namespace
+            };
         }
     }
 }
