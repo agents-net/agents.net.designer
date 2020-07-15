@@ -10,10 +10,6 @@ namespace Agents.Net.Designer.ViewModel.Agents
 @"{
    ""Namespace"":""Base.Namespace"",
    ""Messages"":[
-      {
-         ""Name"":""InitializeMessage"",
-         ""Namespace"":"".Messages""
-      }
    ],
    ""Agents"":[
    ]

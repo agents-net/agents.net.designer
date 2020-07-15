@@ -12,7 +12,11 @@ namespace Agents.Net.Designer.Model
 
         public string[] ConsumingMessages { get; set; } = new string[0];
 
-        public string[] ProducingMessages { get; set; } = new string[0];
+        public string[] ProducedMessages { get; set; } = new string[0];
+
+        public string[] IncomingEvents { get; set; } = new string[0];
+
+        public string[] ProducedEvents { get; set; } = new string[0];
 
         public AgentModel Clone()
         {
@@ -21,7 +25,9 @@ namespace Agents.Net.Designer.Model
                 Name = Name,
                 Namespace = Namespace,
                 ConsumingMessages = ConsumingMessages,
-                ProducingMessages = ProducingMessages
+                ProducedMessages = ProducedMessages,
+                IncomingEvents = IncomingEvents,
+                ProducedEvents = ProducedEvents
             };
         }
     }

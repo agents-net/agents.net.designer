@@ -73,7 +73,7 @@ namespace Agents.Net.Designer.MicrosoftGraph.Agents
                     edge.Attr.Color = Color.Green;
                 }
 
-                foreach (string producingMessage in agentModel.ProducingMessages)
+                foreach (string producingMessage in agentModel.ProducedMessages)
                 {
                     if (string.IsNullOrEmpty(producingMessage))
                     {
@@ -86,6 +86,32 @@ namespace Agents.Net.Designer.MicrosoftGraph.Agents
                         edge.TargetNode.Attr.FillColor = Color.Gray;
                     }
                     edge.Attr.Color = Color.Blue;
+                }
+
+                foreach (string incomingEvent in agentModel.IncomingEvents)
+                {
+                    if (string.IsNullOrEmpty(incomingEvent))
+                    {
+                        continue;
+                    }
+
+                    Edge edge = graph.AddEdge(incomingEvent, agentModel.Name);
+                    edge.SourceNode.Attr.Shape = Shape.Diamond;
+                    edge.SourceNode.Attr.FillColor = Color.Gray;
+                    edge.Attr.Color = Color.Violet;
+                }
+
+                foreach (string producedEvent in agentModel.ProducedEvents)
+                {
+                    if (string.IsNullOrEmpty(producedEvent))
+                    {
+                        continue;
+                    }
+
+                    Edge edge = graph.AddEdge(agentModel.Name, producedEvent);
+                    edge.TargetNode.Attr.Shape = Shape.Diamond;
+                    edge.TargetNode.Attr.FillColor = Color.Gray;
+                    edge.Attr.Color = Color.Orange;
                 }
             }
 

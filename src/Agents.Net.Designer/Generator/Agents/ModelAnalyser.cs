@@ -51,7 +51,7 @@ namespace Agents.Net.Designer.Generator.Agents
                 List<MessageModel> consuming = new List<MessageModel>();
                 List<MessageModel> producing = new List<MessageModel>();
                 FindMessageModels(agentModel.ConsumingMessages, agentModel, "consuming", consuming);
-                FindMessageModels(agentModel.ProducingMessages, agentModel, "producing", producing);
+                FindMessageModels(agentModel.ProducedMessages, agentModel, "producing", producing);
                 messages.Add(new AgentModelSelectedForGeneration(agentModel,consuming.ToArray(),producing.ToArray(),set, 
                                      new ModelSelectedForGeneration(set.Message1.Path, set.Message2.Model, set)));
             }
