@@ -15,13 +15,13 @@ namespace Agents.Net.Designer.Model
         {
             if (modelNamespace.StartsWith('.'))
             {
-                if (string.IsNullOrEmpty(communityModel.Namespace))
+                if (string.IsNullOrEmpty(communityModel.GeneratorSettings?.PackageNamespace))
                 {
                     modelNamespace = modelNamespace.Substring(1);
                 }
                 else
                 {
-                    modelNamespace = communityModel.Namespace + modelNamespace;
+                    modelNamespace = communityModel.GeneratorSettings.PackageNamespace + modelNamespace;
                 }
             }
 

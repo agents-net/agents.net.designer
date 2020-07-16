@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Newtonsoft.Json;
 
 namespace Agents.Net.Designer.Model
 {
@@ -14,9 +15,11 @@ namespace Agents.Net.Designer.Model
 
         public string[] ProducedMessages { get; set; } = new string[0];
 
-        public string[] IncomingEvents { get; set; } = new string[0];
-
-        public string[] ProducedEvents { get; set; } = new string[0];
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
+        public string[] IncomingEvents { get; set; }
+        
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
+        public string[] ProducedEvents { get; set; }
 
         public AgentModel Clone()
         {

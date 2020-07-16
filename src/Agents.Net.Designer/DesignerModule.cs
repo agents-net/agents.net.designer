@@ -54,6 +54,7 @@ namespace Agents.Net.Designer
             builder.RegisterType<TemplatesAggregator>().As<Agent>().InstancePerLifetimeScope();
             builder.RegisterType<TemplatesFinder>().As<Agent>().InstancePerLifetimeScope();
             builder.RegisterType<GraphToSvgConverter>().As<Agent>().InstancePerLifetimeScope();
+            builder.RegisterType<AutofacModuleGenerator>().As<Agent>().InstancePerLifetimeScope();
         }
     }
 }

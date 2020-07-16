@@ -2,12 +2,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Newtonsoft.Json;
 
 namespace Agents.Net.Designer.Model
 {
     public class CommunityModel
     {
-        public string Namespace { get; set; }
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
+        public GeneratorSettings GeneratorSettings { get; set; }
 
         public AgentModel[] Agents { get; set; } = new AgentModel[0];
 
@@ -17,9 +19,9 @@ namespace Agents.Net.Designer.Model
         {
             CommunityModel clone = new CommunityModel
             {
-                Namespace = Namespace,
                 Agents = Agents.Select(a => a.Clone()).ToArray(),
-                Messages = Messages.Select(m => m.Clone()).ToArray()
+                Messages = Messages.Select(m => m.Clone()).ToArray(),
+                GeneratorSettings = GeneratorSettings?.Clone()
             };
             return clone;
         }

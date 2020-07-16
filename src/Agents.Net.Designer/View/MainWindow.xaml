@@ -61,6 +61,10 @@
                     Click="AddMessageOnClick"
                     InputGestureText="Crtl+Alt+M">
                 </MenuItem>
+                <MenuItem
+                    Header="Add Generator Settings"
+                    Click="AddGeneratorSettingsOnClick">
+                </MenuItem>
             </MenuItem>
         </Menu>
         <Grid>
@@ -80,7 +84,7 @@
                             materialDesign:HintAssist.Hint="Json model"
                             HorizontalAlignment="Stretch"
                             x:Name="JsonTextBox"
-                            Text="{Binding Text, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay, Delay=500}" 
+                            Text="{Binding Text, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay, Delay=200}" 
                             d:DataContext="{d:DesignInstance viewModel:JsonViewModel, IsDesignTimeCreatable=True}" />
             </materialDesign:Card>
             <GridSplitter Grid.Column="1" ResizeDirection="Columns"

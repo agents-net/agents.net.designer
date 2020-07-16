@@ -25,6 +25,7 @@ namespace Agents.Net.Designer.View.Agents
                                   {
                                       SelectedObjectChanged.SelectedObjectChangedDefinition,
                                       AddAgentRequested.AddAgentRequestedDefinition,
+                                      AddGeneratorSettingsRequested.AddGeneratorSettingsRequestedDefinition,
                                       AddMessageRequested.AddMessageRequestedDefinition,
                                       ConnectFileRequested.ConnectFileRequestedDefinition,
                                       GenerateFilesRequested.GenerateFilesRequestedDefinition,
@@ -76,6 +77,12 @@ namespace Agents.Net.Designer.View.Agents
             mainWindowCreated.Window.ConnectFileClicked += WindowOnConnectFileClicked;
             mainWindowCreated.Window.GenerateClassesClicked += WindowOnGenerateClassesClicked;
             mainWindowCreated.Window.ExportImageClicked += WindowOnExportImageClicked;
+            mainWindowCreated.Window.AddGeneratorSettingsClicked += WindowOnAddGeneratorSettingsClicked;
+        }
+
+        private void WindowOnAddGeneratorSettingsClicked(object? sender, EventArgs e)
+        {
+            OnMessage(new AddGeneratorSettingsRequested(mainWindowCreated));
         }
 
         private void WindowOnExportImageClicked(object? sender, ExportImageArgs e)
@@ -113,6 +120,8 @@ namespace Agents.Net.Designer.View.Agents
                 mainWindowCreated.Window.AddMessageClicked -= WindowOnAddMessageClicked;
                 mainWindowCreated.Window.ConnectFileClicked -= WindowOnConnectFileClicked;
                 mainWindowCreated.Window.GenerateClassesClicked -= WindowOnGenerateClassesClicked;
+                mainWindowCreated.Window.ExportImageClicked -= WindowOnExportImageClicked;
+                mainWindowCreated.Window.AddGeneratorSettingsClicked -= WindowOnAddGeneratorSettingsClicked;
             }
         }
     }

@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <Compile Remove="Templates\AgentTemplate.cs" />
+    <Compile Remove="Templates\AutofacModuleTemplate.cs" />
     <Compile Remove="Templates\MessageTemplate.cs" />
   </ItemGroup>
 
@@ -25,6 +26,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Templates\AgentTemplate.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Templates\AutofacModuleTemplate.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="Templates\MessageTemplate.cs">

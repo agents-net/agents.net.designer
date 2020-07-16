@@ -68,6 +68,7 @@ namespace Agents.Net.Designer.Generator.Agents
             }
             else
             {
+                OnMessage(new GeneratorSettingsDefined(set.Message2.Model.GeneratorSettings??new GeneratorSettings(), set.Message1.Path, set));
                 OnMessages(messages);
             }
 
@@ -75,6 +76,10 @@ namespace Agents.Net.Designer.Generator.Agents
             {
                 foreach (string message in messageDefinitions)
                 {
+                    if (message == "InitializeMessage" || message == "Agents.Net.InitializeMessage")
+                    {
+                        continue;
+                    }
                     MessageModel messageDefinition = set.Message2.Model.Messages
                                               .FirstOrDefault(m => m.FullName(set.Message2.Model)
                                                                     .EndsWith(message,

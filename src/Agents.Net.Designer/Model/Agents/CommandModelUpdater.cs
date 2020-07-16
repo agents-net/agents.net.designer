@@ -17,6 +17,7 @@ namespace Agents.Net.Designer.Model.Agents
                                   {
                                       AddAgentRequested.AddAgentRequestedDefinition,
                                       AddMessageRequested.AddMessageRequestedDefinition,
+                                      AddGeneratorSettingsRequested.AddGeneratorSettingsRequestedDefinition,
                                       ModelCreated.ModelCreatedDefinition
                                   },
                                   new []
@@ -29,11 +30,29 @@ namespace Agents.Net.Designer.Model.Agents
         private readonly HashSet<Message> processedMessages = new HashSet<Message>();
         private readonly MessageCollector<AddAgentRequested, ModelCreated> addAgentCollector;
         private readonly MessageCollector<AddMessageRequested, ModelCreated> addMessageCollector;
+        private readonly MessageCollector<AddGeneratorSettingsRequested, ModelCreated> addGeneratorSettingsCollector;
 
         public CommandModelUpdater(IMessageBoard messageBoard) : base(CommandModelUpdaterDefinition, messageBoard)
         {
             addAgentCollector = new MessageCollector<AddAgentRequested, ModelCreated>(OnMessagesCollected);
             addMessageCollector = new MessageCollector<AddMessageRequested, ModelCreated>(OnMessagesCollected);
+            addGeneratorSettingsCollector = new MessageCollector<AddGeneratorSettingsRequested, ModelCreated>(OnMessagesCollected);
+        }
+
+        private void OnMessagesCollected(MessageCollection<AddGeneratorSettingsRequested, ModelCreated> set)
+        {
+            lock (processedMessages)
+            {
+                if (!processedMessages.Add(set.Message1) ||
+                    set.Message2.Model.GeneratorSettings != null)
+                {
+                    return;
+                }
+            }
+
+            CommunityModel updatedModel = set.Message2.Model.Clone();
+            updatedModel.GeneratorSettings = new GeneratorSettings();
+            OnMessage(new ModelUpdated(updatedModel,set));
         }
 
         private void OnMessagesCollected(MessageCollection<AddMessageRequested, ModelCreated> set)
@@ -74,6 +93,7 @@ namespace Agents.Net.Designer.Model.Agents
         {
             addAgentCollector.TryPush(messageData);
             addMessageCollector.TryPush(messageData);
+            addGeneratorSettingsCollector.TryPush(messageData);
         }
     }
 }

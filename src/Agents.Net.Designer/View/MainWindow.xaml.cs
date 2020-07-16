@@ -171,8 +171,14 @@ namespace Agents.Net.Designer.View
             }
         }
 
+        private void AddGeneratorSettingsOnClick(object sender, RoutedEventArgs e)
+        {
+            OnAddGeneratorSettingsClicked();
+        }
+
         public event EventHandler<EventArgs> AddMessageClicked; 
         public event EventHandler<EventArgs> AddAgentClicked;
+        public event EventHandler<EventArgs> AddGeneratorSettingsClicked;
         public event EventHandler<ConnectFileArgs> ConnectFileClicked;
         public event EventHandler<ExportImageArgs> ExportImageClicked;
         public event EventHandler<GenerateClassesArgs> GenerateClassesClicked;
@@ -200,6 +206,11 @@ namespace Agents.Net.Designer.View
         protected virtual void OnExportImageClicked(ExportImageArgs e)
         {
             ExportImageClicked?.Invoke(this, e);
+        }
+
+        protected virtual void OnAddGeneratorSettingsClicked()
+        {
+            AddGeneratorSettingsClicked?.Invoke(this, EventArgs.Empty);
         }
 
         public void Dispose()

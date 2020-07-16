@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using Agents.Net.Designer.MicrosoftGraph.Messages;
 using Agents.Net.Designer.Model;
 using Agents.Net.Designer.Model.Messages;
@@ -88,7 +89,7 @@ namespace Agents.Net.Designer.MicrosoftGraph.Agents
                     edge.Attr.Color = Color.Blue;
                 }
 
-                foreach (string incomingEvent in agentModel.IncomingEvents)
+                foreach (string incomingEvent in agentModel.IncomingEvents??Enumerable.Empty<string>())
                 {
                     if (string.IsNullOrEmpty(incomingEvent))
                     {
@@ -101,7 +102,7 @@ namespace Agents.Net.Designer.MicrosoftGraph.Agents
                     edge.Attr.Color = Color.Violet;
                 }
 
-                foreach (string producedEvent in agentModel.ProducedEvents)
+                foreach (string producedEvent in agentModel.ProducedEvents??Enumerable.Empty<string>())
                 {
                     if (string.IsNullOrEmpty(producedEvent))
                     {
