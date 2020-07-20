@@ -10,6 +10,12 @@ namespace Agents.Net.Designer.Generator.Agents
 {
     public class ModelAnalyser : Agent
     {
+        private static readonly string[] BuildInMessages = new[]
+        {
+            "InitializeMessage",
+            "ExceptionMessage"
+        };
+
         #region Definition
 
         [AgentDefinition]
@@ -76,8 +82,9 @@ namespace Agents.Net.Designer.Generator.Agents
             {
                 foreach (string message in messageDefinitions)
                 {
-                    if (message == "InitializeMessage" || message == "Agents.Net.InitializeMessage")
+                    if (BuildInMessages.Contains(message))
                     {
+                        messageModels.Add(new MessageModel {Name = message, Namespace = "Agents.Net"});
                         continue;
                     }
                     MessageModel messageDefinition = set.Message2.Model.Messages

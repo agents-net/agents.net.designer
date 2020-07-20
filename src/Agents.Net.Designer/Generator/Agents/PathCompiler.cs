@@ -41,6 +41,7 @@ namespace Agents.Net.Designer.Generator.Agents
             }
 
             string path = Path.Combine(model.GenerationPath, Path.Combine(namespaceParts), $"{name}.cs");
+            //TODO replace with must lead to new on message and donotpublish
             model.ReplaceWith(new ModelSelectedForGeneration(path, model.Model, Array.Empty<Message>()));
 
             return InterceptionAction.Continue;

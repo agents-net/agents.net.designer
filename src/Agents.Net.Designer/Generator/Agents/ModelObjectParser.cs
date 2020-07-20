@@ -76,7 +76,7 @@ namespace Agents.Net.Designer.Generator.Agents
                 {
                     messageNames.Add(messageModel.Name);
                     string messageNamespace = messageModel.Namespace.ExtendNamespace(communityModel);
-                    if (messageNamespace != agentNamespace)
+                    if (messageNamespace != agentNamespace && messageNamespace != "Agents.Net")
                     {
                         dependencies.Add(messageNamespace);
                     }
