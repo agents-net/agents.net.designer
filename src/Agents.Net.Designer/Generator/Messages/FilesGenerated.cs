@@ -5,17 +5,8 @@ using Agents.Net;
 namespace Agents.Net.Designer.Generator.Messages
 {
     public class FilesGenerated : Message
-    {
-        #region Definition
-
-        [MessageDefinition]
-        public static MessageDefinition FilesGeneratedDefinition { get; } =
-            new MessageDefinition(nameof(FilesGenerated));
-
-        #endregion
-
-        public FilesGenerated(string[] paths, IEnumerable<FileGenerated> predecessorMessages, params Message[] childMessages)
-            : base(predecessorMessages, FilesGeneratedDefinition, childMessages)
+    {        public FilesGenerated(string[] paths, IEnumerable<FileGenerated> predecessorMessages, params Message[] childMessages)
+            : base(predecessorMessages, childMessages:childMessages)
         {
             Paths = paths;
             PredecessorMessages = predecessorMessages;

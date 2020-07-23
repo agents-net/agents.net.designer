@@ -5,18 +5,9 @@ using Agents.Net.Designer.Model;
 namespace Agents.Net.Designer.Generator.Messages
 {
     public class ModelSelectedForGeneration : Message
-    {
-        #region Definition
-
-        [MessageDefinition]
-        public static MessageDefinition ModelSelectedForGenerationDefinition { get; } =
-            new MessageDefinition(nameof(ModelSelectedForGeneration));
-
-        #endregion
-
-        public ModelSelectedForGeneration(string generationPath, CommunityModel model, Message predecessorMessage,
+    {        public ModelSelectedForGeneration(string generationPath, CommunityModel model, Message predecessorMessage,
                                           params Message[] childMessages)
-            : base(predecessorMessage, ModelSelectedForGenerationDefinition, childMessages)
+            : base(predecessorMessage, childMessages:childMessages)
         {
             GenerationPath = generationPath;
             Model = model;
@@ -24,7 +15,7 @@ namespace Agents.Net.Designer.Generator.Messages
 
         public ModelSelectedForGeneration(string generationPath, CommunityModel model,
                                           IEnumerable<Message> predecessorMessages, params Message[] childMessages)
-            : base(predecessorMessages, ModelSelectedForGenerationDefinition, childMessages)
+            : base(predecessorMessages, childMessages:childMessages)
         {
             GenerationPath = generationPath;
             Model = model;

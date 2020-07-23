@@ -6,22 +6,10 @@ using Agents.Net.Designer.Generator.Messages;
 
 namespace Agents.Net.Designer.Generator.Agents
 {
+    [Intercepts(typeof(GeneratingFile))]
+    [Intercepts(typeof(GenerateFilesRequested))]
     public class DirectoryCreator : InterceptorAgent
-    {
-        #region Definition
-
-        [AgentDefinition]
-        public static InterceptorAgentDefinition DirectoryCreatorDefinition { get; }
-            = new InterceptorAgentDefinition(new[]
-                                             {
-                                                 GeneratingFile.GeneratingFileDefinition,
-                                                 GenerateFilesRequested.GenerateFilesRequestedDefinition
-                                             },
-                                             Array.Empty<MessageDefinition>());
-
-        #endregion
-
-        public DirectoryCreator(IMessageBoard messageBoard) : base(DirectoryCreatorDefinition, messageBoard)
+    {        public DirectoryCreator(IMessageBoard messageBoard) : base(messageBoard)
         {
         }
 

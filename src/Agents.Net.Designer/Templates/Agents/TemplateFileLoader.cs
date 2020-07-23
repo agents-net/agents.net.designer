@@ -5,24 +5,10 @@ using Agents.Net.Designer.Templates.Messages;
 
 namespace Agents.Net.Designer.Templates.Agents
 {
+    [Consumes(typeof(TemplateFileFound))]
+    [Produces(typeof(TemplateLoaded))]
     public class TemplateFileLoader : Agent
-    {
-        #region Definition
-
-        [AgentDefinition]
-        public static AgentDefinition TemplateFileLoaderDefinition { get; }
-            = new AgentDefinition(new []
-                                  {
-                                      TemplateFileFound.TemplateFileFoundDefinition
-                                  },
-                                  new []
-                                  {
-                                      TemplateLoaded.TemplateLoadedDefinition
-                                  });
-
-        #endregion
-
-        public TemplateFileLoader(IMessageBoard messageBoard) : base(TemplateFileLoaderDefinition, messageBoard)
+    {        public TemplateFileLoader(IMessageBoard messageBoard) : base(messageBoard)
         {
         }
 

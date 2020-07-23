@@ -5,21 +5,12 @@ using Agents.Net.Designer.Generator.Messages;
 
 namespace Agents.Net.Designer.Generator.Agents
 {
+    [Intercepts(typeof(ModelSelectedForGeneration))]
+    [Consumes(typeof(AgentModelSelectedForGeneration), Implicitly = true)]
+    [Consumes(typeof(MessageModelSelectedForGeneration), Implicitly = true)]
+    [Produces(typeof(ModelSelectedForGeneration))]
     public class PathCompiler : InterceptorAgent
-    {
-        #region Definition
-
-        [AgentDefinition]
-        public static InterceptorAgentDefinition PathCompilerDefinition { get; }
-            = new InterceptorAgentDefinition(new []
-                                             {
-                                                 ModelSelectedForGeneration.ModelSelectedForGenerationDefinition
-                                             },
-                                             Array.Empty<MessageDefinition>());
-
-        #endregion
-
-        public PathCompiler(IMessageBoard messageBoard) : base(PathCompilerDefinition, messageBoard)
+    {        public PathCompiler(IMessageBoard messageBoard) : base(messageBoard)
         {
         }
 

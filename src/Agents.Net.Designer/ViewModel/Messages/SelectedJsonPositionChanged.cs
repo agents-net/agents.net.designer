@@ -3,19 +3,10 @@
 namespace Agents.Net.Designer.ViewModel.Messages
 {
     public class SelectedJsonPositionChanged : Message
-    {
-        #region Definition
-
-        [MessageDefinition]
-        public static MessageDefinition SelectedJsonPositionChangedDefinition { get; } =
-            new MessageDefinition(nameof(SelectedJsonPositionChanged));
-
-        #endregion
-
-        public SelectedJsonPositionChanged(int startLineNumber, int startLineColumn, int endLineNumber,
+    {        public SelectedJsonPositionChanged(int startLineNumber, int startLineColumn, int endLineNumber,
                                            int endLineColumn, Message predecessorMessage,
                                            params Message[] childMessages)
-            : base(predecessorMessage, SelectedJsonPositionChangedDefinition, childMessages)
+            : base(predecessorMessage, childMessages:childMessages)
         {
             StartLineNumber = startLineNumber;
             StartLineColumn = startLineColumn;
@@ -26,7 +17,7 @@ namespace Agents.Net.Designer.ViewModel.Messages
         public SelectedJsonPositionChanged(int startLineNumber, int startLineColumn, int endLineNumber,
                                            int endLineColumn, IEnumerable<Message> predecessorMessages,
                                            params Message[] childMessages)
-            : base(predecessorMessages, SelectedJsonPositionChangedDefinition, childMessages)
+            : base(predecessorMessages, childMessages:childMessages)
         {
             StartLineNumber = startLineNumber;
             StartLineColumn = startLineColumn;

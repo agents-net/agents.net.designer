@@ -4,6 +4,7 @@ using Agents.Net.Designer.ViewModel.Messages;
 
 namespace Agents.Net.Designer.ViewModel.Agents
 {
+    [Consumes(typeof(JsonViewModelApplied))]
     public class JsonTextExampleLoader : Agent
     {
         private const string ExampleText = 
@@ -12,20 +13,7 @@ namespace Agents.Net.Designer.ViewModel.Agents
    ],
    ""Agents"":[
    ]
-}";
-        #region Definition
-
-        [AgentDefinition]
-        public static AgentDefinition JsonTextExampleLoaderDefinition { get; }
-            = new AgentDefinition(new []
-                                  {
-                                      JsonViewModelApplied.JsonViewModelAppliedDefinition
-                                  },
-                                  Array.Empty<MessageDefinition>());
-
-        #endregion
-
-        public JsonTextExampleLoader(IMessageBoard messageBoard) : base(JsonTextExampleLoaderDefinition, messageBoard)
+}";        public JsonTextExampleLoader(IMessageBoard messageBoard) : base(messageBoard)
         {
         }
 

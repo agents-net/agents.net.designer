@@ -4,24 +4,15 @@ using Agents.Net;
 namespace Agents.Net.Designer.Model.Messages
 {
     public class FileSynchronized : Message
-    {
-        #region Definition
-
-        [MessageDefinition]
-        public static MessageDefinition FileSynchronizedDefinition { get; } =
-            new MessageDefinition(nameof(FileSynchronized));
-
-        #endregion
-
-        public FileSynchronized(string fileName, Message predecessorMessage, params Message[] childMessages)
-            : base(predecessorMessage, FileSynchronizedDefinition, childMessages)
+    {        public FileSynchronized(string fileName, Message predecessorMessage, params Message[] childMessages)
+            : base(predecessorMessage, childMessages:childMessages)
         {
             FileName = fileName;
         }
 
         public FileSynchronized(string fileName, IEnumerable<Message> predecessorMessages,
                                 params Message[] childMessages)
-            : base(predecessorMessages, FileSynchronizedDefinition, childMessages)
+            : base(predecessorMessages, childMessages:childMessages)
         {
             FileName = fileName;
         }

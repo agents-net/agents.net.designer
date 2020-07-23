@@ -5,24 +5,12 @@ using Agents.Net.Designer.ViewModel.Messages;
 
 namespace Agents.Net.Designer.View.Agents
 {
+    [Consumes(typeof(SelectedJsonPositionChanged))]
+    [Consumes(typeof(MainWindowCreated))]
     public class TextPositionUpdater : Agent
-    {
-        #region Definition
+    {        private readonly MessageCollector<SelectedJsonPositionChanged, MainWindowCreated> collector;
 
-        [AgentDefinition]
-        public static AgentDefinition TextPositionUpdaterDefinition { get; }
-            = new AgentDefinition(new []
-                                  {
-                                      SelectedJsonPositionChanged.SelectedJsonPositionChangedDefinition,
-                                      MainWindowCreated.MainWindowCreatedDefinition
-                                  },
-                                  Array.Empty<MessageDefinition>());
-
-        #endregion
-
-        private readonly MessageCollector<SelectedJsonPositionChanged, MainWindowCreated> collector;
-
-        public TextPositionUpdater(IMessageBoard messageBoard) : base(TextPositionUpdaterDefinition, messageBoard)
+        public TextPositionUpdater(IMessageBoard messageBoard) : base(messageBoard)
         {
             collector = new MessageCollector<SelectedJsonPositionChanged, MainWindowCreated>(OnMessagesCollected);
         }

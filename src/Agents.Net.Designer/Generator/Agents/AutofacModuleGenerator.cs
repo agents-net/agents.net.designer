@@ -9,28 +9,14 @@ using Agents.Net.Designer.Templates.Messages;
 
 namespace Agents.Net.Designer.Generator.Agents
 {
+    [Intercepts(typeof(FilesGenerated))]
+    [Consumes(typeof(GeneratorSettingsDefined))]
+    [Consumes(typeof(TemplatesLoaded))]
+    [Consumes(typeof(GeneratingFile), Implicitly = true)]
     public class AutofacModuleGenerator : InterceptorAgent
-    {
-        #region Definition
+    {        private readonly MessageCollector<GeneratorSettingsDefined, FilesGenerated, TemplatesLoaded> messageCollector;
 
-        [AgentDefinition]
-        public static InterceptorAgentDefinition AutofacModuleGeneratorDefinition { get; }
-            = new InterceptorAgentDefinition(new[]
-                                             {
-                                                 FilesGenerated.FilesGeneratedDefinition
-                                             },
-                                             Array.Empty<MessageDefinition>(),
-                                             new[]
-                                             {
-                                                 GeneratorSettingsDefined.GeneratorSettingsDefinedDefinition,
-                                                 TemplatesLoaded.TemplatesLoadedDefinition,
-                                             });
-
-        #endregion
-
-        private readonly MessageCollector<GeneratorSettingsDefined, FilesGenerated, TemplatesLoaded> messageCollector;
-
-        public AutofacModuleGenerator(IMessageBoard messageBoard) : base(AutofacModuleGeneratorDefinition, messageBoard)
+        public AutofacModuleGenerator(IMessageBoard messageBoard) : base(messageBoard)
         {
             messageCollector = new MessageCollector<GeneratorSettingsDefined, FilesGenerated, TemplatesLoaded>();
         }

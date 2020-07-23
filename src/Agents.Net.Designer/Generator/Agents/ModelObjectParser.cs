@@ -7,26 +7,14 @@ using Agents.Net.Designer.Model;
 
 namespace Agents.Net.Designer.Generator.Agents
 {
+    [Consumes(typeof(AgentModelSelectedForGeneration))]
+    [Consumes(typeof(MessageModelSelectedForGeneration))]
+    [Consumes(typeof(ModelSelectedForGeneration), Implicitly = true)]
+    [Produces(typeof(GeneratingAgent))]
+    [Produces(typeof(GeneratingMessage))]
+    [Produces(typeof(GeneratingFile))]
     public class ModelObjectParser : Agent
-    {
-        #region Definition
-
-        [AgentDefinition]
-        public static AgentDefinition ModelObjectParserDefinition { get; }
-            = new AgentDefinition(new []
-                                  {
-                                      AgentModelSelectedForGeneration.AgentModelSelectedForGenerationDefinition,
-                                      MessageModelSelectedForGeneration.MessageModelSelectedForGenerationDefinition
-                                  },
-                                  new []
-                                  {
-                                      GeneratingAgent.GeneratingAgentDefinition,
-                                      GeneratingMessage.GeneratingMessageDefinition
-                                  });
-
-        #endregion
-
-        public ModelObjectParser(IMessageBoard messageBoard) : base(ModelObjectParserDefinition, messageBoard)
+    {        public ModelObjectParser(IMessageBoard messageBoard) : base(messageBoard)
         {
         }
 

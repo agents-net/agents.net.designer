@@ -5,24 +5,12 @@ using Agents.Net.Designer.ViewModel.Messages;
 
 namespace Agents.Net.Designer.ViewModel.Agents
 {
+    [Consumes(typeof(JsonTextUpdated))]
+    [Consumes(typeof(JsonViewModelCreated))]
     public class JsonTextUpdater : Agent
-    {
-        #region Definition
+    {        private readonly MessageCollector<JsonTextUpdated, JsonViewModelCreated> collector;
 
-        [AgentDefinition]
-        public static AgentDefinition JsonTextUpdaterDefinition { get; }
-            = new AgentDefinition(new []
-                                  {
-                                      JsonTextUpdated.JsonTextUpdatedDefinition,
-                                      JsonViewModelCreated.JsonViewModelCreatedDefinition
-                                  },
-                                  Array.Empty<MessageDefinition>());
-
-        #endregion
-
-        private readonly MessageCollector<JsonTextUpdated, JsonViewModelCreated> collector;
-
-        public JsonTextUpdater(IMessageBoard messageBoard) : base(JsonTextUpdaterDefinition, messageBoard)
+        public JsonTextUpdater(IMessageBoard messageBoard) : base(messageBoard)
         {
             collector = new MessageCollector<JsonTextUpdated, JsonViewModelCreated>(OnMessagesCollected);
         }

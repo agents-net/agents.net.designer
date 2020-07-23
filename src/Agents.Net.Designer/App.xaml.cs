@@ -43,11 +43,9 @@ namespace Agents.Net.Designer
             try
             {
                 messageBoard = container.Resolve<IMessageBoard>();
-                Community community = container.Resolve<Community>();
                 Agent[] agents = container.Resolve<IEnumerable<Agent>>().ToArray();
-                community.RegisterAgents(agents);
+                messageBoard.Register(agents);
                 messageBoard.Start();
-                AnalyseSystem(agents);
             }
             catch (Exception exception)
             {
@@ -61,35 +59,6 @@ namespace Agents.Net.Designer
 
             //Declare MainWindow as Message
             messageBoard.Publish(new MainWindowCreated(mainWindow));
-        }
-
-        private static void AnalyseSystem(Agent[] agents = null)
-        {
-            AnalysisResult analysisResult = CommunityAnalysis.Analyse(new[]
-            {
-                Assembly.GetAssembly(typeof(Agent)),
-                Assembly.GetAssembly(typeof(App)),
-            }, agents);
-
-            Logger.Log(LogLevel.Info, $"Community Analysis - including {(agents == null ? $"{analysisResult.AnalysedAgentCount}" : $"{agents.Length}/{analysisResult.AnalysedAgentCount}")} " +
-                              $"agents and {analysisResult.AnalysedMessageCount} messages.");
-            Logger.Log(LogLevel.Info, "=====================================================");
-            Logger.Log(LogLevel.Info, "Agents without definition:");
-            Logger.Log(LogLevel.Info, string.Join(Environment.NewLine, analysisResult.AgentWithoutDefinition));
-            Logger.Log(LogLevel.Info, "Message without definition:");
-            Logger.Log(LogLevel.Info, string.Join(Environment.NewLine, analysisResult.MessageTypeWithoutDefinition));
-            Logger.Log(LogLevel.Info, "Unused message definitions:");
-            Logger.Log(LogLevel.Info, string.Join(Environment.NewLine, analysisResult.UnusedMessageDefinitions));
-            Logger.Log(LogLevel.Info, "Unproduced message definitions:");
-            Logger.Log(LogLevel.Info, string.Join(Environment.NewLine, analysisResult.UnproducedMessageTrigger));
-            Logger.Log(LogLevel.Info, "Unconsumed message definitions:");
-            Logger.Log(LogLevel.Info, string.Join(Environment.NewLine, analysisResult.UnconsumedMessageTrigger));
-            if (agents != null)
-            {
-                
-                Logger.Log(LogLevel.Info, "Not initialized agents:");
-                Logger.Log(LogLevel.Info, string.Join(Environment.NewLine, analysisResult.NotInitializedAgents));
-            }
         }
 
         private void ConfigureLogging()

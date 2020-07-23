@@ -5,21 +5,13 @@ namespace $rootnamespace$
 {
     public class $itemname$ : Message
     {
-        #region Definition
-
-        [MessageDefinition]
-        public static MessageDefinition $itemname$Definition { get; } =
-            new MessageDefinition(nameof($itemname$));
-
-        #endregion
-
         public $itemname$(Message predecessorMessage, params Message[] childMessages)
-			: base(predecessorMessage, $itemname$Definition, childMessages)
+			: base(predecessorMessage, childMessages:childMessages)
         {
         }
 
         public $itemname$(IEnumerable<Message> predecessorMessages, params Message[] childMessages)
-			: base(predecessorMessages, $itemname$Definition, childMessages)
+			: base(predecessorMessages, childMessages:childMessages)
         {
         }
 

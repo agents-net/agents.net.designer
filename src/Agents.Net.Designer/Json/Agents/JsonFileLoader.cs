@@ -6,25 +6,11 @@ using Agents.Net.Designer.Model.Messages;
 
 namespace Agents.Net.Designer.Json.Agents
 {
+    [Consumes(typeof(FileConnectionVerified))]
+    [Produces(typeof(FileConnected))]
+    [Produces(typeof(JsonTextUpdated))]
     public class JsonFileLoader : Agent
-    {
-        #region Definition
-
-        [AgentDefinition]
-        public static AgentDefinition JsonFileLoaderDefinition { get; }
-            = new AgentDefinition(new []
-                                  {
-                                      FileConnectionVerified.FileConnectionVerifiedDefinition
-                                  },
-                                  new []
-                                  {
-                                      FileConnected.FileConnectedDefinition,
-                                      JsonTextUpdated.JsonTextUpdatedDefinition
-                                  });
-
-        #endregion
-
-        public JsonFileLoader(IMessageBoard messageBoard) : base(JsonFileLoaderDefinition, messageBoard)
+    {        public JsonFileLoader(IMessageBoard messageBoard) : base(messageBoard)
         {
         }
 

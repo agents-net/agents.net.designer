@@ -5,17 +5,8 @@ using Agents.Net;
 namespace Agents.Net.Designer.View.Messages
 {
     public class MainWindowCreated : Message
-    {
-        #region Definition
-
-        [MessageDefinition]
-        public static MessageDefinition MainWindowCreatedDefinition { get; } =
-            new MessageDefinition(nameof(MainWindowCreated));
-
-        #endregion
-
-        public MainWindowCreated(MainWindow window, params Message[] childMessages)
-            : base(Array.Empty<Message>(), MainWindowCreatedDefinition, childMessages)
+    {        public MainWindowCreated(MainWindow window, params Message[] childMessages)
+            : base(Array.Empty<Message>(), childMessages:childMessages)
         {
             Window = window;
         }

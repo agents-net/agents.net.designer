@@ -5,24 +5,10 @@ using Agents.Net.Designer.Model.Messages;
 
 namespace Agents.Net.Designer.Model.Agents
 {
+    [Consumes(typeof(ConnectFileRequested))]
+    [Produces(typeof(FileConnectionVerified))]
     public class FileVerifier : Agent
-    {
-        #region Definition
-
-        [AgentDefinition]
-        public static AgentDefinition FileVerifierDefinition { get; }
-            = new AgentDefinition(new []
-                                  {
-                                      ConnectFileRequested.ConnectFileRequestedDefinition
-                                  },
-                                  new []
-                                  {
-                                      FileConnectionVerified.FileConnectionVerifiedDefinition
-                                  });
-
-        #endregion
-
-        public FileVerifier(IMessageBoard messageBoard) : base(FileVerifierDefinition, messageBoard)
+    {        public FileVerifier(IMessageBoard messageBoard) : base(messageBoard)
         {
         }
 

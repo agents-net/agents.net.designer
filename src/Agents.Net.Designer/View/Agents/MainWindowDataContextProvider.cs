@@ -4,27 +4,13 @@ using Agents.Net.Designer.ViewModel.Messages;
 
 namespace Agents.Net.Designer.View.Agents
 {
+    [Consumes(typeof(JsonViewModelCreated))]
+    [Consumes(typeof(GraphViewModelCreated))]
+    [Consumes(typeof(MainWindowCreated))]
+    [Produces(typeof(GraphViewModelApplied))]
+    [Produces(typeof(JsonViewModelApplied))]
     public class MainWindowDataContextProvider : Agent
-    {
-        #region Definition
-
-        [AgentDefinition]
-        public static AgentDefinition MainWindowDataContextProviderDefinition { get; }
-            = new AgentDefinition(new []
-                                  {
-                                      JsonViewModelCreated.JsonViewModelCreatedDefinition,
-                                      GraphViewModelCreated.GraphViewModelCreatedDefinition,
-                                      MainWindowCreated.MainWindowCreatedDefinition
-                                  },
-                                  new []
-                                  {
-                                      GraphViewModelApplied.GraphViewModelAppliedDefinition,
-                                      JsonViewModelApplied.JsonViewModelAppliedDefinition
-                                  });
-
-        #endregion
-
-        public MainWindowDataContextProvider(IMessageBoard messageBoard) : base(MainWindowDataContextProviderDefinition, messageBoard)
+    {        public MainWindowDataContextProvider(IMessageBoard messageBoard) : base(messageBoard)
         {
             collector = new MessageCollector<JsonViewModelCreated, GraphViewModelCreated, MainWindowCreated>(OnMessagesCollected);
         }

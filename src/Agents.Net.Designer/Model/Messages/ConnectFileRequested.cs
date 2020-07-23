@@ -4,24 +4,15 @@ using Agents.Net;
 namespace Agents.Net.Designer.Model.Messages
 {
     public class ConnectFileRequested : Message
-    {
-        #region Definition
-
-        [MessageDefinition]
-        public static MessageDefinition ConnectFileRequestedDefinition { get; } =
-            new MessageDefinition(nameof(ConnectFileRequested));
-
-        #endregion
-
-        public ConnectFileRequested(string fileName, Message predecessorMessage, params Message[] childMessages)
-            : base(predecessorMessage, ConnectFileRequestedDefinition, childMessages)
+    {        public ConnectFileRequested(string fileName, Message predecessorMessage, params Message[] childMessages)
+            : base(predecessorMessage, childMessages:childMessages)
         {
             FileName = fileName;
         }
 
         public ConnectFileRequested(string fileName, IEnumerable<Message> predecessorMessages,
                                     params Message[] childMessages)
-            : base(predecessorMessages, ConnectFileRequestedDefinition, childMessages)
+            : base(predecessorMessages, childMessages:childMessages)
         {
             FileName = fileName;
         }

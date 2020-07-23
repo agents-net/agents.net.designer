@@ -4,25 +4,16 @@ using Agents.Net;
 namespace Agents.Net.Designer.Templates.Messages
 {
     public class TemplatesLoaded : Message
-    {
-        #region Definition
-
-        [MessageDefinition]
-        public static MessageDefinition TemplatesLoadedDefinition { get; } =
-            new MessageDefinition(nameof(TemplatesLoaded));
-
-        #endregion
-
-        public TemplatesLoaded(Dictionary<string, string> templates, Message predecessorMessage,
+    {        public TemplatesLoaded(Dictionary<string, string> templates, Message predecessorMessage,
                                params Message[] childMessages)
-            : base(predecessorMessage, TemplatesLoadedDefinition, childMessages)
+            : base(predecessorMessage, childMessages:childMessages)
         {
             Templates = templates;
         }
 
         public TemplatesLoaded(Dictionary<string, string> templates, IEnumerable<Message> predecessorMessages,
                                params Message[] childMessages)
-            : base(predecessorMessages, TemplatesLoadedDefinition, childMessages)
+            : base(predecessorMessages, childMessages:childMessages)
         {
             Templates = templates;
         }

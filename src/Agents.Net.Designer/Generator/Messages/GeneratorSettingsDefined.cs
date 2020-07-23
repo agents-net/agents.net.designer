@@ -5,18 +5,9 @@ using Agents.Net.Designer.Model;
 namespace Agents.Net.Designer.Generator.Messages
 {
     public class GeneratorSettingsDefined : Message
-    {
-        #region Definition
-
-        [MessageDefinition]
-        public static MessageDefinition GeneratorSettingsDefinedDefinition { get; } =
-            new MessageDefinition(nameof(GeneratorSettingsDefined));
-
-        #endregion
-
-        public GeneratorSettingsDefined(GeneratorSettings settings, string path, Message predecessorMessage,
+    {        public GeneratorSettingsDefined(GeneratorSettings settings, string path, Message predecessorMessage,
                                         params Message[] childMessages)
-            : base(predecessorMessage, GeneratorSettingsDefinedDefinition, childMessages)
+            : base(predecessorMessage, childMessages:childMessages)
         {
             Settings = settings;
             Path = path;
@@ -25,7 +16,7 @@ namespace Agents.Net.Designer.Generator.Messages
         public GeneratorSettingsDefined(GeneratorSettings settings, string path,
                                         IEnumerable<Message> predecessorMessages,
                                         params Message[] childMessages)
-            : base(predecessorMessages, GeneratorSettingsDefinedDefinition, childMessages)
+            : base(predecessorMessages, childMessages:childMessages)
         {
             Settings = settings;
             Path = path;

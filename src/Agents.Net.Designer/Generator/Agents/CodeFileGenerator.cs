@@ -8,29 +8,17 @@ using Agents.Net.Designer.Templates.Messages;
 
 namespace Agents.Net.Designer.Generator.Agents
 {
+    [Consumes(typeof(TemplatesLoaded))]
+    [Consumes(typeof(GeneratingFile))]
+    [Consumes(typeof(GeneratingMessage), Implicitly = true)]
+    [Consumes(typeof(GeneratingAgent), Implicitly = true)]
+    [Produces(typeof(FileGenerated))]
     public class CodeFileGenerator : Agent
     {
         private const int Indentation = 4;
-
-        #region Definition
-
-        [AgentDefinition]
-        public static AgentDefinition CodeFileGeneratorDefinition { get; }
-            = new AgentDefinition(new []
-                                  {
-                                      TemplatesLoaded.TemplatesLoadedDefinition,
-                                      GeneratingFile.GeneratingFileDefinition
-                                  },
-                                  new []
-                                  {
-                                      FileGenerated.FileGeneratedDefinition
-                                  });
-
-        #endregion
-
         private readonly MessageCollector<TemplatesLoaded, GeneratingFile> collector;
 
-        public CodeFileGenerator(IMessageBoard messageBoard) : base(CodeFileGeneratorDefinition, messageBoard)
+        public CodeFileGenerator(IMessageBoard messageBoard) : base(messageBoard)
         {
             collector = new MessageCollector<TemplatesLoaded, GeneratingFile>(OnMessagesCollected);
         }
@@ -52,29 +40,31 @@ namespace Agents.Net.Designer.Generator.Agents
         private void GenerateAgent(GeneratingFile file, string template, GeneratingAgent agent)
         {
             string dependencies = string.Join(Environment.NewLine, agent.Dependencies.Select(d => $"using {d};"));
-            int templatePosition = template.IndexOf("$consumingmessages$", StringComparison.Ordinal);
+            int templatePosition = template.IndexOf("$attributes$", StringComparison.Ordinal);
             int previousLineBreak = template.LastIndexOf('\n', templatePosition);
-            int baseEmptySpace = templatePosition - previousLineBreak - 1;
-            string consumingMessages = AggregateMessages(agent.ConsumingMessages);
-            string producingMessages = AggregateMessages(agent.ProducingMessages);
+            int emptySpace = templatePosition - previousLineBreak - 1;
+            string consumingMessages = AggregateMessages(agent.ConsumingMessages, "Consumes", false);
+            string producingMessages = AggregateMessages(agent.ProducingMessages, "Produces", !string.IsNullOrEmpty(consumingMessages));
+            string attributes = consumingMessages + producingMessages;
+            if (!string.IsNullOrEmpty(attributes))
+            {
+                attributes = attributes.Substring(emptySpace);
+            }
             string content = template.Replace("$dependecies$", dependencies, StringComparison.Ordinal)
-                                     .Replace("$consumingmessages$", consumingMessages, StringComparison.Ordinal)
-                                     .Replace("$producingmessages$", producingMessages, StringComparison.Ordinal);
+                                     .Replace("$attributes$", attributes, StringComparison.Ordinal);
             GenerateFile(file, content);
 
-            string AggregateMessages(string[] messages)
+            string AggregateMessages(string[] messages, string attributeName, bool prefixNewline)
             {
                 if (messages.Length == 0)
                 {
-                    return "Array.Empty<MessageDefinition>()";
+                    return string.Empty;
                 }
 
-                string baseSpace = new string(' ', baseEmptySpace);
-                string indentedSpace = baseSpace + new string(' ', Indentation);
-                StringBuilder result = new StringBuilder($"new []{Environment.NewLine}{baseSpace}{{{Environment.NewLine}");
-                result.AppendLine(string.Join($",{Environment.NewLine}",
-                                              messages.Select(m => $"{indentedSpace}{m}.{m}Definition")));
-                result.Append($"{baseSpace}}}");
+                string space = new string(' ', emptySpace);
+                
+                StringBuilder result = prefixNewline ? new StringBuilder(Environment.NewLine): new StringBuilder();
+                result.Append(string.Join(Environment.NewLine, messages.Select(m => $"{space}[{attributeName}(typeof({m}))]")));
                 return result.ToString();
             }
         }

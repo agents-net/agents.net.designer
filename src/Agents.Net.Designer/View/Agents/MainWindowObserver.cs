@@ -11,33 +11,19 @@ using Microsoft.Msagl.Drawing;
 
 namespace Agents.Net.Designer.View.Agents
 {
+    [Consumes(typeof(MainWindowCreated))]
+    [Produces(typeof(SelectedObjectChanged))]
+    [Produces(typeof(AddAgentRequested))]
+    [Produces(typeof(AddGeneratorSettingsRequested))]
+    [Produces(typeof(AddMessageRequested))]
+    [Produces(typeof(ConnectFileRequested))]
+    [Produces(typeof(GenerateFilesRequested))]
+    [Produces(typeof(ExportImageRequested))]
     public class MainWindowObserver : Agent, IDisposable
-    {
-        #region Definition
-
-        [AgentDefinition]
-        public static AgentDefinition MainWindowObserverDefinition { get; }
-            = new AgentDefinition(new []
-                                  {
-                                      MainWindowCreated.MainWindowCreatedDefinition
-                                  },
-                                  new []
-                                  {
-                                      SelectedObjectChanged.SelectedObjectChangedDefinition,
-                                      AddAgentRequested.AddAgentRequestedDefinition,
-                                      AddGeneratorSettingsRequested.AddGeneratorSettingsRequestedDefinition,
-                                      AddMessageRequested.AddMessageRequestedDefinition,
-                                      ConnectFileRequested.ConnectFileRequestedDefinition,
-                                      GenerateFilesRequested.GenerateFilesRequestedDefinition,
-                                      ExportImageRequested.ExportImageRequestedDefinition
-                                  });
-
-        #endregion
-
-        private List<IViewerObject> subscribedObjects = new List<IViewerObject>();
+    {        private List<IViewerObject> subscribedObjects = new List<IViewerObject>();
         private MainWindowCreated mainWindowCreated;
 
-        public MainWindowObserver(IMessageBoard messageBoard, MainWindow mainWindow) : base(MainWindowObserverDefinition, messageBoard)
+        public MainWindowObserver(IMessageBoard messageBoard, MainWindow mainWindow) : base(messageBoard)
         {
         }
 

@@ -4,24 +4,10 @@ using Agents.Net.Designer.ViewModel.Messages;
 
 namespace Agents.Net.Designer.ViewModel.Agents
 {
+    [Consumes(typeof(InitializeMessage))]
+    [Produces(typeof(JsonViewModelCreated))]
     public class JsonViewModelCreator : Agent
-    {
-        #region Definition
-
-        [AgentDefinition]
-        public static AgentDefinition JsonViewModelCreatorDefinition { get; }
-            = new AgentDefinition(new []
-                                  {
-                                      InitializeMessage.InitializeMessageDefinition
-                                  },
-                                  new []
-                                  {
-                                      JsonViewModelCreated.JsonViewModelCreatedDefinition
-                                  });
-
-        #endregion
-
-        public JsonViewModelCreator(IMessageBoard messageBoard) : base(JsonViewModelCreatorDefinition, messageBoard)
+    {        public JsonViewModelCreator(IMessageBoard messageBoard) : base(messageBoard)
         {
         }
 

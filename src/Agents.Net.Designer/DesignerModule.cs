@@ -23,7 +23,6 @@ namespace Agents.Net.Designer
             //TODO Feature: Include amodels -> Package view (Like one model per assembly)
             builder.RegisterType<MainWindow>().AsSelf().InstancePerLifetimeScope();
             builder.RegisterType<MessageBoard>().As<IMessageBoard>().InstancePerLifetimeScope();
-            builder.RegisterType<Community>().As<Community>().InstancePerLifetimeScope();
             builder.RegisterType<JsonViewModelCreator>().As<Agent>().InstancePerLifetimeScope();
             builder.RegisterType<GraphViewModelCreator>().As<Agent>().InstancePerLifetimeScope();
             builder.RegisterType<MainWindowDataContextProvider>().As<Agent>().InstancePerLifetimeScope();

@@ -4,23 +4,14 @@ using Agents.Net;
 namespace Agents.Net.Designer.Model.Messages
 {
     public class ImageExported : Message
-    {
-        #region Definition
-
-        [MessageDefinition]
-        public static MessageDefinition ImageExportedDefinition { get; } =
-            new MessageDefinition(nameof(ImageExported));
-
-        #endregion
-
-        public ImageExported(string path, Message predecessorMessage, params Message[] childMessages)
-            : base(predecessorMessage, ImageExportedDefinition, childMessages)
+    {        public ImageExported(string path, Message predecessorMessage, params Message[] childMessages)
+            : base(predecessorMessage, childMessages:childMessages)
         {
             Path = path;
         }
 
         public ImageExported(string path, IEnumerable<Message> predecessorMessages, params Message[] childMessages)
-            : base(predecessorMessages, ImageExportedDefinition, childMessages)
+            : base(predecessorMessages, childMessages:childMessages)
         {
             Path = path;
         }

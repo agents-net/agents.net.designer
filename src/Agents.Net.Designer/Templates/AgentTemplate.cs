@@ -4,18 +4,10 @@ $dependecies$
 
 namespace $rootnamespace$
 {
+    $attributes$
     public class $itemname$ : Agent
     {
-        #region Definition
-
-        [AgentDefinition]
-        public static AgentDefinition $itemname$Definition { get; }
-            = new AgentDefinition($consumingmessages$,
-                                  $producingmessages$);
-
-        #endregion
-
-        public $itemname$(IMessageBoard messageBoard) : base($itemname$Definition, messageBoard)
+        public $itemname$(IMessageBoard messageBoard) : base(messageBoard)
         {
         }
 

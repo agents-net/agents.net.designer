@@ -6,26 +6,11 @@ using Agents.Net.Designer.Templates.Messages;
 
 namespace Agents.Net.Designer.Templates.Agents
 {
+    [Consumes(typeof(InitializeMessage))]
+    [Produces(typeof(TemplateFileFound))]
     public class TemplatesFinder : Agent
     {
-        private const string TemplatesLocation = ".\\Templates";
-
-        #region Definition
-
-        [AgentDefinition]
-        public static AgentDefinition TemplatesFinderDefinition { get; }
-            = new AgentDefinition(new []
-                                  {
-                                      InitializeMessage.InitializeMessageDefinition
-                                  },
-                                  new []
-                                  {
-                                      TemplateFileFound.TemplateFileFoundDefinition
-                                  });
-
-        #endregion
-
-        public TemplatesFinder(IMessageBoard messageBoard) : base(TemplatesFinderDefinition, messageBoard)
+        private const string TemplatesLocation = ".\\Templates";        public TemplatesFinder(IMessageBoard messageBoard) : base(messageBoard)
         {
         }
 

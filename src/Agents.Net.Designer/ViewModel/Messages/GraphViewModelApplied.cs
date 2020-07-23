@@ -4,25 +4,16 @@ using Agents.Net;
 namespace Agents.Net.Designer.ViewModel.Messages
 {
     public class GraphViewModelApplied : Message
-    {
-        #region Definition
-
-        [MessageDefinition]
-        public static MessageDefinition GraphViewModelAppliedDefinition { get; } =
-            new MessageDefinition(nameof(GraphViewModelApplied));
-
-        #endregion
-
-        public GraphViewModelApplied(GraphViewModel viewModel, Message predecessorMessage,
+    {        public GraphViewModelApplied(GraphViewModel viewModel, Message predecessorMessage,
                                      params Message[] childMessages)
-            : base(predecessorMessage, GraphViewModelAppliedDefinition, childMessages)
+            : base(predecessorMessage, childMessages:childMessages)
         {
             ViewModel = viewModel;
         }
 
         public GraphViewModelApplied(GraphViewModel viewModel, IEnumerable<Message> predecessorMessages,
                                      params Message[] childMessages)
-            : base(predecessorMessages, GraphViewModelAppliedDefinition, childMessages)
+            : base(predecessorMessages, childMessages:childMessages)
         {
             ViewModel = viewModel;
         }

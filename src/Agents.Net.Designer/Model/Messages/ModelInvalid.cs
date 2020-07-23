@@ -5,23 +5,14 @@ using Agents.Net;
 namespace Agents.Net.Designer.Model.Messages
 {
     public class ModelInvalid : Message
-    {
-        #region Definition
-
-        [MessageDefinition]
-        public static MessageDefinition ModelInvalidDefinition { get; } =
-            new MessageDefinition(nameof(ModelInvalid));
-
-        #endregion
-
-        public ModelInvalid(string[] messages, Message predecessorMessage, params Message[] childMessages)
-            : base(predecessorMessage, ModelInvalidDefinition, childMessages)
+    {        public ModelInvalid(string[] messages, Message predecessorMessage, params Message[] childMessages)
+            : base(predecessorMessage, childMessages:childMessages)
         {
             Messages = messages;
         }
 
         public ModelInvalid(string[] messages, IEnumerable<Message> predecessorMessages, params Message[] childMessages)
-            : base(predecessorMessages, ModelInvalidDefinition, childMessages)
+            : base(predecessorMessages, childMessages:childMessages)
         {
             Messages = messages;
         }

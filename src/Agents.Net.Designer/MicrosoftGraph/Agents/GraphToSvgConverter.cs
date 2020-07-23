@@ -10,29 +10,15 @@ using Microsoft.Msagl.Drawing;
 
 namespace Agents.Net.Designer.MicrosoftGraph.Agents
 {
+    [Consumes(typeof(ExportImageRequested))]
+    [Consumes(typeof(GraphCreated))]
+    [Produces(typeof(ImageExported))]
     public class GraphToSvgConverter : Agent
-    {
-        #region Definition
-
-        [AgentDefinition]
-        public static AgentDefinition GraphToSvgConverterDefinition { get; }
-            = new AgentDefinition(new []
-                                  {
-                                      ExportImageRequested.ExportImageRequestedDefinition,
-                                      GraphCreated.GraphCreatedDefinition
-                                  },
-                                  new []
-                                  {
-                                      ImageExported.ImageExportedDefinition
-                                  });
-
-        #endregion
-
-        private readonly MessageCollector<ExportImageRequested, GraphCreated> collector;
+    {        private readonly MessageCollector<ExportImageRequested, GraphCreated> collector;
         private readonly HashSet<ExportImageRequested> processedRequests = new HashSet<ExportImageRequested>();
         private readonly string svgNamespace = "http://www.w3.org/2000/svg";
 
-        public GraphToSvgConverter(IMessageBoard messageBoard) : base(GraphToSvgConverterDefinition, messageBoard)
+        public GraphToSvgConverter(IMessageBoard messageBoard) : base(messageBoard)
         {
             collector = new MessageCollector<ExportImageRequested, GraphCreated>(OnMessagesCollected);
         }

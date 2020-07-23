@@ -5,25 +5,16 @@ using Agents.Net;
 namespace Agents.Net.Designer.Json.Messages
 {
     public class JsonModelParsingError : Message
-    {
-        #region Definition
-
-        [MessageDefinition]
-        public static MessageDefinition JsonModelParsingErrorDefinition { get; } =
-            new MessageDefinition(nameof(JsonModelParsingError));
-
-        #endregion
-
-        public JsonModelParsingError(IEnumerable<string> messages, Message predecessorMessage,
+    {        public JsonModelParsingError(IEnumerable<string> messages, Message predecessorMessage,
                                      params Message[] childMessages)
-            : base(predecessorMessage, JsonModelParsingErrorDefinition, childMessages)
+            : base(predecessorMessage, childMessages:childMessages)
         {
             Messages = messages;
         }
 
         public JsonModelParsingError(IEnumerable<string> messages, IEnumerable<Message> predecessorMessages,
                                      params Message[] childMessages)
-            : base(predecessorMessages, JsonModelParsingErrorDefinition, childMessages)
+            : base(predecessorMessages, childMessages:childMessages)
         {
             Messages = messages;
         }

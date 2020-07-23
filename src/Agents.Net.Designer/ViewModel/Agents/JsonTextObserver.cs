@@ -6,24 +6,10 @@ using Agents.Net.Designer.ViewModel.Messages;
 
 namespace Agents.Net.Designer.ViewModel.Agents
 {
+    [Consumes(typeof(JsonViewModelCreated))]
+    [Produces(typeof(JsonModelSourceChanged))]
     public class JsonTextObserver : Agent, IDisposable
-    {
-        #region Definition
-
-        [AgentDefinition]
-        public static AgentDefinition JsonTextObserverDefinition { get; }
-            = new AgentDefinition(new []
-                                  {
-                                      JsonViewModelCreated.JsonViewModelCreatedDefinition
-                                  },
-                                  new []
-                                  {
-                                      JsonModelSourceChanged.JsonModelSourceChangedDefinition
-                                  });
-
-        #endregion
-
-        public JsonTextObserver(IMessageBoard messageBoard) : base(JsonTextObserverDefinition, messageBoard)
+    {        public JsonTextObserver(IMessageBoard messageBoard) : base(messageBoard)
         {
         }
 

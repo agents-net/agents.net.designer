@@ -13,26 +13,12 @@ using Newtonsoft.Json.Schema.Generation;
 
 namespace Agents.Net.Designer.Json.Agents
 {
+    [Consumes(typeof(JsonModelSourceChanged))]
+    [Produces(typeof(JsonModelParsingError))]
+    [Produces(typeof(JsonModelValidated))]
     public class JsonModelValidator : Agent
-    {
-        #region Definition
-
-        [AgentDefinition]
-        public static AgentDefinition JsonModelValidatorDefinition { get; }
-            = new AgentDefinition(new []
-                                  {
-                                      JsonModelSourceChanged.JsonModelSourceChangedDefinition
-                                  },
-                                  new []
-                                  {
-                                      JsonModelParsingError.JsonModelParsingErrorDefinition,
-                                      JsonModelValidated.JsonModelValidatedDefinition
-                                  });
-
-        #endregion
-        
-        private readonly JSchema schema;
-        public JsonModelValidator(IMessageBoard messageBoard) : base(JsonModelValidatorDefinition, messageBoard)
+    {        private readonly JSchema schema;
+        public JsonModelValidator(IMessageBoard messageBoard) : base(messageBoard)
         {
             JSchemaGenerator generator = new JSchemaGenerator();
             schema = generator.Generate(typeof(CommunityModel));

@@ -7,24 +7,10 @@ using Agents.Net.Designer.Model.Messages;
 
 namespace Agents.Net.Designer.Json.Agents
 {
+    [Consumes(typeof(FileConnectionVerified))]
+    [Produces(typeof(FileConnected))]
     public class JsonFileCreator : Agent
-    {
-        #region Definition
-
-        [AgentDefinition]
-        public static AgentDefinition JsonFileCreatorDefinition { get; }
-            = new AgentDefinition(new []
-                                  {
-                                      FileConnectionVerified.FileConnectionVerifiedDefinition
-                                  },
-                                  new []
-                                  {
-                                      FileConnected.FileConnectedDefinition
-                                  });
-
-        #endregion
-
-        public JsonFileCreator(IMessageBoard messageBoard) : base(JsonFileCreatorDefinition, messageBoard)
+    {        public JsonFileCreator(IMessageBoard messageBoard) : base(messageBoard)
         {
         }
 

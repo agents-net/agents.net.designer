@@ -7,28 +7,14 @@ using Agents.Net.Designer.Model.Messages;
 
 namespace Agents.Net.Designer.Json.Agents
 {
+    [Consumes(typeof(FileConnected))]
+    [Consumes(typeof(JsonModelSourceChanged))]
+    [Produces(typeof(FileSynchronized))]
     public class JsonFileSynchronizer : Agent
-    {
-        #region Definition
-
-        [AgentDefinition]
-        public static AgentDefinition JsonFileSynchronizerDefinition { get; }
-            = new AgentDefinition(new []
-                                  {
-                                      FileConnected.FileConnectedDefinition,
-                                      JsonModelSourceChanged.JsonModelSourceChangedDefinition
-                                  },
-                                  new []
-                                  {
-                                      FileSynchronized.FileSynchronizedDefinition
-                                  });
-
-        #endregion
-
-        private readonly MessageCollector<FileConnected, JsonModelSourceChanged> collector;
+    {        private readonly MessageCollector<FileConnected, JsonModelSourceChanged> collector;
         private readonly HashSet<FileConnected> firstTimeExecutions = new HashSet<FileConnected>();
 
-        public JsonFileSynchronizer(IMessageBoard messageBoard) : base(JsonFileSynchronizerDefinition, messageBoard)
+        public JsonFileSynchronizer(IMessageBoard messageBoard) : base(messageBoard)
         {
             collector = new MessageCollector<FileConnected, JsonModelSourceChanged>(OnMessagesCollected);
         }

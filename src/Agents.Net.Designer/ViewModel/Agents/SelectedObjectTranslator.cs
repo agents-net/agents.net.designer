@@ -6,24 +6,10 @@ using Microsoft.Msagl.Drawing;
 
 namespace Agents.Net.Designer.ViewModel.Agents
 {
+    [Consumes(typeof(SelectedObjectChanged))]
+    [Produces(typeof(SelectedModelObjectChanged))]
     public class SelectedObjectTranslator : Agent
-    {
-        #region Definition
-
-        [AgentDefinition]
-        public static AgentDefinition SelectedObjectTranslatorDefinition { get; }
-            = new AgentDefinition(new []
-                                  {
-                                      SelectedObjectChanged.SelectedObjectChangedDefinition
-                                  },
-                                  new []
-                                  {
-                                      SelectedModelObjectChanged.SelectedModelObjectChangedDefinition
-                                  });
-
-        #endregion
-
-        public SelectedObjectTranslator(IMessageBoard messageBoard) : base(SelectedObjectTranslatorDefinition, messageBoard)
+    {        public SelectedObjectTranslator(IMessageBoard messageBoard) : base(messageBoard)
         {
         }
 

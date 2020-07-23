@@ -4,24 +4,15 @@ using Agents.Net;
 namespace Agents.Net.Designer.Generator.Messages
 {
     public class GeneratingMessage : Message
-    {
-        #region Definition
-
-        [MessageDefinition]
-        public static MessageDefinition GeneratingMessageDefinition { get; } =
-            new MessageDefinition(nameof(GeneratingMessage));
-
-        #endregion
-
-        public GeneratingMessage(Message predecessorMessage,
+    {        public GeneratingMessage(Message predecessorMessage,
                                  params Message[] childMessages)
-            : base(predecessorMessage, GeneratingMessageDefinition, childMessages)
+            : base(predecessorMessage, childMessages:childMessages)
         {
         }
 
         public GeneratingMessage(IEnumerable<Message> predecessorMessages,
                                  params Message[] childMessages)
-            : base(predecessorMessages, GeneratingMessageDefinition, childMessages)
+            : base(predecessorMessages, childMessages:childMessages)
         {
         }
 

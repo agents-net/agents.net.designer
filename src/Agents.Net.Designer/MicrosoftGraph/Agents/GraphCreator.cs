@@ -7,24 +7,11 @@ using Microsoft.Msagl.Drawing;
 
 namespace Agents.Net.Designer.MicrosoftGraph.Agents
 {
+    [Consumes(typeof(ModelCreated))]
+    [Produces(typeof(GraphCreated))]
     public class GraphCreator : Agent
     {
-        #region Definition
-
-        [AgentDefinition]
-        public static AgentDefinition GraphCreatorDefinition { get; }
-            = new AgentDefinition(new []
-                                  {
-                                      ModelCreated.ModelCreatedDefinition
-                                  },
-                                  new []
-                                  {
-                                      GraphCreated.GraphCreatedDefinition
-                                  });
-
-        #endregion
-
-        public GraphCreator(IMessageBoard messageBoard) : base(GraphCreatorDefinition, messageBoard)
+        public GraphCreator(IMessageBoard messageBoard) : base(messageBoard)
         {
         }
 
@@ -40,7 +27,8 @@ namespace Agents.Net.Designer.MicrosoftGraph.Agents
                 {
                     Attr =
                     {
-                        Shape = Shape.Box
+                        Shape = Shape.Box,
+                        FillColor = Color.White
                     }, 
                     UserData = messageModel
                 };
@@ -54,7 +42,8 @@ namespace Agents.Net.Designer.MicrosoftGraph.Agents
                 {
                     Attr =
                     {
-                        Shape = Shape.Ellipse
+                        Shape = Shape.Ellipse,
+                        FillColor = Color.White
                     },
                     UserData = agentModel
                 };

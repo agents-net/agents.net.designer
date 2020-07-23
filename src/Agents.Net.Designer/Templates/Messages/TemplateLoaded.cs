@@ -4,17 +4,8 @@ using Agents.Net;
 namespace Agents.Net.Designer.Templates.Messages
 {
     public class TemplateLoaded : Message
-    {
-        #region Definition
-
-        [MessageDefinition]
-        public static MessageDefinition TemplateLoadedDefinition { get; } =
-            new MessageDefinition(nameof(TemplateLoaded));
-
-        #endregion
-
-        public TemplateLoaded(string name, string content, Message predecessorMessage, params Message[] childMessages)
-            : base(predecessorMessage, TemplateLoadedDefinition, childMessages)
+    {        public TemplateLoaded(string name, string content, Message predecessorMessage, params Message[] childMessages)
+            : base(predecessorMessage, childMessages:childMessages)
         {
             Name = name;
             Content = content;
@@ -22,7 +13,7 @@ namespace Agents.Net.Designer.Templates.Messages
 
         public TemplateLoaded(string name, string content, IEnumerable<Message> predecessorMessages,
                               params Message[] childMessages)
-            : base(predecessorMessages, TemplateLoadedDefinition, childMessages)
+            : base(predecessorMessages, childMessages:childMessages)
         {
             Name = name;
             Content = content;

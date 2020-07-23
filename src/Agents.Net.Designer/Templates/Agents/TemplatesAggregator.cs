@@ -6,26 +6,12 @@ using Agents.Net.Designer.Templates.Messages;
 
 namespace Agents.Net.Designer.Templates.Agents
 {
+    [Consumes(typeof(TemplateLoaded))]
+    [Produces(typeof(TemplatesLoaded))]
     public class TemplatesAggregator : Agent
-    {
-        #region Definition
+    {        private readonly MessageAggregator<TemplateLoaded> aggregator;
 
-        [AgentDefinition]
-        public static AgentDefinition TemplatesAggregatorDefinition { get; }
-            = new AgentDefinition(new []
-                                  {
-                                      TemplateLoaded.TemplateLoadedDefinition
-                                  },
-                                  new []
-                                  {
-                                      TemplatesLoaded.TemplatesLoadedDefinition
-                                  });
-
-        #endregion
-
-        private readonly MessageAggregator<TemplateLoaded> aggregator;
-
-        public TemplatesAggregator(IMessageBoard messageBoard) : base(TemplatesAggregatorDefinition, messageBoard)
+        public TemplatesAggregator(IMessageBoard messageBoard) : base(messageBoard)
         {
             aggregator = new MessageAggregator<TemplateLoaded>(OnAggregated);
         }

@@ -4,19 +4,10 @@ using Agents.Net;
 namespace Agents.Net.Designer.Generator.Messages
 {
     public class GeneratingAgent : Message
-    {
-        #region Definition
-
-        [MessageDefinition]
-        public static MessageDefinition GeneratingAgentDefinition { get; } =
-            new MessageDefinition(nameof(GeneratingAgent));
-
-        #endregion
-
-        public GeneratingAgent(string[] consumingMessages,
+    {        public GeneratingAgent(string[] consumingMessages,
                                string[] producingMessages, string[] dependencies, Message predecessorMessage,
                                params Message[] childMessages)
-            : base(predecessorMessage, GeneratingAgentDefinition, childMessages)
+            : base(predecessorMessage, childMessages:childMessages)
         {
             ConsumingMessages = consumingMessages;
             ProducingMessages = producingMessages;
@@ -26,7 +17,7 @@ namespace Agents.Net.Designer.Generator.Messages
         public GeneratingAgent(string[] consumingMessages,
                                string[] producingMessages, string[] dependencies,
                                IEnumerable<Message> predecessorMessages, params Message[] childMessages)
-            : base(predecessorMessages, GeneratingAgentDefinition, childMessages)
+            : base(predecessorMessages, childMessages:childMessages)
         {
             ConsumingMessages = consumingMessages;
             ProducingMessages = producingMessages;

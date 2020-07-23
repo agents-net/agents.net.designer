@@ -4,18 +4,9 @@ using Agents.Net;
 namespace Agents.Net.Designer.Model.Messages
 {
     public class FileConnected : Message
-    {
-        #region Definition
-
-        [MessageDefinition]
-        public static MessageDefinition FileConnectedDefinition { get; } =
-            new MessageDefinition(nameof(FileConnected));
-
-        #endregion
-
-        public FileConnected(string fileName, bool wasCreated, Message predecessorMessage,
+    {        public FileConnected(string fileName, bool wasCreated, Message predecessorMessage,
                              params Message[] childMessages)
-            : base(predecessorMessage, FileConnectedDefinition, childMessages)
+            : base(predecessorMessage, childMessages:childMessages)
         {
             FileName = fileName;
             WasCreated = wasCreated;
@@ -23,7 +14,7 @@ namespace Agents.Net.Designer.Model.Messages
 
         public FileConnected(string fileName, bool wasCreated, IEnumerable<Message> predecessorMessages,
                              params Message[] childMessages)
-            : base(predecessorMessages, FileConnectedDefinition, childMessages)
+            : base(predecessorMessages, childMessages:childMessages)
         {
             FileName = fileName;
             WasCreated = wasCreated;

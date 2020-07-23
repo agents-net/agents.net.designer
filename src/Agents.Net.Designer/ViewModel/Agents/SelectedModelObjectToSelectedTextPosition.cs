@@ -10,25 +10,11 @@ using Newtonsoft.Json.Linq;
 
 namespace Agents.Net.Designer.ViewModel.Agents
 {
+    [Consumes(typeof(JsonModelValidated))]
+    [Consumes(typeof(SelectedModelObjectChanged))]
+    [Produces(typeof(SelectedJsonPositionChanged))]
     public class SelectedModelObjectToSelectedTextPosition : Agent
-    {
-        #region Definition
-
-        [AgentDefinition]
-        public static AgentDefinition SelectedModelObjectToSelectedTextPositionDefinition { get; }
-            = new AgentDefinition(new []
-                                  {
-                                      JsonModelValidated.JsonModelValidatedDefinition,
-                                      SelectedModelObjectChanged.SelectedModelObjectChangedDefinition
-                                  },
-                                  new []
-                                  {
-                                      SelectedJsonPositionChanged.SelectedJsonPositionChangedDefinition
-                                  });
-
-        #endregion
-
-        public SelectedModelObjectToSelectedTextPosition(IMessageBoard messageBoard) : base(SelectedModelObjectToSelectedTextPositionDefinition, messageBoard)
+    {        public SelectedModelObjectToSelectedTextPosition(IMessageBoard messageBoard) : base(messageBoard)
         {
             collector = new MessageCollector<JsonModelValidated, SelectedModelObjectChanged>(OnMessagesCollected);
         }

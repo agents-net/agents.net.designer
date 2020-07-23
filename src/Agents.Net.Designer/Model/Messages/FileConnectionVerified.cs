@@ -4,18 +4,9 @@ using Agents.Net;
 namespace Agents.Net.Designer.Model.Messages
 {
     public class FileConnectionVerified : Message
-    {
-        #region Definition
-
-        [MessageDefinition]
-        public static MessageDefinition FileConnectionVerifiedDefinition { get; } =
-            new MessageDefinition(nameof(FileConnectionVerified));
-
-        #endregion
-
-        public FileConnectionVerified(string fileName, bool fileExist, Message predecessorMessage,
+    {        public FileConnectionVerified(string fileName, bool fileExist, Message predecessorMessage,
                                       params Message[] childMessages)
-            : base(predecessorMessage, FileConnectionVerifiedDefinition, childMessages)
+            : base(predecessorMessage, childMessages:childMessages)
         {
             FileName = fileName;
             FileExist = fileExist;
@@ -23,7 +14,7 @@ namespace Agents.Net.Designer.Model.Messages
 
         public FileConnectionVerified(string fileName, bool fileExist, IEnumerable<Message> predecessorMessages,
                                       params Message[] childMessages)
-            : base(predecessorMessages, FileConnectionVerifiedDefinition, childMessages)
+            : base(predecessorMessages, childMessages:childMessages)
         {
             FileName = fileName;
             FileExist = fileExist;

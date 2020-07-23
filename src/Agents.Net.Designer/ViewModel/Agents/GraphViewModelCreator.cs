@@ -4,24 +4,10 @@ using Agents.Net.Designer.ViewModel.Messages;
 
 namespace Agents.Net.Designer.ViewModel.Agents
 {
+    [Consumes(typeof(InitializeMessage))]
+    [Produces(typeof(GraphViewModelCreated))]
     public class GraphViewModelCreator : Agent
-    {
-        #region Definition
-
-        [AgentDefinition]
-        public static AgentDefinition GraphViewModelCreatorDefinition { get; }
-            = new AgentDefinition(new []
-                                  {
-                                      InitializeMessage.InitializeMessageDefinition
-                                  },
-                                  new []
-                                  {
-                                      GraphViewModelCreated.GraphViewModelCreatedDefinition
-                                  });
-
-        #endregion
-
-        public GraphViewModelCreator(IMessageBoard messageBoard) : base(GraphViewModelCreatorDefinition, messageBoard)
+    {        public GraphViewModelCreator(IMessageBoard messageBoard) : base(messageBoard)
         {
         }
 

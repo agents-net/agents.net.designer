@@ -7,32 +7,18 @@ using Agents.Net.Designer.Model.Messages;
 
 namespace Agents.Net.Designer.Model.Agents
 {
+    [Consumes(typeof(AddAgentRequested))]
+    [Consumes(typeof(AddMessageRequested))]
+    [Consumes(typeof(AddGeneratorSettingsRequested))]
+    [Consumes(typeof(ModelCreated))]
+    [Produces(typeof(ModelUpdated))]
     public class CommandModelUpdater : Agent
-    {
-        #region Definition
-
-        [AgentDefinition]
-        public static AgentDefinition CommandModelUpdaterDefinition { get; }
-            = new AgentDefinition(new []
-                                  {
-                                      AddAgentRequested.AddAgentRequestedDefinition,
-                                      AddMessageRequested.AddMessageRequestedDefinition,
-                                      AddGeneratorSettingsRequested.AddGeneratorSettingsRequestedDefinition,
-                                      ModelCreated.ModelCreatedDefinition
-                                  },
-                                  new []
-                                  {
-                                      ModelUpdated.ModelUpdatedDefinition
-                                  });
-
-        #endregion
-
-        private readonly HashSet<Message> processedMessages = new HashSet<Message>();
+    {        private readonly HashSet<Message> processedMessages = new HashSet<Message>();
         private readonly MessageCollector<AddAgentRequested, ModelCreated> addAgentCollector;
         private readonly MessageCollector<AddMessageRequested, ModelCreated> addMessageCollector;
         private readonly MessageCollector<AddGeneratorSettingsRequested, ModelCreated> addGeneratorSettingsCollector;
 
-        public CommandModelUpdater(IMessageBoard messageBoard) : base(CommandModelUpdaterDefinition, messageBoard)
+        public CommandModelUpdater(IMessageBoard messageBoard) : base(messageBoard)
         {
             addAgentCollector = new MessageCollector<AddAgentRequested, ModelCreated>(OnMessagesCollected);
             addMessageCollector = new MessageCollector<AddMessageRequested, ModelCreated>(OnMessagesCollected);

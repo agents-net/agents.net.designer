@@ -4,24 +4,15 @@ using Agents.Net;
 namespace Agents.Net.Designer.ViewModel.Messages
 {
     public class JsonViewModelApplied : Message
-    {
-        #region Definition
-
-        [MessageDefinition]
-        public static MessageDefinition JsonViewModelAppliedDefinition { get; } =
-            new MessageDefinition(nameof(JsonViewModelApplied));
-
-        #endregion
-
-        public JsonViewModelApplied(JsonViewModel viewModel, Message predecessorMessage, params Message[] childMessages)
-            : base(predecessorMessage, JsonViewModelAppliedDefinition, childMessages)
+    {        public JsonViewModelApplied(JsonViewModel viewModel, Message predecessorMessage, params Message[] childMessages)
+            : base(predecessorMessage, childMessages:childMessages)
         {
             ViewModel = viewModel;
         }
 
         public JsonViewModelApplied(JsonViewModel viewModel, IEnumerable<Message> predecessorMessages,
                                     params Message[] childMessages)
-            : base(predecessorMessages, JsonViewModelAppliedDefinition, childMessages)
+            : base(predecessorMessages, childMessages:childMessages)
         {
             ViewModel = viewModel;
         }

@@ -5,25 +5,16 @@ using Agents.Net.Designer.Model;
 namespace Agents.Net.Designer.Generator.Messages
 {
     public class MessageModelSelectedForGeneration : Message
-    {
-        #region Definition
-
-        [MessageDefinition]
-        public static MessageDefinition MessageModelSelectedForGenerationDefinition { get; } =
-            new MessageDefinition(nameof(MessageModelSelectedForGeneration));
-
-        #endregion
-
-        public MessageModelSelectedForGeneration(MessageModel message, Message predecessorMessage,
+    {        public MessageModelSelectedForGeneration(MessageModel message, Message predecessorMessage,
                                                  params Message[] childMessages)
-            : base(predecessorMessage, MessageModelSelectedForGenerationDefinition, childMessages)
+            : base(predecessorMessage, childMessages:childMessages)
         {
             Message = message;
         }
 
         public MessageModelSelectedForGeneration(MessageModel message, IEnumerable<Message> predecessorMessages,
                                                  params Message[] childMessages)
-            : base(predecessorMessages, MessageModelSelectedForGenerationDefinition, childMessages)
+            : base(predecessorMessages, childMessages:childMessages)
         {
             Message = message;
         }

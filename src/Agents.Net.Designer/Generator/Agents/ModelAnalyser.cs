@@ -8,34 +8,23 @@ using Agents.Net.Designer.Model.Messages;
 
 namespace Agents.Net.Designer.Generator.Agents
 {
+    [Consumes(typeof(GenerateFilesRequested))]
+    [Consumes(typeof(ModelCreated))]
+    [Produces(typeof(ModelInvalid))]
+    [Produces(typeof(AgentModelSelectedForGeneration))]
+    [Produces(typeof(ModelSelectedForGeneration))]
+    [Produces(typeof(MessageModelSelectedForGeneration))]
+    [Produces(typeof(GeneratorSettingsDefined))]
     public class ModelAnalyser : Agent
     {
         private static readonly string[] BuildInMessages = new[]
         {
             "InitializeMessage",
             "ExceptionMessage"
-        };
-
-        #region Definition
-
-        [AgentDefinition]
-        public static AgentDefinition ModelAnalyserDefinition { get; }
-            = new AgentDefinition(new []
-                                  {
-                                      GenerateFilesRequested.GenerateFilesRequestedDefinition,
-                                      ModelCreated.ModelCreatedDefinition
-                                  },
-                                  new []
-                                  {
-                                      ModelInvalid.ModelInvalidDefinition
-                                  });
-
-        #endregion
-
-        private readonly MessageCollector<GenerateFilesRequested, ModelCreated> collector;
+        };        private readonly MessageCollector<GenerateFilesRequested, ModelCreated> collector;
         private readonly HashSet<GenerateFilesRequested> processedCommands = new HashSet<GenerateFilesRequested>();
 
-        public ModelAnalyser(IMessageBoard messageBoard) : base(ModelAnalyserDefinition, messageBoard)
+        public ModelAnalyser(IMessageBoard messageBoard) : base(messageBoard)
         {
             collector = new MessageCollector<GenerateFilesRequested, ModelCreated>(OnMessagesCollected);
         }

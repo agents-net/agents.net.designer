@@ -8,24 +8,10 @@ using Newtonsoft.Json;
 
 namespace Agents.Net.Designer.Json.Agents
 {
+    [Consumes(typeof(ModelUpdated))]
+    [Produces(typeof(JsonTextUpdated))]
     public class JsonModelSerializer : Agent
-    {
-        #region Definition
-
-        [AgentDefinition]
-        public static AgentDefinition JsonModelSerializerDefinition { get; }
-            = new AgentDefinition(new []
-                                  {
-                                      ModelUpdated.ModelUpdatedDefinition
-                                  },
-                                  new []
-                                  {
-                                      JsonTextUpdated.JsonTextUpdatedDefinition
-                                  });
-
-        #endregion
-
-        public JsonModelSerializer(IMessageBoard messageBoard) : base(JsonModelSerializerDefinition, messageBoard)
+    {        public JsonModelSerializer(IMessageBoard messageBoard) : base(messageBoard)
         {
         }
 

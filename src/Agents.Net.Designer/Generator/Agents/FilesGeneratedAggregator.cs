@@ -6,26 +6,12 @@ using Agents.Net.Designer.Generator.Messages;
 
 namespace Agents.Net.Designer.Generator.Agents
 {
+    [Consumes(typeof(FileGenerated))]
+    [Produces(typeof(FilesGenerated))]
     public class FilesGeneratedAggregator : Agent
-    {
-        #region Definition
+    {        private readonly MessageAggregator<FileGenerated> aggregator;
 
-        [AgentDefinition]
-        public static AgentDefinition FilesGeneratedAggregatorDefinition { get; }
-            = new AgentDefinition(new []
-                                  {
-                                      FileGenerated.FileGeneratedDefinition
-                                  },
-                                  new []
-                                  {
-                                      FilesGenerated.FilesGeneratedDefinition
-                                  });
-
-        #endregion
-
-        private readonly MessageAggregator<FileGenerated> aggregator;
-
-        public FilesGeneratedAggregator(IMessageBoard messageBoard) : base(FilesGeneratedAggregatorDefinition, messageBoard)
+        public FilesGeneratedAggregator(IMessageBoard messageBoard) : base(messageBoard)
         {
             aggregator = new MessageAggregator<FileGenerated>(OnAggregated);
         }
