@@ -29,9 +29,7 @@ namespace Agents.Net.Designer
             builder.RegisterType<JsonModelParser>().As<Agent>().InstancePerLifetimeScope();
             builder.RegisterType<GraphCreator>().As<Agent>().InstancePerLifetimeScope();
             builder.RegisterType<MainWindowObserver>().As<Agent>().InstancePerLifetimeScope();
-            builder.RegisterType<SelectedModelObjectToSelectedTextPosition>().As<Agent>().InstancePerLifetimeScope();
             builder.RegisterType<SelectedObjectTranslator>().As<Agent>().InstancePerLifetimeScope();
-            builder.RegisterType<TextPositionUpdater>().As<Agent>().InstancePerLifetimeScope();
             builder.RegisterType<JsonModelSerializer>().As<Agent>().InstancePerLifetimeScope();
             builder.RegisterType<CommandModelUpdater>().As<Agent>().InstancePerLifetimeScope();
             builder.RegisterType<FileVerifier>().As<Agent>().InstancePerLifetimeScope();
