@@ -21,8 +21,8 @@ namespace Agents.Net.Designer.Generator.Agents
         {
             "InitializeMessage",
             "ExceptionMessage"
-        };        private readonly MessageCollector<GenerateFilesRequested, ModelCreated> collector;
-        private readonly HashSet<GenerateFilesRequested> processedCommands = new HashSet<GenerateFilesRequested>();
+        };
+        private readonly MessageCollector<GenerateFilesRequested, ModelCreated> collector;
 
         public ModelAnalyser(IMessageBoard messageBoard) : base(messageBoard)
         {
@@ -31,14 +31,7 @@ namespace Agents.Net.Designer.Generator.Agents
 
         private void OnMessagesCollected(MessageCollection<GenerateFilesRequested, ModelCreated> set)
         {
-            lock (processedCommands)
-            {
-                if (!processedCommands.Add(set.Message1))
-                {
-                    return;
-                }
-            }
-
+            set.MarkAsConsumed(set.Message1);
             List<Message> messages = new List<Message>();
             List<string> errors = new List<string>();
             foreach (AgentModel agentModel in set.Message2.Model.Agents)

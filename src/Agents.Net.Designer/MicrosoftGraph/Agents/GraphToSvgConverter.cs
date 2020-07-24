@@ -14,8 +14,8 @@ namespace Agents.Net.Designer.MicrosoftGraph.Agents
     [Consumes(typeof(GraphCreated))]
     [Produces(typeof(ImageExported))]
     public class GraphToSvgConverter : Agent
-    {        private readonly MessageCollector<ExportImageRequested, GraphCreated> collector;
-        private readonly HashSet<ExportImageRequested> processedRequests = new HashSet<ExportImageRequested>();
+    {
+        private readonly MessageCollector<ExportImageRequested, GraphCreated> collector;
         private readonly string svgNamespace = "http://www.w3.org/2000/svg";
 
         public GraphToSvgConverter(IMessageBoard messageBoard) : base(messageBoard)
@@ -25,15 +25,8 @@ namespace Agents.Net.Designer.MicrosoftGraph.Agents
 
         private void OnMessagesCollected(MessageCollection<ExportImageRequested, GraphCreated> set)
         {
-            lock (processedRequests)
-            {
-                if (!processedRequests.Add(set.Message1))
-                {
-                    return;
-                }
-            }
+            set.MarkAsConsumed(set.Message1);
 
-            
             Graph layoutGraph = set.Message2.Graph;
             using FileStream svgFile = File.Open(set.Message1.Path, FileMode.OpenOrCreate, FileAccess.ReadWrite);
             svgFile.SetLength(0);

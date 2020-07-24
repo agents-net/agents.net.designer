@@ -13,7 +13,7 @@ namespace Agents.Net.Designer.Model.Agents
     [Consumes(typeof(ModelCreated))]
     [Produces(typeof(ModelUpdated))]
     public class CommandModelUpdater : Agent
-    {        private readonly HashSet<Message> processedMessages = new HashSet<Message>();
+    {
         private readonly MessageCollector<AddAgentRequested, ModelCreated> addAgentCollector;
         private readonly MessageCollector<AddMessageRequested, ModelCreated> addMessageCollector;
         private readonly MessageCollector<AddGeneratorSettingsRequested, ModelCreated> addGeneratorSettingsCollector;
@@ -27,13 +27,10 @@ namespace Agents.Net.Designer.Model.Agents
 
         private void OnMessagesCollected(MessageCollection<AddGeneratorSettingsRequested, ModelCreated> set)
         {
-            lock (processedMessages)
+            set.MarkAsConsumed(set.Message1);
+            if (set.Message2.Model.GeneratorSettings != null)
             {
-                if (!processedMessages.Add(set.Message1) ||
-                    set.Message2.Model.GeneratorSettings != null)
-                {
-                    return;
-                }
+                return;
             }
 
             CommunityModel updatedModel = set.Message2.Model.Clone();
@@ -43,13 +40,7 @@ namespace Agents.Net.Designer.Model.Agents
 
         private void OnMessagesCollected(MessageCollection<AddMessageRequested, ModelCreated> set)
         {
-            lock (processedMessages)
-            {
-                if (!processedMessages.Add(set.Message1))
-                {
-                    return;
-                }
-            }
+            set.MarkAsConsumed(set.Message1);
 
             CommunityModel updatedModel = set.Message2.Model.Clone();
             updatedModel.Messages = updatedModel.Messages
@@ -60,13 +51,7 @@ namespace Agents.Net.Designer.Model.Agents
 
         private void OnMessagesCollected(MessageCollection<AddAgentRequested, ModelCreated> set)
         {
-            lock (processedMessages)
-            {
-                if (!processedMessages.Add(set.Message1))
-                {
-                    return;
-                }
-            }
+            set.MarkAsConsumed(set.Message1);
 
             CommunityModel updatedModel = set.Message2.Model.Clone();
             updatedModel.Agents = updatedModel.Agents

@@ -14,7 +14,8 @@ namespace Agents.Net.Designer.Generator.Agents
     [Consumes(typeof(TemplatesLoaded))]
     [Consumes(typeof(GeneratingFile), Implicitly = true)]
     public class AutofacModuleGenerator : InterceptorAgent
-    {        private readonly MessageCollector<GeneratorSettingsDefined, FilesGenerated, TemplatesLoaded> messageCollector;
+    {
+        private readonly MessageCollector<GeneratorSettingsDefined, FilesGenerated, TemplatesLoaded> messageCollector;
 
         public AutofacModuleGenerator(IMessageBoard messageBoard) : base(messageBoard)
         {
@@ -48,7 +49,7 @@ namespace Agents.Net.Designer.Generator.Agents
 
             List<GeneratingAgent> agents = new List<GeneratingAgent>();
             List<GeneratingFile> files = new List<GeneratingFile>();
-            foreach (FileGenerated fileGenerated in set.Message2.PredecessorMessages)
+            foreach (FileGenerated fileGenerated in set.Message2.Predecessors.OfType<FileGenerated>())
             {
                 if (fileGenerated.TryGetPredecessor(out GeneratingAgent agent))
                 {

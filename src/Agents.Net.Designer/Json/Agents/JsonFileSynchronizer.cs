@@ -11,8 +11,8 @@ namespace Agents.Net.Designer.Json.Agents
     [Consumes(typeof(JsonModelSourceChanged))]
     [Produces(typeof(FileSynchronized))]
     public class JsonFileSynchronizer : Agent
-    {        private readonly MessageCollector<FileConnected, JsonModelSourceChanged> collector;
-        private readonly HashSet<FileConnected> firstTimeExecutions = new HashSet<FileConnected>();
+    {
+        private readonly MessageCollector<FileConnected, JsonModelSourceChanged> collector;
 
         public JsonFileSynchronizer(IMessageBoard messageBoard) : base(messageBoard)
         {
@@ -21,13 +21,7 @@ namespace Agents.Net.Designer.Json.Agents
 
         private void OnMessagesCollected(MessageCollection<FileConnected, JsonModelSourceChanged> set)
         {
-            lock (firstTimeExecutions)
-            {
-                if (firstTimeExecutions.Add(set.Message1) && !set.Message1.WasCreated)
-                {
-                    return;
-                }
-            }
+            set.MarkAsConsumed(set.Message1);
             File.WriteAllText(set.Message1.FileName, set.Message2.JsonModel);
             OnMessage(new FileSynchronized(set.Message1.FileName, set));
         }

@@ -9,16 +9,17 @@ namespace Agents.Net.Designer.Templates.Agents
     [Consumes(typeof(TemplateLoaded))]
     [Produces(typeof(TemplatesLoaded))]
     public class TemplatesAggregator : Agent
-    {        private readonly MessageAggregator<TemplateLoaded> aggregator;
+    {
+        private readonly MessageAggregator<TemplateLoaded> aggregator;
 
         public TemplatesAggregator(IMessageBoard messageBoard) : base(messageBoard)
         {
             aggregator = new MessageAggregator<TemplateLoaded>(OnAggregated);
         }
 
-        private void OnAggregated(ICollection<TemplateLoaded> messages)
+        private void OnAggregated(IReadOnlyCollection<TemplateLoaded> messages)
         {
-            MessageDomain.TerminateDomainsOf(messages.ToArray());
+            MessageDomain.TerminateDomainsOf(messages);
             OnMessage(new TemplatesLoaded(messages.ToDictionary(m => m.Name, m => m.Content), messages));
         }
 

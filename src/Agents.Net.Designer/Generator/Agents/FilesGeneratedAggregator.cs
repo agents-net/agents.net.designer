@@ -9,16 +9,17 @@ namespace Agents.Net.Designer.Generator.Agents
     [Consumes(typeof(FileGenerated))]
     [Produces(typeof(FilesGenerated))]
     public class FilesGeneratedAggregator : Agent
-    {        private readonly MessageAggregator<FileGenerated> aggregator;
+    {
+        private readonly MessageAggregator<FileGenerated> aggregator;
 
         public FilesGeneratedAggregator(IMessageBoard messageBoard) : base(messageBoard)
         {
             aggregator = new MessageAggregator<FileGenerated>(OnAggregated);
         }
 
-        private void OnAggregated(ICollection<FileGenerated> set)
+        private void OnAggregated(IReadOnlyCollection<FileGenerated> set)
         {
-            MessageDomain.TerminateDomainsOf(set.ToArray());
+            MessageDomain.TerminateDomainsOf(set);
             OnMessage(new FilesGenerated(set.Select(f => f.Path).ToArray(), set));
         }
 

@@ -14,22 +14,15 @@ namespace Agents.Net.Designer.ViewModel.Agents
     [Consumes(typeof(SelectedModelObjectChanged))]
     [Produces(typeof(SelectedJsonPositionChanged))]
     public class SelectedModelObjectToSelectedTextPosition : Agent
-    {        public SelectedModelObjectToSelectedTextPosition(IMessageBoard messageBoard) : base(messageBoard)
+    {
+        public SelectedModelObjectToSelectedTextPosition(IMessageBoard messageBoard) : base(messageBoard)
         {
             collector = new MessageCollector<JsonModelValidated, SelectedModelObjectChanged>(OnMessagesCollected);
         }
 
-        private readonly HashSet<SelectedModelObjectChanged> processedMessages = new HashSet<SelectedModelObjectChanged>();
-
         private void OnMessagesCollected(MessageCollection<JsonModelValidated, SelectedModelObjectChanged> set)
         {
-            lock (processedMessages)
-            {
-                if (!processedMessages.Add(set.Message2))
-                {
-                    return;
-                }
-            }
+            set.MarkAsConsumed(set.Message2);
             JToken token;
             switch (set.Message2.SelectedObject)
             {
