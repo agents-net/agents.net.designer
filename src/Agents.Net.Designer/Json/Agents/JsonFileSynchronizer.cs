@@ -8,21 +8,20 @@ using Agents.Net.Designer.Model.Messages;
 namespace Agents.Net.Designer.Json.Agents
 {
     [Consumes(typeof(FileConnected))]
-    [Consumes(typeof(JsonModelSourceChanged))]
+    [Consumes(typeof(JsonTextUpdated))]
     [Produces(typeof(FileSynchronized))]
     public class JsonFileSynchronizer : Agent
     {
-        private readonly MessageCollector<FileConnected, JsonModelSourceChanged> collector;
+        private readonly MessageCollector<FileConnected, JsonTextUpdated> collector;
 
         public JsonFileSynchronizer(IMessageBoard messageBoard) : base(messageBoard)
         {
-            collector = new MessageCollector<FileConnected, JsonModelSourceChanged>(OnMessagesCollected);
+            collector = new MessageCollector<FileConnected, JsonTextUpdated>(OnMessagesCollected);
         }
 
-        private void OnMessagesCollected(MessageCollection<FileConnected, JsonModelSourceChanged> set)
+        private void OnMessagesCollected(MessageCollection<FileConnected, JsonTextUpdated> set)
         {
-            set.MarkAsConsumed(set.Message1);
-            File.WriteAllText(set.Message1.FileName, set.Message2.JsonModel);
+            File.WriteAllText(set.Message1.FileName, set.Message2.Text);
             OnMessage(new FileSynchronized(set.Message1.FileName, set));
         }
 

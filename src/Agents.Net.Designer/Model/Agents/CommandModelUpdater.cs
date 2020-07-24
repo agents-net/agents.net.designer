@@ -11,7 +11,7 @@ namespace Agents.Net.Designer.Model.Agents
     [Consumes(typeof(AddMessageRequested))]
     [Consumes(typeof(AddGeneratorSettingsRequested))]
     [Consumes(typeof(ModelCreated))]
-    [Produces(typeof(ModelUpdated))]
+    [Produces(typeof(ModelCreated))]
     public class CommandModelUpdater : Agent
     {
         private readonly MessageCollector<AddAgentRequested, ModelCreated> addAgentCollector;
@@ -35,7 +35,7 @@ namespace Agents.Net.Designer.Model.Agents
 
             CommunityModel updatedModel = set.Message2.Model.Clone();
             updatedModel.GeneratorSettings = new GeneratorSettings();
-            OnMessage(new ModelUpdated(updatedModel,set));
+            OnMessage(new ModelCreated(updatedModel,set));
         }
 
         private void OnMessagesCollected(MessageCollection<AddMessageRequested, ModelCreated> set)
@@ -46,7 +46,7 @@ namespace Agents.Net.Designer.Model.Agents
             updatedModel.Messages = updatedModel.Messages
                                                 .Concat(new[] {new MessageModel{Name = "MessageX"}})
                                                 .ToArray();
-            OnMessage(new ModelUpdated(updatedModel,set));
+            OnMessage(new ModelCreated(updatedModel,set));
         }
 
         private void OnMessagesCollected(MessageCollection<AddAgentRequested, ModelCreated> set)
@@ -57,7 +57,7 @@ namespace Agents.Net.Designer.Model.Agents
             updatedModel.Agents = updatedModel.Agents
                                                 .Concat(new[] {new AgentModel(){Name = "AgentX"}})
                                                 .ToArray();
-            OnMessage(new ModelUpdated(updatedModel,set));
+            OnMessage(new ModelCreated(updatedModel,set));
         }
 
         protected override void ExecuteCore(Message messageData)

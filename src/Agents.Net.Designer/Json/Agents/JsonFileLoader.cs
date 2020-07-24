@@ -8,9 +8,10 @@ namespace Agents.Net.Designer.Json.Agents
 {
     [Consumes(typeof(FileConnectionVerified))]
     [Produces(typeof(FileConnected))]
-    [Produces(typeof(JsonTextUpdated))]
+    [Produces(typeof(JsonTextLoaded))]
     public class JsonFileLoader : Agent
-    {        public JsonFileLoader(IMessageBoard messageBoard) : base(messageBoard)
+    {
+        public JsonFileLoader(IMessageBoard messageBoard) : base(messageBoard)
         {
         }
 
@@ -22,7 +23,7 @@ namespace Agents.Net.Designer.Json.Agents
                 return;
             }
 
-            OnMessage(new JsonTextUpdated(File.ReadAllText(fileVerified.FileName, Encoding.UTF8), messageData));
+            OnMessage(new JsonTextLoaded(File.ReadAllText(fileVerified.FileName, Encoding.UTF8), messageData));
             OnMessage(new FileConnected(fileVerified.FileName, false, messageData));
         }
     }

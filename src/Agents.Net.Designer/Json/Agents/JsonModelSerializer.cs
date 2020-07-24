@@ -8,23 +8,24 @@ using Newtonsoft.Json;
 
 namespace Agents.Net.Designer.Json.Agents
 {
-    [Consumes(typeof(ModelUpdated))]
+    [Consumes(typeof(ModelCreated))]
     [Produces(typeof(JsonTextUpdated))]
     public class JsonModelSerializer : Agent
-    {        public JsonModelSerializer(IMessageBoard messageBoard) : base(messageBoard)
+    {
+        public JsonModelSerializer(IMessageBoard messageBoard) : base(messageBoard)
         {
         }
 
         protected override void ExecuteCore(Message messageData)
         {
-            ModelUpdated updated = messageData.Get<ModelUpdated>();
+            ModelCreated created = messageData.Get<ModelCreated>();
             JsonSerializer serializer = JsonSerializer.Create(new JsonSerializerSettings
             {
                 Formatting = Formatting.Indented
             });
             StringBuilder updatedText = new StringBuilder();
             using StringWriter stringWriter = new StringWriter(updatedText);
-            serializer.Serialize(stringWriter, updated.Model);
+            serializer.Serialize(stringWriter, created.Model);
             OnMessage(new JsonTextUpdated(updatedText.ToString(), messageData));
         }
     }
