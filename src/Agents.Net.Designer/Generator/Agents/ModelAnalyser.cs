@@ -9,7 +9,7 @@ using Agents.Net.Designer.Model.Messages;
 namespace Agents.Net.Designer.Generator.Agents
 {
     [Consumes(typeof(GenerateFilesRequested))]
-    [Consumes(typeof(ModelCreated))]
+    [Consumes(typeof(ModelUpdated))]
     [Produces(typeof(ModelInvalid))]
     [Produces(typeof(AgentModelSelectedForGeneration))]
     [Produces(typeof(ModelSelectedForGeneration))]
@@ -22,14 +22,14 @@ namespace Agents.Net.Designer.Generator.Agents
             "InitializeMessage",
             "ExceptionMessage"
         };
-        private readonly MessageCollector<GenerateFilesRequested, ModelCreated> collector;
+        private readonly MessageCollector<GenerateFilesRequested, ModelUpdated> collector;
 
         public ModelAnalyser(IMessageBoard messageBoard) : base(messageBoard)
         {
-            collector = new MessageCollector<GenerateFilesRequested, ModelCreated>(OnMessagesCollected);
+            collector = new MessageCollector<GenerateFilesRequested, ModelUpdated>(OnMessagesCollected);
         }
 
-        private void OnMessagesCollected(MessageCollection<GenerateFilesRequested, ModelCreated> set)
+        private void OnMessagesCollected(MessageCollection<GenerateFilesRequested, ModelUpdated> set)
         {
             set.MarkAsConsumed(set.Message1);
             List<Message> messages = new List<Message>();
@@ -66,7 +66,7 @@ namespace Agents.Net.Designer.Generator.Agents
                 {
                     if (BuildInMessages.Contains(message))
                     {
-                        messageModels.Add(new MessageModel {Name = message, Namespace = "Agents.Net"});
+                        messageModels.Add(new MessageModel(message, "Agents.Net"));
                         continue;
                     }
                     MessageModel messageDefinition = set.Message2.Model.Messages

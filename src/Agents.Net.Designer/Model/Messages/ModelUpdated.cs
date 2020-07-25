@@ -3,14 +3,15 @@ using Agents.Net;
 
 namespace Agents.Net.Designer.Model.Messages
 {
-    public class ModelCreated : Message
-    {        public ModelCreated(CommunityModel model, Message predecessorMessage, params Message[] childMessages)
+    public class ModelUpdated : Message
+    {
+        public ModelUpdated(CommunityModel model, Message predecessorMessage, params Message[] childMessages)
             : base(predecessorMessage, childMessages:childMessages)
         {
             Model = model;
         }
 
-        public ModelCreated(CommunityModel model, IEnumerable<Message> predecessorMessages,
+        public ModelUpdated(CommunityModel model, IEnumerable<Message> predecessorMessages,
                             params Message[] childMessages)
             : base(predecessorMessages, childMessages:childMessages)
         {

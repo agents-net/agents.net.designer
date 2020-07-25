@@ -8,7 +8,7 @@ using Newtonsoft.Json;
 
 namespace Agents.Net.Designer.Json.Agents
 {
-    [Consumes(typeof(ModelCreated))]
+    [Consumes(typeof(ModelUpdated))]
     [Produces(typeof(JsonTextUpdated))]
     public class JsonModelSerializer : Agent
     {
@@ -18,14 +18,14 @@ namespace Agents.Net.Designer.Json.Agents
 
         protected override void ExecuteCore(Message messageData)
         {
-            ModelCreated created = messageData.Get<ModelCreated>();
+            ModelUpdated updated = messageData.Get<ModelUpdated>();
             JsonSerializer serializer = JsonSerializer.Create(new JsonSerializerSettings
             {
                 Formatting = Formatting.Indented
             });
             StringBuilder updatedText = new StringBuilder();
             using StringWriter stringWriter = new StringWriter(updatedText);
-            serializer.Serialize(stringWriter, created.Model);
+            serializer.Serialize(stringWriter, updated.Model);
             OnMessage(new JsonTextUpdated(updatedText.ToString(), messageData));
         }
     }

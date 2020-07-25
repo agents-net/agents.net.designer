@@ -14,7 +14,7 @@ using Newtonsoft.Json.Schema.Generation;
 namespace Agents.Net.Designer.Json.Agents
 {
     [Consumes(typeof(JsonTextLoaded))]
-    [Produces(typeof(ModelCreated))]
+    [Produces(typeof(ModelUpdated))]
     [Produces(typeof(JsonModelParsingError))]
     public class JsonModelParser : Agent
     {
@@ -33,7 +33,7 @@ namespace Agents.Net.Designer.Json.Agents
                 using JsonTextReader jsonReader = new JsonTextReader(reader);
                 CommunityModel model = serializer.Deserialize<CommunityModel>(jsonReader);
                 
-                OnMessage(new ModelCreated(model, messageData));
+                OnMessage(new ModelUpdated(model, messageData));
             }
             catch (JsonReaderException e)
             {

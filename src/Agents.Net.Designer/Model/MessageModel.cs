@@ -6,17 +6,14 @@ namespace Agents.Net.Designer.Model
 {
     public class MessageModel
     {
-        public string Name { get; set; }
-
-        public string Namespace { get; set; } = ".Messages";
-
-        public MessageModel Clone()
+        public MessageModel(string name = "", string ns = ".Messages")
         {
-            return new MessageModel
-            {
-                Name = Name,
-                Namespace = Namespace
-            };
+            Name = name;
+            Namespace = ns;
         }
+
+        public string Name { get; }
+
+        public string Namespace { get; }
     }
 }

@@ -6,17 +6,14 @@ namespace Agents.Net.Designer.Model
 {
     public class GeneratorSettings
     {
-        public string PackageNamespace { get; set; }
-
-        public bool GenerateAutofacModule { get; set; }
-
-        public GeneratorSettings Clone()
+        public GeneratorSettings(string packageNamespace = "Root", bool generateAutofacModule = false)
         {
-            return new GeneratorSettings
-            {
-                PackageNamespace = PackageNamespace,
-                GenerateAutofacModule = GenerateAutofacModule
-            };
+            PackageNamespace = packageNamespace;
+            GenerateAutofacModule = generateAutofacModule;
         }
+
+        public string PackageNamespace { get; }
+
+        public bool GenerateAutofacModule { get; }
     }
 }

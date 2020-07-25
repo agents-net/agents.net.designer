@@ -7,7 +7,7 @@ using Microsoft.Msagl.Drawing;
 
 namespace Agents.Net.Designer.MicrosoftGraph.Agents
 {
-    [Consumes(typeof(ModelCreated))]
+    [Consumes(typeof(ModelUpdated))]
     [Produces(typeof(GraphCreated))]
     public class GraphCreator : Agent
     {
@@ -18,10 +18,10 @@ namespace Agents.Net.Designer.MicrosoftGraph.Agents
         protected override void ExecuteCore(Message messageData)
         {
             //Check uniqueness of nodes
-            ModelCreated created = messageData.Get<ModelCreated>();
+            ModelUpdated updated = messageData.Get<ModelUpdated>();
             Graph graph = new Graph();
             List<Node> messages = new List<Node>();
-            foreach (MessageModel messageModel in created.Model.Messages)
+            foreach (MessageModel messageModel in updated.Model.Messages)
             {
                 Node messageNode = new Node(messageModel.Name)
                 {
@@ -36,7 +36,7 @@ namespace Agents.Net.Designer.MicrosoftGraph.Agents
                 graph.AddNode(messageNode);
             }
 
-            foreach (AgentModel agentModel in created.Model.Agents)
+            foreach (AgentModel agentModel in updated.Model.Agents)
             {
                 Node agentNode =  new Node(agentModel.Name)
                 {
