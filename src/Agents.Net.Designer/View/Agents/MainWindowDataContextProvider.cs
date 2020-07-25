@@ -19,7 +19,6 @@ namespace Agents.Net.Designer.View.Agents
             set.Message2.Window.Dispatcher.Invoke(() =>
             {
                 set.Message2.Window.DataContext = set.Message1.ViewModel;
-                set.Message2.Window.JsonTextBox.DataContext = set.Message1.ViewModel;
             });
             OnMessage(new GraphViewModelApplied(set.Message1.ViewModel, set));
         }

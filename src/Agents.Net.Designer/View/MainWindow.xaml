@@ -74,7 +74,7 @@
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
             <materialDesign:Card Padding="32" Margin="16,16,10,16" Grid.Column="0">
-                <TextBox    TextWrapping="Wrap"
+                <!--<TextBox    TextWrapping="Wrap"
                             VerticalAlignment="Stretch"
                             MinWidth="280"
                             AcceptsReturn="True"
@@ -85,7 +85,7 @@
                             HorizontalAlignment="Stretch"
                             x:Name="JsonTextBox"
                             Text="{Binding Text, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay, Delay=200}" 
-                            d:DataContext="{d:DesignInstance viewModel:JsonViewModel, IsDesignTimeCreatable=True}" />
+                            d:DataContext="{d:DesignInstance viewModel:JsonViewModel, IsDesignTimeCreatable=True}" />-->
             </materialDesign:Card>
             <GridSplitter Grid.Column="1" ResizeDirection="Columns"
                           ResizeBehavior="PreviousAndNext"
