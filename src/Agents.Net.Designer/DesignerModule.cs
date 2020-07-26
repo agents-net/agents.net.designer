@@ -48,6 +48,9 @@ namespace Agents.Net.Designer
             builder.RegisterType<GraphToSvgConverter>().As<Agent>().InstancePerLifetimeScope();
             builder.RegisterType<AutofacModuleGenerator>().As<Agent>().InstancePerLifetimeScope();
             builder.RegisterType<CommunityModelModifier>().As<Agent>().InstancePerLifetimeScope();
+            builder.RegisterType<TreeViewModelCreator>().As<Agent>().InstancePerLifetimeScope();
+            builder.RegisterType<TreeViewModelBuilder>().As<Agent>().InstancePerLifetimeScope();
+            builder.RegisterType<ModelLoader>().As<Agent>().InstancePerLifetimeScope();
         }
     }
 }

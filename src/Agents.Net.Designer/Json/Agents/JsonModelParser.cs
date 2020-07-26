@@ -15,6 +15,7 @@ namespace Agents.Net.Designer.Json.Agents
 {
     [Consumes(typeof(JsonTextLoaded))]
     [Produces(typeof(ModelUpdated))]
+    [Produces(typeof(ModelLoaded))]
     [Produces(typeof(JsonModelParsingError))]
     public class JsonModelParser : Agent
     {
@@ -34,6 +35,7 @@ namespace Agents.Net.Designer.Json.Agents
                 CommunityModel model = serializer.Deserialize<CommunityModel>(jsonReader);
                 
                 OnMessage(new ModelUpdated(model, messageData));
+                OnMessage(new ModelLoaded(model, messageData));
             }
             catch (JsonReaderException e)
             {

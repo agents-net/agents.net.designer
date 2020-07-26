@@ -6,10 +6,10 @@ namespace Agents.Net.Designer.Model
 {
     public class MessageModel
     {
-        public MessageModel(string name = "", string ns = ".Messages")
+        public MessageModel(string name = "", string @namespace = ".Messages")
         {
             Name = name;
-            Namespace = ns;
+            Namespace = @namespace;
         }
 
         public string Name { get; }

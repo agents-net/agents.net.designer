@@ -7,11 +7,11 @@ namespace Agents.Net.Designer.Model
 {
     public class AgentModel
     {
-        public AgentModel(string name = "", string ns = ".Agents", string[] consumingMessages = null,
+        public AgentModel(string name = "", string @namespace = ".Agents", string[] consumingMessages = null,
                           string[] producedMessages = null, string[] incomingEvents = null, string[] producedEvents = null)
         {
             Name = name;
-            Namespace = ns;
+            Namespace = @namespace;
             ConsumingMessages = consumingMessages ?? new string[0];
             ProducedMessages = producedMessages ?? new string[0];
             IncomingEvents = incomingEvents;

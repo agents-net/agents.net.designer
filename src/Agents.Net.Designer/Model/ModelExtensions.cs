@@ -13,6 +13,11 @@ namespace Agents.Net.Designer.Model
 
         public static string ExtendNamespace(this string modelNamespace, CommunityModel communityModel)
         {
+            if (string.IsNullOrEmpty(modelNamespace))
+            {
+                return communityModel.GeneratorSettings?.PackageNamespace ?? string.Empty;
+            }
+            
             if (modelNamespace.StartsWith('.'))
             {
                 if (string.IsNullOrEmpty(communityModel.GeneratorSettings?.PackageNamespace))

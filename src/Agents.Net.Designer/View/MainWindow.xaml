@@ -74,6 +74,57 @@
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
             <materialDesign:Card Padding="32" Margin="16,16,10,16" Grid.Column="0">
+                <materialDesign:Card.Resources>
+                    <HierarchicalDataTemplate DataType="{x:Type viewModel:CommunityViewModel}"
+                                              ItemsSource="{Binding Items}">
+                        <StackPanel Orientation="Horizontal">
+                            <materialDesign:PackIcon Kind="DesktopWindows" VerticalAlignment="Center"/>
+                            <TextBlock Style="{DynamicResource MaterialDesignTextBlock}"
+                                       Text="{Binding Name}" Margin="8,0,0,0" 
+                                       VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </HierarchicalDataTemplate>
+                    
+                    <HierarchicalDataTemplate DataType="{x:Type viewModel:FolderViewModel}"
+                                              ItemsSource="{Binding Items}">
+                        <StackPanel Orientation="Horizontal">
+                            <materialDesign:PackIcon Kind="Folder" VerticalAlignment="Center"/>
+                            <TextBlock Style="{DynamicResource MaterialDesignTextBlock}"
+                                       Text="{Binding Name}" Margin="8,0,0,0" VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </HierarchicalDataTemplate>
+                    
+                    <HierarchicalDataTemplate DataType="{x:Type viewModel:AgentViewModel}"
+                                              ItemsSource="{Binding Items}">
+                        <StackPanel Orientation="Horizontal" ToolTip="{Binding FullName}">
+                            <materialDesign:PackIcon Kind="FaceAgent" VerticalAlignment="Center"/>
+                            <TextBlock Style="{DynamicResource MaterialDesignTextBlock}"
+                                       Text="{Binding Name}" Margin="8,0,0,0" VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </HierarchicalDataTemplate>
+                    
+                    <HierarchicalDataTemplate DataType="{x:Type viewModel:MessageViewModel}"
+                                              ItemsSource="{Binding Items}">
+                        <StackPanel Orientation="Horizontal" ToolTip="{Binding FullName}">
+                            <materialDesign:PackIcon Kind="Message" VerticalAlignment="Center"/>
+                            <TextBlock Style="{DynamicResource MaterialDesignTextBlock}"
+                                       Text="{Binding Name}" Margin="8,0,0,0" VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </HierarchicalDataTemplate>
+                </materialDesign:Card.Resources>
+                <TreeView ItemsSource="{Binding Items}"
+                          d:DataContext="{d:DesignInstance viewModel:TreeViewModel, IsDesignTimeCreatable=True}"
+                          VirtualizingStackPanel.IsVirtualizing="True"
+                          VirtualizingStackPanel.VirtualizationMode="Recycling"
+                          x:Name="TreeView">
+                    <TreeView.ItemContainerStyle>
+      
+                        <!--Expand each TreeViewItem in the first level as there is only one.-->
+                        <Style TargetType="TreeViewItem">
+                            <Setter Property="IsExpanded" Value="True"/>
+                        </Style>
+                    </TreeView.ItemContainerStyle>
+                </TreeView>
                 <!--<TextBox    TextWrapping="Wrap"
                             VerticalAlignment="Stretch"
                             MinWidth="280"
