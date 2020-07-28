@@ -10,6 +10,7 @@ namespace Agents.Net.Designer.ViewModel
     {
         private ObservableCollection<TreeViewItem> items = new ObservableCollection<TreeViewItem>();
         private string name;
+        private bool isSelected;
 
         public string Name
         {
@@ -18,6 +19,17 @@ namespace Agents.Net.Designer.ViewModel
             {
                 if (value == name) return;
                 name = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public bool IsSelected
+        {
+            get => isSelected;
+            set
+            {
+                if (value == isSelected) return;
+                isSelected = value;
                 OnPropertyChanged();
             }
         }

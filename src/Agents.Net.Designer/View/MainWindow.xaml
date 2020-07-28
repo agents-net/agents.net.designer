@@ -7,6 +7,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:viewModel="clr-namespace:Agents.Net.Designer.ViewModel"
+        xmlns:view="clr-namespace:Agents.Net.Designer.View"
         mc:Ignorable="d"
         TextElement.Foreground="{DynamicResource MaterialDesignBody}"
         TextElement.FontWeight="Regular"
@@ -73,7 +74,12 @@
                 <ColumnDefinition Width="2" />
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
-            <materialDesign:Card Padding="32" Margin="16,16,10,16" Grid.Column="0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="2"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <materialDesign:Card Padding="32" Margin="16,16,10,10" Grid.Column="0" Grid.Row="0">
                 <materialDesign:Card.Resources>
                     <HierarchicalDataTemplate DataType="{x:Type viewModel:CommunityViewModel}"
                                               ItemsSource="{Binding Items}">
@@ -116,32 +122,150 @@
                           d:DataContext="{d:DesignInstance viewModel:TreeViewModel, IsDesignTimeCreatable=True}"
                           VirtualizingStackPanel.IsVirtualizing="True"
                           VirtualizingStackPanel.VirtualizationMode="Recycling"
-                          x:Name="TreeView">
+                          x:Name="TreeView"
+                          SelectedItemChanged="TreeViewOnSelectedItemChanged">
                     <TreeView.ItemContainerStyle>
       
                         <!--Expand each TreeViewItem in the first level as there is only one.-->
                         <Style TargetType="TreeViewItem">
                             <Setter Property="IsExpanded" Value="True"/>
+                            <Setter Property="view:AttachedBehaviors.IsBringSelectedIntoView" Value="True"/>
+                            <Setter Property="IsSelected" Value="{Binding IsSelected, Mode=TwoWay}" />
                         </Style>
                     </TreeView.ItemContainerStyle>
                 </TreeView>
-                <!--<TextBox    TextWrapping="Wrap"
-                            VerticalAlignment="Stretch"
-                            MinWidth="280"
-                            AcceptsReturn="True"
-                            AcceptsTab="True"
-                            VerticalScrollBarVisibility="Auto"
-                            SpellCheck.IsEnabled="True"
-                            materialDesign:HintAssist.Hint="Json model"
-                            HorizontalAlignment="Stretch"
-                            x:Name="JsonTextBox"
-                            Text="{Binding Text, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay, Delay=200}" 
-                            d:DataContext="{d:DesignInstance viewModel:JsonViewModel, IsDesignTimeCreatable=True}" />-->
             </materialDesign:Card>
-            <GridSplitter Grid.Column="1" ResizeDirection="Columns"
+            <GridSplitter Grid.Column="0" Grid.Row="1" ResizeDirection="Rows"
                           ResizeBehavior="PreviousAndNext"
-                          HorizontalAlignment="Stretch"/>
-            <materialDesign:Card Padding="32" Margin="10,16,16,16" Grid.Column="2">
+                          HorizontalAlignment="Stretch"
+                          Height="2"
+                          Width="Auto"/>
+            <materialDesign:Card Padding="32" Margin="16,10,10,16" Grid.Column="0" Grid.Row="2">
+                <ScrollViewer x:Name="DetailsView"
+                                d:DataContext="{d:DesignInstance viewModel:DetailsViewModel, IsDesignTimeCreatable=True}"
+                                Content="{Binding CurrentItem}"
+                                VerticalScrollBarVisibility="Auto"
+                                HorizontalScrollBarVisibility="Disabled">
+                    <ScrollViewer.Resources>
+                        <DataTemplate DataType="{x:Type viewModel:MessageViewModel}">
+                            <TextBlock Style="{DynamicResource MaterialDesignTextBlock}"
+                                       Text="{Binding Name}" ToolTip="{Binding FullName}"
+                                       TextTrimming="CharacterEllipsis"/>
+                        </DataTemplate>
+                        
+                        <Style TargetType="ListView" BasedOn="{StaticResource MaterialDesignListView}" x:Key="MessageListView">
+                            <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Disabled"/>
+                            <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Disabled"/>
+                        </Style>
+                        
+                        <Style TargetType="ComboBox" BasedOn="{StaticResource MaterialDesignComboBox}" x:Key="MessageComboBox">
+                            <Setter Property="IsEditable" Value="True"/>
+                            <Setter Property="IsTextSearchEnabled" Value="True"/>
+                            <Setter Property="IsTextSearchCaseSensitive" Value="True"/>
+                            <Setter Property="TextSearch.TextPath" Value="Name"/>
+                        </Style>
+                        
+                        <Style TargetType="TextBox" BasedOn="{StaticResource MaterialDesignTextBox}" x:Key="UpdateOnEnterBox">
+                            <Setter Property="VerticalAlignment" Value="Center"/>
+                            <Setter Property="view:AttachedBehaviors.UpdatePropertySourceWhenEnterPressed" Value="TextBox.Text"/>
+                        </Style>
+                        
+                        <DataTemplate DataType="{x:Type viewModel:AgentViewModel}">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+                                <TextBlock Style="{DynamicResource MaterialDesignTextBlock}"
+                                           Text="Name" Margin="0,4,8,4" VerticalAlignment="Center"
+                                           Grid.Column="0" Grid.Row="0"/>
+                                <TextBox Style="{DynamicResource UpdateOnEnterBox}"
+                                         Text="{Binding Name, Mode=TwoWay}"
+                                         Grid.Column="1" Grid.Row="0"/>
+                                <TextBlock Style="{DynamicResource MaterialDesignTextBlock}"
+                                           Text="Namespace" Margin="0,4,8,4" VerticalAlignment="Center"
+                                           Grid.Column="0" Grid.Row="1"/>
+                                <TextBox Style="{DynamicResource UpdateOnEnterBox}"
+                                         Text="{Binding Namespace, Mode=TwoWay}"
+                                         Grid.Column="1" Grid.Row="1"/>
+                                <TextBlock Style="{DynamicResource MaterialDesignTextBlock}"
+                                           Text="Consuming Messages" Margin="0,4,8,4" VerticalAlignment="Top"
+                                           Grid.Column="0" Grid.Row="2" Grid.RowSpan="2"/>
+                                <ComboBox ItemsSource="{Binding ConsumingMessages}"
+                                          Style="{StaticResource MessageComboBox}"
+                                          Grid.Column="1" Grid.Row="2"/>
+                                <ListView ItemsSource="{Binding ConsumingMessages}"
+                                          Style="{StaticResource MessageListView}"
+                                          Grid.Column="1" Grid.Row="3"/>
+                                <TextBlock Style="{DynamicResource MaterialDesignTextBlock}"
+                                           Text="Producing Messages" Margin="0,4,8,4" VerticalAlignment="Top"
+                                           Grid.Column="0" Grid.Row="4" Grid.RowSpan="2"/>
+                                <ComboBox ItemsSource="{Binding ProducingMessages}"
+                                          Style="{StaticResource MessageComboBox}"
+                                          Grid.Column="1" Grid.Row="4"/>
+                                <ListView ItemsSource="{Binding ProducingMessages}"
+                                          Style="{StaticResource MessageListView}"
+                                          Grid.Column="1" Grid.Row="5"/>
+                                <TextBlock Style="{DynamicResource MaterialDesignTextBlock}"
+                                           Text="Incoming Events" Margin="0,4,8,4" VerticalAlignment="Top"
+                                           Grid.Column="0" Grid.Row="6" Grid.RowSpan="2"/>
+                                <ComboBox ItemsSource="{Binding IncomingEvents}"
+                                          Style="{StaticResource MaterialDesignComboBox}"
+                                          IsEditable="True"
+                                          IsTextSearchEnabled="True"
+                                          IsTextSearchCaseSensitive="False"
+                                          Grid.Column="1" Grid.Row="6"/>
+                                <ListView ItemsSource="{Binding IncomingEvents}"
+                                          Style="{StaticResource MessageListView}"
+                                          Grid.Column="1" Grid.Row="7">
+                                    <ListView.ItemTemplate>
+                                        <DataTemplate>
+                                            <TextBlock TextTrimming="CharacterEllipsis"/>
+                                        </DataTemplate>
+                                    </ListView.ItemTemplate>
+                                </ListView>
+                                <TextBlock Style="{DynamicResource MaterialDesignTextBlock}"
+                                           Text="Produced Events" Margin="0,4,8,4" VerticalAlignment="Top"
+                                           Grid.Column="0" Grid.Row="8" Grid.RowSpan="2"/>
+                                <ComboBox ItemsSource="{Binding ProducedEvents}"
+                                          Style="{StaticResource MaterialDesignComboBox}"
+                                          IsEditable="True"
+                                          IsTextSearchEnabled="True"
+                                          IsTextSearchCaseSensitive="False"
+                                          Grid.Column="1" Grid.Row="8"/>
+                                <ListView ItemsSource="{Binding ProducedEvents}"
+                                          Style="{StaticResource MessageListView}"
+                                          Grid.Column="1" Grid.Row="9">
+                                    <ListView.ItemTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Text="{Binding}" TextTrimming="CharacterEllipsis"
+                                                       ToolTip="{Binding}"/>
+                                        </DataTemplate>
+                                    </ListView.ItemTemplate>
+                                </ListView>
+                            </Grid>
+                        </DataTemplate>
+                    </ScrollViewer.Resources>
+                </ScrollViewer>
+            </materialDesign:Card>
+            <GridSplitter Grid.Column="1" Grid.Row="0" Grid.RowSpan="3" ResizeDirection="Columns"
+                          ResizeBehavior="PreviousAndNext"
+                          VerticalAlignment="Stretch"
+                          Width="2"
+                          Height="Auto"/>
+            <materialDesign:Card Padding="32" Margin="10,16,16,16" Grid.Column="2" Grid.Row="0" Grid.RowSpan="3">
                 <DockPanel x:Name="GraphViewerPanel" ClipToBounds="True" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
             </materialDesign:Card>
         </Grid>

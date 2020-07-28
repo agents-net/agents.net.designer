@@ -176,12 +176,18 @@ namespace Agents.Net.Designer.View
             OnAddGeneratorSettingsClicked();
         }
 
+        private void TreeViewOnSelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
+        {
+            OnSelectedTreeViewItemChanged(new SelectedTreeViewItemChangedArgs(e.NewValue as TreeViewItem));
+        }
+
         public event EventHandler<EventArgs> AddMessageClicked; 
         public event EventHandler<EventArgs> AddAgentClicked;
         public event EventHandler<EventArgs> AddGeneratorSettingsClicked;
         public event EventHandler<ConnectFileArgs> ConnectFileClicked;
         public event EventHandler<ExportImageArgs> ExportImageClicked;
         public event EventHandler<GenerateClassesArgs> GenerateClassesClicked;
+        public event EventHandler<SelectedTreeViewItemChangedArgs> SelectedTreeViewItemChanged; 
 
         protected virtual void OnAddMessageClicked()
         {
@@ -211,6 +217,11 @@ namespace Agents.Net.Designer.View
         protected virtual void OnAddGeneratorSettingsClicked()
         {
             AddGeneratorSettingsClicked?.Invoke(this, EventArgs.Empty);
+        }
+
+        protected virtual void OnSelectedTreeViewItemChanged(SelectedTreeViewItemChangedArgs e)
+        {
+            SelectedTreeViewItemChanged?.Invoke(this, e);
         }
 
         public void Dispose()

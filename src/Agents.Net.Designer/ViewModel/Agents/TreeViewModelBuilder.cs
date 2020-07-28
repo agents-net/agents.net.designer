@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using Agents.Net.Designer.Model;
 using Agents.Net.Designer.Model.Messages;
@@ -31,58 +32,67 @@ namespace Agents.Net.Designer.ViewModel.Agents
                 string rootNamespace = model.GeneratorSettings?.PackageNamespace ?? string.Empty;
                 CommunityViewModel root = new CommunityViewModel
                 {
-                    Name = string.IsNullOrEmpty(rootNamespace) ? "<Root>" : rootNamespace
+                    Name = string.IsNullOrEmpty(rootNamespace)?"<Root>":rootNamespace
                 };
+                if (!string.IsNullOrEmpty(rootNamespace))
+                {
+                    FolderViewModel folder = new FolderViewModel
+                    {
+                        Name = rootNamespace
+                    };
+                    root.Items.Add(folder);
+                }
                 
                 foreach (AgentModel agent in model.Agents)
                 {
-                    string ns = agent.Namespace.ExtendNamespace(model);
-                    string[] path = ns.StartsWith(rootNamespace)
-                                        ? ns.Substring(rootNamespace.Length)
-                                            .Split('.', StringSplitOptions.RemoveEmptyEntries)
-                                        : ns.Split('.', StringSplitOptions.RemoveEmptyEntries);
-                    FolderViewModel folder = GeneratePath(path);
-                    folder.Items.Add(new AgentViewModel
+                    root.AddItem(new AgentViewModel
                     {
                         Name = agent.Name,
-                        FullName = agent.FullName(model)
+                        FullName = agent.FullName(model),
+                        Namespace = agent.Namespace.ExtendNamespace(model),
+                        IncomingEvents = new ObservableCollection<string>(agent.IncomingEvents??Enumerable.Empty<string>()),
+                        ProducedEvents = new ObservableCollection<string>(agent.ProducedEvents??Enumerable.Empty<string>()),
+                        ConsumingMessages = new ObservableCollection<MessageViewModel>(GenerateMessageMocks(agent.ConsumingMessages)),
+                        ProducingMessages = new ObservableCollection<MessageViewModel>(GenerateMessageMocks(agent.ProducedMessages)),
+                        ModelId = agent.Id
                     });
                 }
 
                 foreach (MessageModel message in model.Messages)
                 {
-                    string ns = message.Namespace.ExtendNamespace(model);
-                    string[] path = ns.StartsWith(rootNamespace)
-                                        ? ns.Substring(rootNamespace.Length)
-                                            .Split('.', StringSplitOptions.RemoveEmptyEntries)
-                                        : ns.Split('.', StringSplitOptions.RemoveEmptyEntries);
-                    FolderViewModel folder = GeneratePath(path);
-                    folder.Items.Add(new MessageViewModel
+                    root.AddItem(new MessageViewModel
                     {
                         Name = message.Name,
-                        FullName = message.FullName(model)
+                        FullName = message.FullName(model),
+                        Namespace = message.Namespace.ExtendNamespace(model)
                     });
                 }
 
                 return root;
-                
-                FolderViewModel GeneratePath(IEnumerable<string> path)
+            
+                IEnumerable<MessageViewModel> GenerateMessageMocks(string[] agentMessages)
                 {
-                    FolderViewModel result = root;
-                    foreach (string part in path)
+                    List<MessageViewModel> viewModels = new List<MessageViewModel>();
+                    foreach (string messageDefinition in agentMessages)
                     {
-                        FolderViewModel child = result.Items.OfType<FolderViewModel>()
-                                                      .FirstOrDefault(f => f.Name == part);
-                        if (child == null)
-                        {
-                            child = new FolderViewModel{Name = part};
-                            result.Items.Add(child);
-                        }
-
-                        result = child;
+                        MessageModel message = model.Messages.FirstOrDefault(m => m.FullName(model)
+                                                                                   .EndsWith(messageDefinition));
+                        viewModels.Add(message != null
+                                           ? new MessageViewModel
+                                           {
+                                               Name = message.Name,
+                                               FullName = message.FullName(model),
+                                               Namespace = message.Namespace.ExtendNamespace(model)
+                                           }
+                                           : new MessageViewModel
+                                           {
+                                               Name = messageDefinition.Substring(messageDefinition.LastIndexOf('.') + 1),
+                                               FullName = messageDefinition,
+                                               Namespace = messageDefinition.Substring(0, Math.Max(0, messageDefinition.LastIndexOf('.')))
+                                           });
                     }
 
-                    return result;
+                    return viewModels;
                 }
             }
         }

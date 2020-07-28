@@ -51,6 +51,13 @@ namespace Agents.Net.Designer
             builder.RegisterType<TreeViewModelCreator>().As<Agent>().InstancePerLifetimeScope();
             builder.RegisterType<TreeViewModelBuilder>().As<Agent>().InstancePerLifetimeScope();
             builder.RegisterType<ModelLoader>().As<Agent>().InstancePerLifetimeScope();
+            builder.RegisterType<DetailsViewModelCreator>().As<Agent>().InstancePerLifetimeScope();
+            builder.RegisterType<DetailsViewModelUpdater>().As<Agent>().InstancePerLifetimeScope();
+            builder.RegisterType<AgentViewModelWatcher>().As<Agent>().InstancePerLifetimeScope();
+            builder.RegisterType<AgentModelModifier>().As<Agent>().InstancePerLifetimeScope();
+            builder.RegisterType<AgentViewModelUpdater>().As<Agent>().InstancePerLifetimeScope();
+            builder.RegisterType<ViewModelChangeApplier>().As<Agent>().InstancePerLifetimeScope();
+            builder.RegisterType<TreeItemSelector>().As<Agent>().InstancePerLifetimeScope();
         }
     }
 }

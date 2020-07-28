@@ -19,8 +19,10 @@ namespace Agents.Net.Designer.View.Agents
     [Produces(typeof(ConnectFileRequested))]
     [Produces(typeof(GenerateFilesRequested))]
     [Produces(typeof(ExportImageRequested))]
+    [Produces(typeof(SelectedTreeViewItemChanged))]
     public class MainWindowObserver : Agent, IDisposable
-    {        private List<IViewerObject> subscribedObjects = new List<IViewerObject>();
+    {
+        private List<IViewerObject> subscribedObjects = new List<IViewerObject>();
         private MainWindowCreated mainWindowCreated;
 
         public MainWindowObserver(IMessageBoard messageBoard, MainWindow mainWindow) : base(messageBoard)
@@ -64,6 +66,12 @@ namespace Agents.Net.Designer.View.Agents
             mainWindowCreated.Window.GenerateClassesClicked += WindowOnGenerateClassesClicked;
             mainWindowCreated.Window.ExportImageClicked += WindowOnExportImageClicked;
             mainWindowCreated.Window.AddGeneratorSettingsClicked += WindowOnAddGeneratorSettingsClicked;
+            mainWindowCreated.Window.SelectedTreeViewItemChanged += WindowOnSelectedTreeViewItemChanged;
+        }
+
+        private void WindowOnSelectedTreeViewItemChanged(object? sender, SelectedTreeViewItemChangedArgs e)
+        {
+            OnMessage(new SelectedTreeViewItemChanged(e.SelectedItem, mainWindowCreated));
         }
 
         private void WindowOnAddGeneratorSettingsClicked(object? sender, EventArgs e)
@@ -108,6 +116,7 @@ namespace Agents.Net.Designer.View.Agents
                 mainWindowCreated.Window.GenerateClassesClicked -= WindowOnGenerateClassesClicked;
                 mainWindowCreated.Window.ExportImageClicked -= WindowOnExportImageClicked;
                 mainWindowCreated.Window.AddGeneratorSettingsClicked -= WindowOnAddGeneratorSettingsClicked;
+                mainWindowCreated.Window.SelectedTreeViewItemChanged -= WindowOnSelectedTreeViewItemChanged;
             }
         }
     }

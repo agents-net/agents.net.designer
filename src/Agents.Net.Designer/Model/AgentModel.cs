@@ -8,7 +8,8 @@ namespace Agents.Net.Designer.Model
     public class AgentModel
     {
         public AgentModel(string name = "", string @namespace = ".Agents", string[] consumingMessages = null,
-                          string[] producedMessages = null, string[] incomingEvents = null, string[] producedEvents = null)
+                          string[] producedMessages = null, string[] incomingEvents = null, string[] producedEvents = null,
+                          Guid id = default)
         {
             Name = name;
             Namespace = @namespace;
@@ -16,7 +17,11 @@ namespace Agents.Net.Designer.Model
             ProducedMessages = producedMessages ?? new string[0];
             IncomingEvents = incomingEvents;
             ProducedEvents = producedEvents;
+            Id = id == default ? Guid.NewGuid() : id;
         }
+        
+        [JsonIgnore]
+        public Guid Id { get; }
 
         public string Name { get; }
 

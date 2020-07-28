@@ -65,4 +65,18 @@
         {
         }
     }
+
+    public class AgentNameProperty : PropertySpecifier
+    {
+        public AgentNameProperty() : base(nameof(AgentModel.Name))
+        {
+        }
+    }
+
+    public class AgentNamespaceProperty : PropertySpecifier
+    {
+        public AgentNamespaceProperty() : base(nameof(AgentModel.Namespace))
+        {
+        }
+    }
 }
