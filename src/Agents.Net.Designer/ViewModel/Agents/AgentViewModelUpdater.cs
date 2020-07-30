@@ -1,5 +1,6 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using Agents.Net.Designer.Model;
 using Agents.Net.Designer.Model.Agents;
@@ -20,7 +21,6 @@ namespace Agents.Net.Designer.ViewModel.Agents
             collector = new MessageCollector<TreeViewModelCreated, ModifyModel>(OnMessagesCollected);
         }
 
-        //TODO Continue with next property
         private void OnMessagesCollected(MessageCollection<TreeViewModelCreated, ModifyModel> set)
         {
             set.MarkAsConsumed(set.Message2);
@@ -43,8 +43,58 @@ namespace Agents.Net.Designer.ViewModel.Agents
                         changingViewModel.FullName = $"{changingViewModel.Namespace}.{changingViewModel.Name}";
                         RestructureViewModel(changingViewModel, set.Message1.ViewModel);
                         break;
+                    case AgentConsumingMessagesProperty _:
+                        ChangeMessages(changingViewModel.ConsumingMessages, set.Message2,
+                                       changingViewModel.AvailableMessages);
+                        break;
+                    case AgentProducedMessagesProperty _:
+                        ChangeMessages(changingViewModel.ProducingMessages, set.Message2,
+                                       changingViewModel.AvailableMessages);
+                        break;
                 }
             }, set));
+        }
+
+        private void ChangeMessages(ObservableCollection<MessageViewModel> messages, ModifyModel modifyModel, IReadOnlyCollection<MessageViewModel> availableMessages)
+        {
+            switch (modifyModel.ModificationType)
+            {
+                case ModelModification.Add:
+                {
+                    MessageViewModel viewModel = GetViewModel(modifyModel.NewValue, true);
+                    messages.Add(viewModel);
+                    break;
+                }
+                case ModelModification.Remove:
+                {
+                    MessageViewModel viewModel = GetViewModel(modifyModel.OldValue, false);
+                    messages.Remove(viewModel);
+                    break;
+                }
+                case ModelModification.Change:
+                {
+                    MessageViewModel addViewModel = GetViewModel(modifyModel.NewValue, true);
+                    messages.Add(addViewModel);
+                    MessageViewModel removeViewModel = GetViewModel(modifyModel.OldValue, false);
+                    messages.Remove(removeViewModel);
+                    break;
+                }
+            }
+
+            MessageViewModel GetViewModel(object value, bool generateMock)
+            {
+                if (value is Guid id)
+                {
+                    return availableMessages.First(m => m.ModelId == id);
+                }
+
+                string name = (string) value;
+                MessageViewModel viewModel = availableMessages.FirstOrDefault(m => m.FullName.EndsWith(name))
+                                             ?? (generateMock
+                                                     ? name.GenerateMessageMock()
+                                                     : null);
+                return viewModel;
+            }
         }
 
         private void RestructureViewModel(AgentViewModel changingViewModel, TreeViewModel viewModel)

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -104,6 +104,16 @@ namespace Agents.Net.Designer.ViewModel
 
                 return result;
             }
+        }
+
+        public static MessageViewModel GenerateMessageMock(this string messageDefinition)
+        {
+            return new MessageViewModel
+            {
+                Name = messageDefinition.Substring(messageDefinition.LastIndexOf('.') + 1),
+                FullName = messageDefinition,
+                Namespace = messageDefinition.Substring(0, Math.Max(0, messageDefinition.LastIndexOf('.')))
+            };
         }
     }
 }

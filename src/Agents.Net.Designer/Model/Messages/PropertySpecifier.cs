@@ -1,4 +1,4 @@
-﻿namespace Agents.Net.Designer.Model.Messages
+namespace Agents.Net.Designer.Model.Messages
 {
     public class PropertySpecifier
     {
@@ -76,6 +76,20 @@
     public class AgentNamespaceProperty : PropertySpecifier
     {
         public AgentNamespaceProperty() : base(nameof(AgentModel.Namespace))
+        {
+        }
+    }
+
+    public class AgentConsumingMessagesProperty : PropertySpecifier
+    {
+        public AgentConsumingMessagesProperty() : base(nameof(AgentModel.ConsumingMessages))
+        {
+        }
+    }
+
+    public class AgentProducedMessagesProperty : PropertySpecifier
+    {
+        public AgentProducedMessagesProperty() : base(nameof(AgentModel.ProducedMessages))
         {
         }
     }

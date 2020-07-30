@@ -1,4 +1,4 @@
-﻿using Agents.Net.Designer.Generator.Agents;
+using Agents.Net.Designer.Generator.Agents;
 using Agents.Net.Designer.Json.Agents;
 using Agents.Net.Designer.MicrosoftGraph.Agents;
 using Agents.Net.Designer.Model.Agents;
@@ -58,6 +58,7 @@ namespace Agents.Net.Designer
             builder.RegisterType<AgentViewModelUpdater>().As<Agent>().InstancePerLifetimeScope();
             builder.RegisterType<ViewModelChangeApplier>().As<Agent>().InstancePerLifetimeScope();
             builder.RegisterType<TreeItemSelector>().As<Agent>().InstancePerLifetimeScope();
+            builder.RegisterType<SelectionDirectionDecorator>().As<Agent>().InstancePerLifetimeScope();
         }
     }
 }

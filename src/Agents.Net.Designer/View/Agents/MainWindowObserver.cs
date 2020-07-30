@@ -12,7 +12,7 @@ using Microsoft.Msagl.Drawing;
 namespace Agents.Net.Designer.View.Agents
 {
     [Consumes(typeof(MainWindowCreated))]
-    [Produces(typeof(SelectedObjectChanged))]
+    [Produces(typeof(SelectedGraphObjectChanged))]
     [Produces(typeof(AddAgentRequested))]
     [Produces(typeof(AddGeneratorSettingsRequested))]
     [Produces(typeof(AddMessageRequested))]
@@ -51,7 +51,7 @@ namespace Agents.Net.Designer.View.Agents
         {
             if (mainWindowCreated != null && sender is IViewerObject viewerObject)
             {
-                OnMessage(new SelectedObjectChanged(viewerObject.DrawingObject, mainWindowCreated));
+                OnMessage(new SelectedGraphObjectChanged(viewerObject.DrawingObject, mainWindowCreated));
             }
         }
 

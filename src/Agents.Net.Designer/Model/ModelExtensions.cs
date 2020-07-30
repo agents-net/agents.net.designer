@@ -1,5 +1,6 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace Agents.Net.Designer.Model
@@ -36,6 +37,18 @@ namespace Agents.Net.Designer.Model
         public static string FullName(this AgentModel agent, CommunityModel communityModel)
         {
             return $"{agent.Namespace.ExtendNamespace(communityModel)}.{agent.Name}";
+        }
+        public static T AssertTypeOf<T>(this object value)
+        {
+            if (value == null)
+            {
+                return default;
+            }
+            if (value is T result)
+            {
+                return result;
+            }
+            throw new InvalidOperationException($"{value} was expected to be {typeof(T)}, but is {value?.GetType()}");
         }
     }
 }

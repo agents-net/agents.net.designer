@@ -1,11 +1,12 @@
-﻿using System;
+using System;
 using Agents.Net.Designer.Model;
 using Agents.Net.Designer.Model.Messages;
 using Agents.Net.Designer.ViewModel.Messages;
 
 namespace Agents.Net.Designer.ViewModel.Agents
 {
-    [Consumes(typeof(SelectedModelObjectChanged))]
+    [Consumes(typeof(SelectTreeObjectRequested))]
+    [Consumes(typeof(SelectedModelObjectChanged), Implicitly = true)]
     [Consumes(typeof(TreeViewModelCreated))]
     [Produces(typeof(ViewModelChangeApplying))]
     public class TreeItemSelector : Agent

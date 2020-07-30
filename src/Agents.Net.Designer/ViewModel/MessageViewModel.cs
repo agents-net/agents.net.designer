@@ -1,9 +1,13 @@
-﻿namespace Agents.Net.Designer.ViewModel
+using System;
+
+namespace Agents.Net.Designer.ViewModel
 {
     public class MessageViewModel : TreeViewItem
     {
         private string fullName;
         private string ns;
+        
+        internal Guid ModelId { get; set; }
 
         public string FullName
         {

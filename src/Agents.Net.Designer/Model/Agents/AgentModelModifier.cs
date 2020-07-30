@@ -1,5 +1,7 @@
-﻿using System;
+using System;
+using System.Linq;
 using Agents.Net.Designer.Model.Messages;
+using AngleSharp.Common;
 
 namespace Agents.Net.Designer.Model.Agents
 {
@@ -50,6 +52,24 @@ namespace Agents.Net.Designer.Model.Agents
                                                   agentModel.ProducedEvents,
                                                   agentModel.Id);
                     break;
+                case AgentConsumingMessagesProperty _:
+                    updatedModel = new AgentModel(agentModel.Name,
+                                                  agentModel.Namespace,
+                                                  ModifyMessages(set.Message2.Model, set.Message1, agentModel.ConsumingMessages),
+                                                  agentModel.ProducedMessages,
+                                                  agentModel.IncomingEvents,
+                                                  agentModel.ProducedEvents,
+                                                  agentModel.Id);
+                    break;
+                case AgentProducedMessagesProperty _:
+                    updatedModel = new AgentModel(agentModel.Name,
+                                                  agentModel.Namespace,
+                                                  agentModel.ConsumingMessages,
+                                                  ModifyMessages(set.Message2.Model, set.Message1, agentModel.ProducedMessages),
+                                                  agentModel.IncomingEvents,
+                                                  agentModel.ProducedEvents,
+                                                  agentModel.Id);
+                    break;
                 default:
                     throw new InvalidOperationException($"Property {set.Message1.Property} unknown for agent model.");
             }
@@ -71,6 +91,64 @@ namespace Agents.Net.Designer.Model.Agents
 
                 agents[agentIndex] = updatedModel;
                 return agents;
+            }
+        }
+
+        private string[] ModifyMessages(CommunityModel communityModel, ModifyModel modifyModel, string[] originalMessages)
+        {
+            switch (modifyModel.ModificationType)
+            {
+                case ModelModification.Add:
+                    return AddMessage(originalMessages, GetMessageFullName(modifyModel.NewValue));
+                case ModelModification.Remove:
+                    return RemoveMessage(originalMessages, GetMessageFullName(modifyModel.OldValue));
+                case ModelModification.Change:
+                    return RemoveMessage(AddMessage(originalMessages,
+                                                    GetMessageFullName(modifyModel.NewValue)),
+                                         GetMessageFullName(modifyModel.OldValue));
+                default:
+                    throw new InvalidOperationException($"What? {modifyModel.ModificationType}");
+            }
+
+            string[] AddMessage(string[] messages, string addedMessage)
+            {
+                if (string.IsNullOrEmpty(addedMessage))
+                {
+                    return messages;
+                }
+
+                return messages.Concat(new[] {addedMessage}).ToArray();
+            }
+
+            string[] RemoveMessage(string[] messages, string removedMessage)
+            {
+                if (string.IsNullOrEmpty(removedMessage))
+                {
+                    return messages;
+                }
+
+                return messages.Except(new[] {removedMessage}).ToArray();
+            }
+            
+            string GetMessageFullName(object value)
+            {
+                return GetBestMatchMessage()?.FullName(communityModel) ?? value as string;
+
+                MessageModel GetBestMatchMessage()
+                {
+                    if (value is string name)
+                    {
+                        return communityModel.Messages.FirstOrDefault(m => m.FullName(communityModel).EndsWith(name));
+                    }
+
+                    if (value is Guid id)
+                    {
+                        //First here is intentional as with an id it is assumed that the message model does exist
+                        return communityModel.Messages.First(m => m.Id == id);
+                    }
+
+                    return null;
+                }
             }
         }
 

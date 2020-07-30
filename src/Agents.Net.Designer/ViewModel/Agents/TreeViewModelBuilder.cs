@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -42,7 +42,21 @@ namespace Agents.Net.Designer.ViewModel.Agents
                     };
                     root.Items.Add(folder);
                 }
-                
+
+                List<MessageViewModel> messages = new List<MessageViewModel>();
+                foreach (MessageModel message in model.Messages)
+                {
+                    MessageViewModel messageViewModel = new MessageViewModel
+                    {
+                        Name = message.Name,
+                        FullName = message.FullName(model),
+                        Namespace = message.Namespace.ExtendNamespace(model),
+                        ModelId = message.Id
+                    };
+                    root.AddItem(messageViewModel);
+                    messages.Add(messageViewModel);
+                }
+
                 foreach (AgentModel agent in model.Agents)
                 {
                     root.AddItem(new AgentViewModel
@@ -54,17 +68,8 @@ namespace Agents.Net.Designer.ViewModel.Agents
                         ProducedEvents = new ObservableCollection<string>(agent.ProducedEvents??Enumerable.Empty<string>()),
                         ConsumingMessages = new ObservableCollection<MessageViewModel>(GenerateMessageMocks(agent.ConsumingMessages)),
                         ProducingMessages = new ObservableCollection<MessageViewModel>(GenerateMessageMocks(agent.ProducedMessages)),
+                        AvailableMessages = new ObservableCollection<MessageViewModel>(messages),
                         ModelId = agent.Id
-                    });
-                }
-
-                foreach (MessageModel message in model.Messages)
-                {
-                    root.AddItem(new MessageViewModel
-                    {
-                        Name = message.Name,
-                        FullName = message.FullName(model),
-                        Namespace = message.Namespace.ExtendNamespace(model)
                     });
                 }
 
@@ -78,18 +83,8 @@ namespace Agents.Net.Designer.ViewModel.Agents
                         MessageModel message = model.Messages.FirstOrDefault(m => m.FullName(model)
                                                                                    .EndsWith(messageDefinition));
                         viewModels.Add(message != null
-                                           ? new MessageViewModel
-                                           {
-                                               Name = message.Name,
-                                               FullName = message.FullName(model),
-                                               Namespace = message.Namespace.ExtendNamespace(model)
-                                           }
-                                           : new MessageViewModel
-                                           {
-                                               Name = messageDefinition.Substring(messageDefinition.LastIndexOf('.') + 1),
-                                               FullName = messageDefinition,
-                                               Namespace = messageDefinition.Substring(0, Math.Max(0, messageDefinition.LastIndexOf('.')))
-                                           });
+                                           ? messages.First(m => m.ModelId == message.Id)
+                                           : messageDefinition.GenerateMessageMock());
                     }
 
                     return viewModels;

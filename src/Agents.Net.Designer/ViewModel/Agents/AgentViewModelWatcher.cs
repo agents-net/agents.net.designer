@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.ComponentModel;
 using System.Linq;
 using System.Threading;
@@ -65,6 +65,38 @@ namespace Agents.Net.Designer.ViewModel.Agents
                                               oldModel,
                                               new AgentNamespaceProperty(),
                                               changedMessage));
+                    break;
+                case nameof(AgentViewModel.NewConsumingMessage):
+                    if (string.IsNullOrEmpty(agentViewModel.NewConsumingMessage))
+                    {
+                        return;
+                    }
+                    MessageViewModel selectedConsumingViewModel = agentViewModel.NewConsumingMessageObject as MessageViewModel;
+                    OnMessage(new ModifyModel(ModelModification.Add,
+                                              null,
+                                              selectedConsumingViewModel != null
+                                                  ? (object) selectedConsumingViewModel.ModelId
+                                                  :agentViewModel.NewConsumingMessage,
+                                              oldModel,
+                                              new AgentConsumingMessagesProperty(),
+                                              changedMessage));
+                    agentViewModel.NewConsumingMessage = string.Empty;
+                    break;
+                case nameof(AgentViewModel.NewProducingMessage):
+                    if (string.IsNullOrEmpty(agentViewModel.NewProducingMessage))
+                    {
+                        return;
+                    }
+                    MessageViewModel selectedProducingViewModel = agentViewModel.NewConsumingMessageObject as MessageViewModel;
+                    OnMessage(new ModifyModel(ModelModification.Add,
+                                              null,
+                                              selectedProducingViewModel != null
+                                                  ? (object) selectedProducingViewModel.ModelId
+                                                  :agentViewModel.NewProducingMessage,
+                                              oldModel,
+                                              new AgentProducedMessagesProperty(),
+                                              changedMessage));
+                    agentViewModel.NewProducingMessage = string.Empty;
                     break;
             }
         }
