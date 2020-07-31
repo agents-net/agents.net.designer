@@ -42,8 +42,11 @@ namespace Agents.Net.Designer.ViewModel.Agents
                     };
                     root.Items.Add(folder);
                 }
-
-                List<MessageViewModel> messages = new List<MessageViewModel>();
+                
+                AvailableItemsViewModel availableViewModel = new AvailableItemsViewModel
+                {
+                    AvailableMessages = new ObservableCollection<MessageViewModel>()
+                };
                 foreach (MessageModel message in model.Messages)
                 {
                     MessageViewModel messageViewModel = new MessageViewModel
@@ -54,7 +57,7 @@ namespace Agents.Net.Designer.ViewModel.Agents
                         ModelId = message.Id
                     };
                     root.AddItem(messageViewModel);
-                    messages.Add(messageViewModel);
+                    availableViewModel.AvailableMessages.Add(messageViewModel);
                 }
 
                 foreach (AgentModel agent in model.Agents)
@@ -68,7 +71,7 @@ namespace Agents.Net.Designer.ViewModel.Agents
                         ProducedEvents = new ObservableCollection<string>(agent.ProducedEvents??Enumerable.Empty<string>()),
                         ConsumingMessages = new ObservableCollection<MessageViewModel>(GenerateMessageMocks(agent.ConsumingMessages)),
                         ProducingMessages = new ObservableCollection<MessageViewModel>(GenerateMessageMocks(agent.ProducedMessages)),
-                        AvailableMessages = new ObservableCollection<MessageViewModel>(messages),
+                        AvailableItems = availableViewModel,
                         ModelId = agent.Id
                     });
                 }
@@ -83,8 +86,8 @@ namespace Agents.Net.Designer.ViewModel.Agents
                         MessageModel message = model.Messages.FirstOrDefault(m => m.FullName(model)
                                                                                    .EndsWith(messageDefinition));
                         viewModels.Add(message != null
-                                           ? messages.First(m => m.ModelId == message.Id)
-                                           : messageDefinition.GenerateMessageMock());
+                                           ? availableViewModel.AvailableMessages.First(m => m.ModelId == message.Id)
+                                           : messageDefinition.GenerateMessageMock(availableViewModel.AvailableMessages));
                     }
 
                     return viewModels;

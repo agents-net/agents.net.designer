@@ -67,37 +67,76 @@ namespace Agents.Net.Designer.ViewModel.Agents
                                               changedMessage));
                     break;
                 case nameof(AgentViewModel.NewConsumingMessage):
-                    if (string.IsNullOrEmpty(agentViewModel.NewConsumingMessage))
-                    {
-                        return;
-                    }
-                    MessageViewModel selectedConsumingViewModel = agentViewModel.NewConsumingMessageObject as MessageViewModel;
-                    OnMessage(new ModifyModel(ModelModification.Add,
-                                              null,
-                                              selectedConsumingViewModel != null
-                                                  ? (object) selectedConsumingViewModel.ModelId
-                                                  :agentViewModel.NewConsumingMessage,
-                                              oldModel,
-                                              new AgentConsumingMessagesProperty(),
-                                              changedMessage));
-                    agentViewModel.NewConsumingMessage = string.Empty;
+                    AddConsumingMessage();
                     break;
                 case nameof(AgentViewModel.NewProducingMessage):
-                    if (string.IsNullOrEmpty(agentViewModel.NewProducingMessage))
-                    {
-                        return;
-                    }
-                    MessageViewModel selectedProducingViewModel = agentViewModel.NewConsumingMessageObject as MessageViewModel;
-                    OnMessage(new ModifyModel(ModelModification.Add,
-                                              null,
-                                              selectedProducingViewModel != null
-                                                  ? (object) selectedProducingViewModel.ModelId
-                                                  :agentViewModel.NewProducingMessage,
-                                              oldModel,
-                                              new AgentProducedMessagesProperty(),
-                                              changedMessage));
-                    agentViewModel.NewProducingMessage = string.Empty;
+                    AddProducedMessage();
                     break;
+                case nameof(AgentViewModel.NewIncomingEvent):
+                    AddEvent(agentViewModel.NewIncomingEvent, new AgentIncomingEventsProperty());
+                    agentViewModel.NewIncomingEvent = string.Empty;
+                    break;
+                case nameof(AgentViewModel.NewProducedEvent):
+                    AddEvent(agentViewModel.NewProducedEvent, new AgentProducedEventsProperty());
+                    agentViewModel.NewProducedEvent = string.Empty;
+                    break;
+            }
+
+            void AddConsumingMessage()
+            {
+                if (string.IsNullOrEmpty(agentViewModel.NewConsumingMessage))
+                {
+                    return;
+                }
+
+                MessageViewModel selectedConsumingViewModel = agentViewModel.NewConsumingMessageObject as MessageViewModel;
+                OnMessage(new ModifyModel(ModelModification.Add,
+                                          null,
+                                          selectedConsumingViewModel != null
+                                              ? selectedConsumingViewModel.ModelId != default
+                                                    ? (object) selectedConsumingViewModel.ModelId
+                                                    : selectedConsumingViewModel.FullName
+                                              : agentViewModel.NewConsumingMessage,
+                                          oldModel,
+                                          new AgentConsumingMessagesProperty(),
+                                          changedMessage));
+                agentViewModel.NewConsumingMessage = string.Empty;
+            }
+
+            void AddProducedMessage()
+            {
+                if (string.IsNullOrEmpty(agentViewModel.NewProducingMessage))
+                {
+                    return;
+                }
+
+                MessageViewModel selectedProducingViewModel = agentViewModel.NewProducingMessageObject as MessageViewModel;
+                OnMessage(new ModifyModel(ModelModification.Add,
+                                          null,
+                                          selectedProducingViewModel != null
+                                              ? selectedProducingViewModel.ModelId != default
+                                                    ? (object) selectedProducingViewModel.ModelId
+                                                    : selectedProducingViewModel.FullName
+                                              : agentViewModel.NewProducingMessage,
+                                          oldModel,
+                                          new AgentProducedMessagesProperty(),
+                                          changedMessage));
+                agentViewModel.NewProducingMessage = string.Empty;
+            }
+
+            void AddEvent(string @event, PropertySpecifier propertySpecifier)
+            {
+                if (string.IsNullOrEmpty(@event))
+                {
+                    return;
+                }
+
+                OnMessage(new ModifyModel(ModelModification.Add,
+                                          null,
+                                          @event,
+                                          oldModel,
+                                          propertySpecifier,
+                                          changedMessage));
             }
         }
 

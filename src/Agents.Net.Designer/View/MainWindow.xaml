@@ -158,6 +158,19 @@
                             <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Disabled"/>
                         </Style>
                         
+                        <Style TargetType="ListView" BasedOn="{StaticResource MaterialDesignListView}" x:Key="EventsListView">
+                            <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Disabled"/>
+                            <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Disabled"/>
+                            <Setter Property="ItemTemplate">
+                                <Setter.Value>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding}" TextTrimming="CharacterEllipsis"
+                                                   ToolTip="{Binding}"/>
+                                    </DataTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                        
                         <Style TargetType="ComboBox" BasedOn="{StaticResource MaterialDesignComboBox}" x:Key="EditableComboBox">
                             <Setter Property="IsEditable" Value="True"/>
                             <Setter Property="IsTextSearchEnabled" Value="True"/>
@@ -204,7 +217,7 @@
                                 <TextBlock Style="{DynamicResource MaterialDesignTextBlock}"
                                            Text="Consuming Messages" Margin="0,4,8,4" VerticalAlignment="Top"
                                            Grid.Column="0" Grid.Row="2" Grid.RowSpan="2"/>
-                                <ComboBox ItemsSource="{Binding AvailableMessages}"
+                                <ComboBox ItemsSource="{Binding AvailableItems.AvailableMessages}"
                                           Style="{StaticResource EditableComboBox}"
                                           Text="{Binding NewConsumingMessage, Mode=TwoWay, UpdateSourceTrigger=Explicit}"
                                           SelectedItem="{Binding NewConsumingMessageObject, Mode=OneWayToSource}"
@@ -215,7 +228,7 @@
                                 <TextBlock Style="{DynamicResource MaterialDesignTextBlock}"
                                            Text="Producing Messages" Margin="0,4,8,4" VerticalAlignment="Top"
                                            Grid.Column="0" Grid.Row="4" Grid.RowSpan="2"/>
-                                <ComboBox ItemsSource="{Binding AvailableMessages}"
+                                <ComboBox ItemsSource="{Binding AvailableItems.AvailableMessages}"
                                           Style="{StaticResource EditableComboBox}"
                                           Text="{Binding NewProducingMessage, Mode=TwoWay, UpdateSourceTrigger=Explicit}"
                                           SelectedItem="{Binding NewProducingMessageObject, Mode=OneWayToSource}"
@@ -226,40 +239,21 @@
                                 <TextBlock Style="{DynamicResource MaterialDesignTextBlock}"
                                            Text="Incoming Events" Margin="0,4,8,4" VerticalAlignment="Top"
                                            Grid.Column="0" Grid.Row="6" Grid.RowSpan="2"/>
-                                <ComboBox ItemsSource="{Binding IncomingEvents}"
-                                          Style="{StaticResource MaterialDesignComboBox}"
-                                          IsEditable="True"
-                                          IsTextSearchEnabled="True"
-                                          IsTextSearchCaseSensitive="False"
+                                <TextBox Style="{DynamicResource UpdateOnEnterBox}"
+                                          Text="{Binding NewIncomingEvent, Mode=TwoWay, UpdateSourceTrigger=Explicit}"
                                           Grid.Column="1" Grid.Row="6"/>
                                 <ListView ItemsSource="{Binding IncomingEvents}"
-                                          Style="{StaticResource MessageListView}"
-                                          Grid.Column="1" Grid.Row="7">
-                                    <ListView.ItemTemplate>
-                                        <DataTemplate>
-                                            <TextBlock TextTrimming="CharacterEllipsis"/>
-                                        </DataTemplate>
-                                    </ListView.ItemTemplate>
-                                </ListView>
+                                          Style="{StaticResource EventsListView}"
+                                          Grid.Column="1" Grid.Row="7" />
                                 <TextBlock Style="{DynamicResource MaterialDesignTextBlock}"
                                            Text="Produced Events" Margin="0,4,8,4" VerticalAlignment="Top"
                                            Grid.Column="0" Grid.Row="8" Grid.RowSpan="2"/>
-                                <ComboBox ItemsSource="{Binding ProducedEvents}"
-                                          Style="{StaticResource MaterialDesignComboBox}"
-                                          IsEditable="True"
-                                          IsTextSearchEnabled="True"
-                                          IsTextSearchCaseSensitive="False"
-                                          Grid.Column="1" Grid.Row="8"/>
+                                <TextBox Style="{DynamicResource UpdateOnEnterBox}"
+                                         Text="{Binding NewProducedEvent, Mode=TwoWay, UpdateSourceTrigger=Explicit}"
+                                         Grid.Column="1" Grid.Row="8"/>
                                 <ListView ItemsSource="{Binding ProducedEvents}"
-                                          Style="{StaticResource MessageListView}"
-                                          Grid.Column="1" Grid.Row="9">
-                                    <ListView.ItemTemplate>
-                                        <DataTemplate>
-                                            <TextBlock Text="{Binding}" TextTrimming="CharacterEllipsis"
-                                                       ToolTip="{Binding}"/>
-                                        </DataTemplate>
-                                    </ListView.ItemTemplate>
-                                </ListView>
+                                          Style="{StaticResource EventsListView}" 
+                                          Grid.Column="1" Grid.Row="9"/>
                             </Grid>
                         </DataTemplate>
                     </ScrollViewer.Resources>

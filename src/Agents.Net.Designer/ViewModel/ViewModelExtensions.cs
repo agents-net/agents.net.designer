@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 
 namespace Agents.Net.Designer.ViewModel
@@ -106,14 +107,22 @@ namespace Agents.Net.Designer.ViewModel
             }
         }
 
-        public static MessageViewModel GenerateMessageMock(this string messageDefinition)
+        public static MessageViewModel GenerateMessageMock(this string messageDefinition, ObservableCollection<MessageViewModel> availableMessages)
         {
-            return new MessageViewModel
+            MessageViewModel viewModel = availableMessages.FirstOrDefault(m => m.FullName == messageDefinition &&
+                                                                               m.ModelId == default);
+            if (viewModel == null)
             {
-                Name = messageDefinition.Substring(messageDefinition.LastIndexOf('.') + 1),
-                FullName = messageDefinition,
-                Namespace = messageDefinition.Substring(0, Math.Max(0, messageDefinition.LastIndexOf('.')))
-            };
+                viewModel = new MessageViewModel
+                {
+                    Name = messageDefinition.Substring(messageDefinition.LastIndexOf('.') + 1),
+                    FullName = messageDefinition,
+                    Namespace = messageDefinition.Substring(0, Math.Max(0, messageDefinition.LastIndexOf('.')))
+                };
+                availableMessages.Add(viewModel);
+            }
+
+            return viewModel;
         }
     }
 }

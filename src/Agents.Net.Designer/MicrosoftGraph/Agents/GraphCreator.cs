@@ -91,7 +91,7 @@ namespace Agents.Net.Designer.MicrosoftGraph.Agents
                                : graph.AddEdge(agentModelId.ToString("D"), message);
                     Node newNode = addMessageAsSource ? edge.SourceNode : edge.TargetNode;
                     newNode.Attr.Shape = Shape.Box;
-                    newNode.Attr.Color = Color.Gray;
+                    newNode.Attr.FillColor = Color.Gray;
                 }
 
                 edge.Attr.Color = addMessageAsSource ? Color.Green : Color.Blue;

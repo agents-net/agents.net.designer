@@ -12,11 +12,13 @@ namespace Agents.Net.Designer.ViewModel
         private ObservableCollection<string> producedEvents;
         private ObservableCollection<MessageViewModel> consumingMessages;
         private ObservableCollection<MessageViewModel> producingMessages;
-        private ObservableCollection<MessageViewModel> availableMessages;
         private string newConsumingMessage;
         private string newProducingMessage;
         private object newConsumingMessageObject;
         private object newProducingMessageObject;
+        private AvailableItemsViewModel availableItems;
+        private string newIncomingEvent;
+        private string newProducedEvent;
 
         internal Guid ModelId { get; set; }
 
@@ -86,6 +88,28 @@ namespace Agents.Net.Designer.ViewModel
             }
         }
 
+        public string NewIncomingEvent
+        {
+            get => newIncomingEvent;
+            set
+            {
+                if (value == newIncomingEvent) return;
+                newIncomingEvent = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public string NewProducedEvent
+        {
+            get => newProducedEvent;
+            set
+            {
+                if (value == newProducedEvent) return;
+                newProducedEvent = value;
+                OnPropertyChanged();
+            }
+        }
+
         public ObservableCollection<string> IncomingEvents
         {
             get => incomingEvents;
@@ -108,17 +132,6 @@ namespace Agents.Net.Designer.ViewModel
             }
         }
 
-        public ObservableCollection<MessageViewModel> AvailableMessages
-        {
-            get => availableMessages;
-            set
-            {
-                if (Equals(value, availableMessages)) return;
-                availableMessages = value;
-                OnPropertyChanged();
-            }
-        }
-
         public ObservableCollection<MessageViewModel> ConsumingMessages
         {
             get => consumingMessages;
@@ -137,6 +150,17 @@ namespace Agents.Net.Designer.ViewModel
             {
                 if (Equals(value, producingMessages)) return;
                 producingMessages = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public AvailableItemsViewModel AvailableItems
+        {
+            get => availableItems;
+            set
+            {
+                if (Equals(value, availableItems)) return;
+                availableItems = value;
                 OnPropertyChanged();
             }
         }

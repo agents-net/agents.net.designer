@@ -45,17 +45,40 @@ namespace Agents.Net.Designer.ViewModel.Agents
                         break;
                     case AgentConsumingMessagesProperty _:
                         ChangeMessages(changingViewModel.ConsumingMessages, set.Message2,
-                                       changingViewModel.AvailableMessages);
+                                       changingViewModel.AvailableItems.AvailableMessages);
                         break;
                     case AgentProducedMessagesProperty _:
                         ChangeMessages(changingViewModel.ProducingMessages, set.Message2,
-                                       changingViewModel.AvailableMessages);
+                                       changingViewModel.AvailableItems.AvailableMessages);
+                        break;
+                    case AgentIncomingEventsProperty _:
+                        ChangeEvents(changingViewModel.IncomingEvents, set.Message2);
+                        break;
+                    case AgentProducedEventsProperty _:
+                        ChangeEvents(changingViewModel.ProducedEvents, set.Message2);
                         break;
                 }
             }, set));
         }
 
-        private void ChangeMessages(ObservableCollection<MessageViewModel> messages, ModifyModel modifyModel, IReadOnlyCollection<MessageViewModel> availableMessages)
+        private void ChangeEvents(ObservableCollection<string> events, ModifyModel modifyModel)
+        {
+            switch (modifyModel.ModificationType)
+            {
+                case ModelModification.Add:
+                    events.Add(modifyModel.NewValue.AssertTypeOf<string>());
+                    break;
+                case ModelModification.Remove:
+                    events.Remove(modifyModel.OldValue.AssertTypeOf<string>());
+                    break;
+                case ModelModification.Change:
+                    events.Remove(modifyModel.OldValue.AssertTypeOf<string>());
+                    events.Add(modifyModel.NewValue.AssertTypeOf<string>());
+                    break;
+            }
+        }
+
+        private void ChangeMessages(ObservableCollection<MessageViewModel> messages, ModifyModel modifyModel, ObservableCollection<MessageViewModel> availableMessages)
         {
             switch (modifyModel.ModificationType)
             {
@@ -91,7 +114,7 @@ namespace Agents.Net.Designer.ViewModel.Agents
                 string name = (string) value;
                 MessageViewModel viewModel = availableMessages.FirstOrDefault(m => m.FullName.EndsWith(name))
                                              ?? (generateMock
-                                                     ? name.GenerateMessageMock()
+                                                     ? name.GenerateMessageMock(availableMessages)
                                                      : null);
                 return viewModel;
             }

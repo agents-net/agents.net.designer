@@ -93,4 +93,18 @@ namespace Agents.Net.Designer.Model.Messages
         {
         }
     }
+
+    public class AgentIncomingEventsProperty : PropertySpecifier
+    {
+        public AgentIncomingEventsProperty() : base(nameof(AgentModel.IncomingEvents))
+        {
+        }
+    }
+
+    public class AgentProducedEventsProperty : PropertySpecifier
+    {
+        public AgentProducedEventsProperty() : base(nameof(AgentModel.ProducedEvents))
+        {
+        }
+    }
 }
