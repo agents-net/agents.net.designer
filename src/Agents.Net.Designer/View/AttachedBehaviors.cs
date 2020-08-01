@@ -1,13 +1,15 @@
-﻿using System.Windows;
+using System;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
+using Agents.Net.Designer.ViewModel;
+using TreeViewItem = System.Windows.Controls.TreeViewItem;
 
 namespace Agents.Net.Designer.View
 {
     public static class AttachedBehaviors
     {
-        
         public static readonly DependencyProperty IsBringSelectedIntoViewProperty = DependencyProperty.RegisterAttached(
             "IsBringSelectedIntoView", typeof (bool), typeof (AttachedBehaviors), new PropertyMetadata(default(bool), PropertyChangedCallback));
 

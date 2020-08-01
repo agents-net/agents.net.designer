@@ -1,6 +1,8 @@
 using System;
 using System.Collections.ObjectModel;
+using System.Windows.Input;
 using Agents.Net.Designer.Model;
+using Agents.Net.Designer.View;
 
 namespace Agents.Net.Designer.ViewModel
 {
@@ -20,7 +22,21 @@ namespace Agents.Net.Designer.ViewModel
         private string newIncomingEvent;
         private string newProducedEvent;
 
+        public AgentViewModel()
+        {
+            DeleteItemCommand = new RelayCommand(DeleteItem);
+        }
+
+        private void DeleteItem(object obj)
+        {
+            OnDeleteItemRequested((DeleteItemEventArgs) obj);
+        }
+
         internal Guid ModelId { get; set; }
+
+        internal event EventHandler<DeleteItemEventArgs> DeleteItemRequested; 
+
+        public ICommand DeleteItemCommand { get; }
 
         public string FullName
         {
@@ -163,6 +179,11 @@ namespace Agents.Net.Designer.ViewModel
                 availableItems = value;
                 OnPropertyChanged();
             }
+        }
+
+        protected virtual void OnDeleteItemRequested(DeleteItemEventArgs e)
+        {
+            DeleteItemRequested?.Invoke(this, e);
         }
     }
 }

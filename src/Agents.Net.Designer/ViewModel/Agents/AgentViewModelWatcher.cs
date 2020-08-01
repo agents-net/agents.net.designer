@@ -42,18 +42,68 @@ namespace Agents.Net.Designer.ViewModel.Agents
             }
             changedMessage = messageData;
             agentViewModel.PropertyChanged += ViewModelOnPropertyChanged;
+            agentViewModel.DeleteItemRequested += ViewModelOnDeleteItemRequested;
+        }
+
+        private void ViewModelOnDeleteItemRequested(object? sender, DeleteItemEventArgs e)
+        {
+            AgentModel oldModel = latestModel.Agents.First(a => a.Id == viewModel.ModelId);
+            switch (e.TargetProperty)
+            {
+                case nameof(AgentViewModel.ConsumingMessages):
+                {
+                    MessageViewModel message = e.DeletedItem.AssertTypeOf<MessageViewModel>();
+                    object messageId = message.ModelId != default ? (object) message.ModelId : message.FullName;
+                    OnMessage(new ModifyModel(ModelModification.Remove,
+                                              messageId,
+                                              null,
+                                              oldModel,
+                                              new AgentConsumingMessagesProperty(),
+                                              changedMessage));
+                    break;
+                }
+                case nameof(AgentViewModel.ProducingMessages):
+                {
+                    MessageViewModel message = e.DeletedItem.AssertTypeOf<MessageViewModel>();
+                    object messageId = message.ModelId != default ? (object) message.ModelId : message.FullName;
+                    OnMessage(new ModifyModel(ModelModification.Remove,
+                                              messageId,
+                                              null,
+                                              oldModel,
+                                              new AgentProducedMessagesProperty(), 
+                                              changedMessage));
+                    break;
+                }
+                case nameof(AgentViewModel.IncomingEvents):
+                    OnMessage(new ModifyModel(ModelModification.Remove,
+                                              e.DeletedItem.AssertTypeOf<string>(),
+                                              null,
+                                              oldModel,
+                                              new AgentIncomingEventsProperty(), 
+                                              changedMessage));
+                    break;
+                case nameof(AgentViewModel.ProducedEvents):
+                    OnMessage(new ModifyModel(ModelModification.Remove,
+                                              e.DeletedItem.AssertTypeOf<string>(),
+                                              null,
+                                              oldModel,
+                                              new AgentProducedEventsProperty(), 
+                                              changedMessage));
+                    break;
+                default:
+                    throw new InvalidOperationException($"Unknown deleted item {e.TargetProperty}");
+            }
         }
 
         private void ViewModelOnPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            AgentViewModel agentViewModel = (AgentViewModel) sender;
-            AgentModel oldModel = latestModel.Agents.First(a => a.Id == agentViewModel.ModelId);
+            AgentModel oldModel = latestModel.Agents.First(a => a.Id == viewModel.ModelId);
             switch (e.PropertyName)
             {
                 case nameof(AgentViewModel.Name):
                     OnMessage(new ModifyModel(ModelModification.Change,
                                               oldModel.Name,
-                                              agentViewModel.Name,
+                                              viewModel.Name,
                                               oldModel,
                                               new AgentNameProperty(),
                                               changedMessage));
@@ -61,7 +111,7 @@ namespace Agents.Net.Designer.ViewModel.Agents
                 case nameof(AgentViewModel.Namespace):
                     OnMessage(new ModifyModel(ModelModification.Change,
                                               oldModel.Namespace,
-                                              agentViewModel.Namespace,
+                                              viewModel.Namespace,
                                               oldModel,
                                               new AgentNamespaceProperty(),
                                               changedMessage));
@@ -73,55 +123,55 @@ namespace Agents.Net.Designer.ViewModel.Agents
                     AddProducedMessage();
                     break;
                 case nameof(AgentViewModel.NewIncomingEvent):
-                    AddEvent(agentViewModel.NewIncomingEvent, new AgentIncomingEventsProperty());
-                    agentViewModel.NewIncomingEvent = string.Empty;
+                    AddEvent(viewModel.NewIncomingEvent, new AgentIncomingEventsProperty());
+                    viewModel.NewIncomingEvent = string.Empty;
                     break;
                 case nameof(AgentViewModel.NewProducedEvent):
-                    AddEvent(agentViewModel.NewProducedEvent, new AgentProducedEventsProperty());
-                    agentViewModel.NewProducedEvent = string.Empty;
+                    AddEvent(viewModel.NewProducedEvent, new AgentProducedEventsProperty());
+                    viewModel.NewProducedEvent = string.Empty;
                     break;
             }
 
             void AddConsumingMessage()
             {
-                if (string.IsNullOrEmpty(agentViewModel.NewConsumingMessage))
+                if (string.IsNullOrEmpty(viewModel.NewConsumingMessage))
                 {
                     return;
                 }
 
-                MessageViewModel selectedConsumingViewModel = agentViewModel.NewConsumingMessageObject as MessageViewModel;
+                MessageViewModel selectedConsumingViewModel = viewModel.NewConsumingMessageObject as MessageViewModel;
                 OnMessage(new ModifyModel(ModelModification.Add,
                                           null,
                                           selectedConsumingViewModel != null
                                               ? selectedConsumingViewModel.ModelId != default
                                                     ? (object) selectedConsumingViewModel.ModelId
                                                     : selectedConsumingViewModel.FullName
-                                              : agentViewModel.NewConsumingMessage,
+                                              : viewModel.NewConsumingMessage,
                                           oldModel,
                                           new AgentConsumingMessagesProperty(),
                                           changedMessage));
-                agentViewModel.NewConsumingMessage = string.Empty;
+                viewModel.NewConsumingMessage = string.Empty;
             }
 
             void AddProducedMessage()
             {
-                if (string.IsNullOrEmpty(agentViewModel.NewProducingMessage))
+                if (string.IsNullOrEmpty(viewModel.NewProducingMessage))
                 {
                     return;
                 }
 
-                MessageViewModel selectedProducingViewModel = agentViewModel.NewProducingMessageObject as MessageViewModel;
+                MessageViewModel selectedProducingViewModel = viewModel.NewProducingMessageObject as MessageViewModel;
                 OnMessage(new ModifyModel(ModelModification.Add,
                                           null,
                                           selectedProducingViewModel != null
                                               ? selectedProducingViewModel.ModelId != default
                                                     ? (object) selectedProducingViewModel.ModelId
                                                     : selectedProducingViewModel.FullName
-                                              : agentViewModel.NewProducingMessage,
+                                              : viewModel.NewProducingMessage,
                                           oldModel,
                                           new AgentProducedMessagesProperty(),
                                           changedMessage));
-                agentViewModel.NewProducingMessage = string.Empty;
+                viewModel.NewProducingMessage = string.Empty;
             }
 
             void AddEvent(string @event, PropertySpecifier propertySpecifier)
@@ -145,6 +195,7 @@ namespace Agents.Net.Designer.ViewModel.Agents
             if (viewModel != null)
             {
                 viewModel.PropertyChanged -= ViewModelOnPropertyChanged;
+                viewModel.DeleteItemRequested -= ViewModelOnDeleteItemRequested;
             }
         }
     }

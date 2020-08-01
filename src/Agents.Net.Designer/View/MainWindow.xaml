@@ -147,25 +147,58 @@
                                 VerticalScrollBarVisibility="Auto"
                                 HorizontalScrollBarVisibility="Disabled">
                     <ScrollViewer.Resources>
+
+                        <Style TargetType="Button" BasedOn="{StaticResource MaterialDesignIconForegroundButton}" x:Key="DeleteItemButton">
+                            <Setter Property="Width" Value="30"/>
+                            <Setter Property="Height" Value="30"/>
+                            <Setter Property="ToolTip" Value="Delete"/>
+                            <Setter Property="Command" Value="{Binding Path=DataContext.DeleteItemCommand, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}"/>
+                            <Setter Property="CommandParameter" Value="{Binding RelativeSource={RelativeSource Self}, Converter={view:ButtonToDeleteItemEventArgsConverter}}"/>
+                        </Style>
+
                         <DataTemplate DataType="{x:Type viewModel:MessageViewModel}">
-                            <TextBlock Style="{DynamicResource MaterialDesignTextBlock}"
-                                       Text="{Binding Name}" ToolTip="{Binding FullName}"
-                                       TextTrimming="CharacterEllipsis"/>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Style="{DynamicResource MaterialDesignTextBlock}"
+                                           Text="{Binding Name}" ToolTip="{Binding FullName}"
+                                           TextTrimming="CharacterEllipsis" Grid.Column="0"
+                                           VerticalAlignment="Center"/>
+                                
+                                <Button Style="{StaticResource DeleteItemButton}" Grid.Column="1">
+                                    <materialDesign:PackIcon Kind="Delete"/>
+                                </Button>
+                            </Grid>
                         </DataTemplate>
                         
-                        <Style TargetType="ListView" BasedOn="{StaticResource MaterialDesignListView}" x:Key="MessageListView">
+                        <Style TargetType="ListBox" BasedOn="{StaticResource MaterialDesignListBox}" x:Key="MessageListBox">
                             <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Disabled"/>
                             <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Disabled"/>
+                            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
                         </Style>
                         
-                        <Style TargetType="ListView" BasedOn="{StaticResource MaterialDesignListView}" x:Key="EventsListView">
+                        <Style TargetType="ListBox" BasedOn="{StaticResource MaterialDesignListBox}" x:Key="EventsListBox">
                             <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Disabled"/>
                             <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Disabled"/>
+                            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
                             <Setter Property="ItemTemplate">
                                 <Setter.Value>
                                     <DataTemplate>
-                                        <TextBlock Text="{Binding}" TextTrimming="CharacterEllipsis"
-                                                   ToolTip="{Binding}"/>
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                            </Grid.ColumnDefinitions>
+                                            <TextBlock Text="{Binding}" TextTrimming="CharacterEllipsis"
+                                                       ToolTip="{Binding}" Grid.Column="0"
+                                                       VerticalAlignment="Center"/>
+                                
+                                            <Button Style="{StaticResource DeleteItemButton}" Grid.Column="1">
+                                                <materialDesign:PackIcon Kind="Delete"/>
+                                            </Button>
+                                        </Grid>
                                     </DataTemplate>
                                 </Setter.Value>
                             </Setter>
@@ -222,8 +255,8 @@
                                           Text="{Binding NewConsumingMessage, Mode=TwoWay, UpdateSourceTrigger=Explicit}"
                                           SelectedItem="{Binding NewConsumingMessageObject, Mode=OneWayToSource}"
                                           Grid.Column="1" Grid.Row="2"/>
-                                <ListView ItemsSource="{Binding ConsumingMessages}"
-                                          Style="{StaticResource MessageListView}"
+                                <ListBox ItemsSource="{Binding ConsumingMessages}"
+                                          Style="{StaticResource MessageListBox}"
                                           Grid.Column="1" Grid.Row="3"/>
                                 <TextBlock Style="{DynamicResource MaterialDesignTextBlock}"
                                            Text="Producing Messages" Margin="0,4,8,4" VerticalAlignment="Top"
@@ -233,8 +266,8 @@
                                           Text="{Binding NewProducingMessage, Mode=TwoWay, UpdateSourceTrigger=Explicit}"
                                           SelectedItem="{Binding NewProducingMessageObject, Mode=OneWayToSource}"
                                           Grid.Column="1" Grid.Row="4"/>
-                                <ListView ItemsSource="{Binding ProducingMessages}"
-                                          Style="{StaticResource MessageListView}"
+                                <ListBox ItemsSource="{Binding ProducingMessages}"
+                                          Style="{StaticResource MessageListBox}"
                                           Grid.Column="1" Grid.Row="5"/>
                                 <TextBlock Style="{DynamicResource MaterialDesignTextBlock}"
                                            Text="Incoming Events" Margin="0,4,8,4" VerticalAlignment="Top"
@@ -242,8 +275,8 @@
                                 <TextBox Style="{DynamicResource UpdateOnEnterBox}"
                                           Text="{Binding NewIncomingEvent, Mode=TwoWay, UpdateSourceTrigger=Explicit}"
                                           Grid.Column="1" Grid.Row="6"/>
-                                <ListView ItemsSource="{Binding IncomingEvents}"
-                                          Style="{StaticResource EventsListView}"
+                                <ListBox ItemsSource="{Binding IncomingEvents}"
+                                          Style="{StaticResource EventsListBox}"
                                           Grid.Column="1" Grid.Row="7" />
                                 <TextBlock Style="{DynamicResource MaterialDesignTextBlock}"
                                            Text="Produced Events" Margin="0,4,8,4" VerticalAlignment="Top"
@@ -251,8 +284,8 @@
                                 <TextBox Style="{DynamicResource UpdateOnEnterBox}"
                                          Text="{Binding NewProducedEvent, Mode=TwoWay, UpdateSourceTrigger=Explicit}"
                                          Grid.Column="1" Grid.Row="8"/>
-                                <ListView ItemsSource="{Binding ProducedEvents}"
-                                          Style="{StaticResource EventsListView}" 
+                                <ListBox ItemsSource="{Binding ProducedEvents}"
+                                          Style="{StaticResource EventsListBox}" 
                                           Grid.Column="1" Grid.Row="9"/>
                             </Grid>
                         </DataTemplate>
