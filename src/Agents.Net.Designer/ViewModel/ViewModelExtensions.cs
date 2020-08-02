@@ -52,10 +52,15 @@ namespace Agents.Net.Designer.ViewModel
             while (unvisited.Any())
             {
                 TreeViewItem item = unvisited.Pop();
-                if (item is AgentViewModel viewModel &&
-                    viewModel.ModelId == id)
+                if (item is AgentViewModel agent &&
+                    agent.ModelId == id)
                 {
-                    return viewModel;
+                    return agent;
+                }
+                else if (item is MessageViewModel message &&
+                         message.ModelId == id)
+                {
+                    return message;
                 }
 
                 foreach (TreeViewItem child in item.Items)

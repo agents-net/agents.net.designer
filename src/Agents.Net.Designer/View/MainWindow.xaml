@@ -155,23 +155,6 @@
                             <Setter Property="Command" Value="{Binding Path=DataContext.DeleteItemCommand, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}"/>
                             <Setter Property="CommandParameter" Value="{Binding RelativeSource={RelativeSource Self}, Converter={view:ButtonToDeleteItemEventArgsConverter}}"/>
                         </Style>
-
-                        <DataTemplate DataType="{x:Type viewModel:MessageViewModel}">
-                            <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*"/>
-                                    <ColumnDefinition Width="Auto"/>
-                                </Grid.ColumnDefinitions>
-                                <TextBlock Style="{DynamicResource MaterialDesignTextBlock}"
-                                           Text="{Binding Name}" ToolTip="{Binding FullName}"
-                                           TextTrimming="CharacterEllipsis" Grid.Column="0"
-                                           VerticalAlignment="Center"/>
-                                
-                                <Button Style="{StaticResource DeleteItemButton}" Grid.Column="1">
-                                    <materialDesign:PackIcon Kind="Delete"/>
-                                </Button>
-                            </Grid>
-                        </DataTemplate>
                         
                         <Style TargetType="ListBox" BasedOn="{StaticResource MaterialDesignListBox}" x:Key="MessageListBox">
                             <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Disabled"/>
@@ -216,9 +199,52 @@
                             <Setter Property="VerticalAlignment" Value="Center"/>
                             <Setter Property="view:AttachedBehaviors.UpdatePropertySourceWhenEnterPressed" Value="TextBox.Text"/>
                         </Style>
+
+                        <DataTemplate DataType="{x:Type viewModel:MessageViewModel}">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+                                <TextBlock Style="{DynamicResource MaterialDesignTextBlock}"
+                                           Text="Name" Margin="0,4,8,4" VerticalAlignment="Center"
+                                           Grid.Column="0" Grid.Row="0"/>
+                                <TextBox Style="{DynamicResource UpdateOnEnterBox}"
+                                         Text="{Binding Name, Mode=TwoWay}"
+                                         Grid.Column="1" Grid.Row="0"/>
+                                <TextBlock Style="{DynamicResource MaterialDesignTextBlock}"
+                                           Text="Namespace" Margin="0,4,8,4" VerticalAlignment="Center"
+                                           Grid.Column="0" Grid.Row="1"/>
+                                <TextBox Style="{DynamicResource UpdateOnEnterBox}"
+                                         Text="{Binding Namespace, Mode=TwoWay}"
+                                         Grid.Column="1" Grid.Row="1"/>
+                            </Grid>
+                        </DataTemplate>
                         
                         <DataTemplate DataType="{x:Type viewModel:AgentViewModel}">
                             <Grid>
+                                <Grid.Resources>
+                                    <DataTemplate DataType="{x:Type viewModel:MessageViewModel}">
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                            </Grid.ColumnDefinitions>
+                                            <TextBlock Style="{DynamicResource MaterialDesignTextBlock}"
+                                                       Text="{Binding Name}" ToolTip="{Binding FullName}"
+                                                       TextTrimming="CharacterEllipsis" Grid.Column="0"
+                                                       VerticalAlignment="Center"/>
+                                
+                                            <Button Style="{StaticResource DeleteItemButton}" Grid.Column="1">
+                                                <materialDesign:PackIcon Kind="Delete"/>
+                                            </Button>
+                                        </Grid>
+                                    </DataTemplate>
+                                </Grid.Resources>
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="Auto"/>
                                     <ColumnDefinition Width="*"/>

@@ -63,6 +63,9 @@ namespace Agents.Net.Designer
             builder.RegisterType<CommunityViewModelUpdater>().As<Agent>().InstancePerLifetimeScope();
             builder.RegisterType<ModelIdUpdater>().As<Agent>().InstancePerLifetimeScope();
             builder.RegisterType<FileSynchronizationCoordinator>().As<Agent>().InstancePerLifetimeScope();
+            builder.RegisterType<MessageViewModelWatcher>().As<Agent>().InstancePerLifetimeScope();
+            builder.RegisterType<MessageViewModelUpdater>().As<Agent>().InstancePerLifetimeScope();
+            builder.RegisterType<MessageModelModifier>().As<Agent>().InstancePerLifetimeScope();
         }
     }
 }

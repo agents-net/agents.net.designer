@@ -66,6 +66,20 @@ namespace Agents.Net.Designer.Model.Messages
         }
     }
 
+    public class MessageNameProperty : PropertySpecifier
+    {
+        public MessageNameProperty() : base(nameof(MessageModel.Name))
+        {
+        }
+    }
+
+    public class MessageNamespaceProperty : PropertySpecifier
+    {
+        public MessageNamespaceProperty() : base(nameof(MessageModel.Namespace))
+        {
+        }
+    }
+
     public class AgentNameProperty : PropertySpecifier
     {
         public AgentNameProperty() : base(nameof(AgentModel.Name))
