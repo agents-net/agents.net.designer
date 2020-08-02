@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using Agents.Net;
@@ -12,11 +12,10 @@ namespace Agents.Net.Designer.Json.Agents
     [Produces(typeof(FileSynchronized))]
     public class JsonFileSynchronizer : Agent
     {
-        private readonly MessageCollector<FileConnected, JsonTextUpdated> collector;
+        private MessageCollector<FileConnected, JsonTextUpdated> collector;
 
         public JsonFileSynchronizer(IMessageBoard messageBoard) : base(messageBoard)
         {
-            collector = new MessageCollector<FileConnected, JsonTextUpdated>(OnMessagesCollected);
         }
 
         private void OnMessagesCollected(MessageCollection<FileConnected, JsonTextUpdated> set)
@@ -27,7 +26,11 @@ namespace Agents.Net.Designer.Json.Agents
 
         protected override void ExecuteCore(Message messageData)
         {
-            collector.Push(messageData);
+            if (messageData.Is<FileConnected>())
+            {
+                collector = new MessageCollector<FileConnected, JsonTextUpdated>(OnMessagesCollected);
+            }
+            collector?.Push(messageData);
         }
     }
 }

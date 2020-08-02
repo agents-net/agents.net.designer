@@ -49,49 +49,20 @@ namespace Agents.Net.Designer.ViewModel.Agents
                 };
                 foreach (MessageModel message in model.Messages)
                 {
-                    MessageViewModel messageViewModel = new MessageViewModel
+                    MessageViewModel messageViewModel = message.CreateViewModel(model);
+                    if (!message.BuildIn)
                     {
-                        Name = message.Name,
-                        FullName = message.FullName(model),
-                        Namespace = message.Namespace.ExtendNamespace(model),
-                        ModelId = message.Id
-                    };
-                    root.AddItem(messageViewModel);
+                        root.AddItem(messageViewModel);
+                    }
                     availableViewModel.AvailableMessages.Add(messageViewModel);
                 }
 
                 foreach (AgentModel agent in model.Agents)
                 {
-                    root.AddItem(new AgentViewModel
-                    {
-                        Name = agent.Name,
-                        FullName = agent.FullName(model),
-                        Namespace = agent.Namespace.ExtendNamespace(model),
-                        IncomingEvents = new ObservableCollection<string>(agent.IncomingEvents??Enumerable.Empty<string>()),
-                        ProducedEvents = new ObservableCollection<string>(agent.ProducedEvents??Enumerable.Empty<string>()),
-                        ConsumingMessages = new ObservableCollection<MessageViewModel>(GenerateMessageMocks(agent.ConsumingMessages)),
-                        ProducingMessages = new ObservableCollection<MessageViewModel>(GenerateMessageMocks(agent.ProducedMessages)),
-                        AvailableItems = availableViewModel,
-                        ModelId = agent.Id
-                    });
+                    root.AddItem(agent.CreateViewModel(model, availableViewModel));
                 }
 
                 return root;
-            
-                IEnumerable<MessageViewModel> GenerateMessageMocks(string[] agentMessages)
-                {
-                    List<MessageViewModel> viewModels = new List<MessageViewModel>();
-                    foreach (string messageDefinition in agentMessages)
-                    {
-                        MessageModel message = model.Messages.FirstOrDefault(m => m.FullName(model)
-                                                                                   .EndsWith(messageDefinition));
-                        viewModels.Add(message != null
-                                           ? availableViewModel.AvailableMessages.First(m => m.ModelId == message.Id)
-                                           : messageDefinition.GenerateMessageMock(availableViewModel.AvailableMessages));
-                    }
-
-                    return viewModels;
-                }
             }
         }
 

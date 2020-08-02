@@ -84,39 +84,29 @@ namespace Agents.Net.Designer.ViewModel.Agents
             {
                 case ModelModification.Add:
                 {
-                    MessageViewModel viewModel = GetViewModel(modifyModel.NewValue, true);
+                    MessageViewModel viewModel = GetViewModel(modifyModel.NewValue);
                     messages.Add(viewModel);
                     break;
                 }
                 case ModelModification.Remove:
                 {
-                    MessageViewModel viewModel = GetViewModel(modifyModel.OldValue, false);
+                    MessageViewModel viewModel = GetViewModel(modifyModel.OldValue);
                     messages.Remove(viewModel);
                     break;
                 }
                 case ModelModification.Change:
                 {
-                    MessageViewModel addViewModel = GetViewModel(modifyModel.NewValue, true);
+                    MessageViewModel addViewModel = GetViewModel(modifyModel.NewValue);
                     messages.Add(addViewModel);
-                    MessageViewModel removeViewModel = GetViewModel(modifyModel.OldValue, false);
+                    MessageViewModel removeViewModel = GetViewModel(modifyModel.OldValue);
                     messages.Remove(removeViewModel);
                     break;
                 }
             }
 
-            MessageViewModel GetViewModel(object value, bool generateMock)
+            MessageViewModel GetViewModel(object value)
             {
-                if (value is Guid id)
-                {
-                    return availableMessages.First(m => m.ModelId == id);
-                }
-
-                string name = (string) value;
-                MessageViewModel viewModel = availableMessages.FirstOrDefault(m => m.FullName.EndsWith(name))
-                                             ?? (generateMock
-                                                     ? name.GenerateMessageMock(availableMessages)
-                                                     : null);
-                return viewModel;
+                return availableMessages.First(m => m.ModelId == value.AssertTypeOf<Guid>());
             }
         }
 

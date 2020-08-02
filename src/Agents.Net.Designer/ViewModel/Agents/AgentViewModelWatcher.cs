@@ -143,9 +143,7 @@ namespace Agents.Net.Designer.ViewModel.Agents
                 OnMessage(new ModifyModel(ModelModification.Add,
                                           null,
                                           selectedConsumingViewModel != null
-                                              ? selectedConsumingViewModel.ModelId != default
-                                                    ? (object) selectedConsumingViewModel.ModelId
-                                                    : selectedConsumingViewModel.FullName
+                                              ? (object) selectedConsumingViewModel.ModelId
                                               : viewModel.NewConsumingMessage,
                                           oldModel,
                                           new AgentConsumingMessagesProperty(),
@@ -164,9 +162,7 @@ namespace Agents.Net.Designer.ViewModel.Agents
                 OnMessage(new ModifyModel(ModelModification.Add,
                                           null,
                                           selectedProducingViewModel != null
-                                              ? selectedProducingViewModel.ModelId != default
-                                                    ? (object) selectedProducingViewModel.ModelId
-                                                    : selectedProducingViewModel.FullName
+                                              ? (object) selectedProducingViewModel.ModelId
                                               : viewModel.NewProducingMessage,
                                           oldModel,
                                           new AgentProducedMessagesProperty(),

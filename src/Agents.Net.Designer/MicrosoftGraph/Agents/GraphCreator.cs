@@ -27,9 +27,9 @@ namespace Agents.Net.Designer.MicrosoftGraph.Agents
             {
                 AddAgentNode(agentModel, graph);
                 AddMessageEdges(agentModel.ConsumingMessages, messages, true,
-                                agentModel.Id, graph, updated.Model);
+                                agentModel.Id, graph);
                 AddMessageEdges(agentModel.ProducedMessages, messages, false,
-                                agentModel.Id, graph, updated.Model);
+                                agentModel.Id, graph);
                 AddEventEdges(agentModel.IncomingEvents ?? Enumerable.Empty<string>(),
                               true, agentModel.Id, graph);
                 AddEventEdges(agentModel.ProducedEvents ?? Enumerable.Empty<string>(),
@@ -67,16 +67,12 @@ namespace Agents.Net.Designer.MicrosoftGraph.Agents
             }
         }
 
-        private void AddMessageEdges(string[] messages, List<Node> messageNodes, bool addMessageAsSource,
-                                     Guid agentModelId, Graph graph, CommunityModel model)
+        private void AddMessageEdges(Guid[] messages, List<Node> messageNodes, bool addMessageAsSource,
+                                     Guid agentModelId, Graph graph)
         {
-            foreach (string message in messages)
+            foreach (Guid message in messages)
             {
-                if (string.IsNullOrEmpty(message))
-                {
-                    continue;
-                }
-                Node messageNode = messageNodes.FirstOrDefault(n => n.UserData.AssertTypeOf<MessageModel>().FullName(model).EndsWith(message));
+                Node messageNode = messageNodes.FirstOrDefault(n => n.Id == message.ToString("D"));
                 Edge edge;
                 if (messageNode != null)
                 {
@@ -86,12 +82,7 @@ namespace Agents.Net.Designer.MicrosoftGraph.Agents
                 }
                 else
                 {
-                    edge = addMessageAsSource
-                               ? graph.AddEdge(message, agentModelId.ToString("D"))
-                               : graph.AddEdge(agentModelId.ToString("D"), message);
-                    Node newNode = addMessageAsSource ? edge.SourceNode : edge.TargetNode;
-                    newNode.Attr.Shape = Shape.Box;
-                    newNode.Attr.FillColor = Color.Gray;
+                    throw new InvalidOperationException("Cannot happen.");
                 }
 
                 edge.Attr.Color = addMessageAsSource ? Color.Green : Color.Blue;

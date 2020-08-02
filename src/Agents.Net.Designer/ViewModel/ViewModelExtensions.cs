@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using Agents.Net.Designer.Model;
 
 namespace Agents.Net.Designer.ViewModel
 {
@@ -15,6 +16,34 @@ namespace Agents.Net.Designer.ViewModel
         public static void AddItem(this CommunityViewModel viewModel, MessageViewModel messageViewModel)
         {
             viewModel.AddItem(messageViewModel,messageViewModel.Namespace);
+        }
+
+        public static T FindItemByType<T>(this CommunityViewModel community)
+            where T : TreeViewItem
+        {
+            return community.FindItemsByType<T>().FirstOrDefault();
+        }
+
+        public static IEnumerable<T> FindItemsByType<T>(this CommunityViewModel community)
+            where T : TreeViewItem
+        {
+            List<T> items = new List<T>();
+            Stack<TreeViewItem> unvisited = new Stack<TreeViewItem>(new []{community});
+            while (unvisited.Any())
+            {
+                TreeViewItem item = unvisited.Pop();
+                if (item is T value)
+                {
+                    items.Add(value);
+                }
+
+                foreach (TreeViewItem child in item.Items)
+                {
+                    unvisited.Push(child);
+                }
+            }
+
+            return items;
         }
 
         public static TreeViewItem FindViewItemById(this CommunityViewModel community, Guid id)
@@ -107,22 +136,58 @@ namespace Agents.Net.Designer.ViewModel
             }
         }
 
-        public static MessageViewModel GenerateMessageMock(this string messageDefinition, ObservableCollection<MessageViewModel> availableMessages)
+        public static MessageViewModel CreateViewModel(this MessageModel message, CommunityModel model)
         {
-            MessageViewModel viewModel = availableMessages.FirstOrDefault(m => m.FullName == messageDefinition &&
-                                                                               m.ModelId == default);
-            if (viewModel == null)
+            return new MessageViewModel
             {
-                viewModel = new MessageViewModel
-                {
-                    Name = messageDefinition.Substring(messageDefinition.LastIndexOf('.') + 1),
-                    FullName = messageDefinition,
-                    Namespace = messageDefinition.Substring(0, Math.Max(0, messageDefinition.LastIndexOf('.')))
-                };
-                availableMessages.Add(viewModel);
-            }
+                Name = message.Name,
+                FullName = message.FullName(model),
+                Namespace = message.Namespace.ExtendNamespace(model),
+                ModelId = message.Id
+            };
+        }
 
-            return viewModel;
+        public static AgentViewModel CreateViewModel(this AgentModel agent, CommunityModel model,
+                                                     CommunityViewModel community)
+        {
+            AvailableItemsViewModel availableItems = community.FindItemByType<AgentViewModel>()?.AvailableItems
+                                                     ?? new AvailableItemsViewModel
+                                                     {
+                                                         AvailableMessages =
+                                                             new ObservableCollection<MessageViewModel>(
+                                                                 community.FindItemsByType<MessageViewModel>())
+                                                     };
+
+            return agent.CreateViewModel(model, availableItems);
+        }
+
+        public static AgentViewModel CreateViewModel(this AgentModel agent, CommunityModel model,
+                                                     AvailableItemsViewModel availableViewModel)
+        {
+            return new AgentViewModel
+            {
+                Name = agent.Name,
+                FullName = agent.FullName(model),
+                Namespace = agent.Namespace.ExtendNamespace(model),
+                IncomingEvents = new ObservableCollection<string>(agent.IncomingEvents),
+                ProducedEvents = new ObservableCollection<string>(agent.ProducedEvents),
+                ConsumingMessages =
+                    new ObservableCollection<MessageViewModel>(CollectMessages(agent.ConsumingMessages)),
+                ProducingMessages = new ObservableCollection<MessageViewModel>(CollectMessages(agent.ProducedMessages)),
+                AvailableItems = availableViewModel,
+                ModelId = agent.Id
+            };
+            
+            IEnumerable<MessageViewModel> CollectMessages(Guid[] agentMessages)
+            {
+                List<MessageViewModel> viewModels = new List<MessageViewModel>();
+                foreach (Guid messageDefinition in agentMessages)
+                {
+                    viewModels.Add(availableViewModel.AvailableMessages.First(m => m.ModelId == messageDefinition));
+                }
+
+                return viewModels;
+            }
         }
     }
 }

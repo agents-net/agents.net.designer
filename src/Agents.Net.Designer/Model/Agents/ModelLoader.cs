@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Agents.Net.Designer.Model.Messages;
 
 namespace Agents.Net.Designer.Model.Agents
@@ -15,9 +15,18 @@ namespace Agents.Net.Designer.Model.Agents
 
         protected override void ExecuteCore(Message messageData)
         {
-            CommunityModel model = new CommunityModel();
+            CommunityModel model = new CommunityModel(messages:BuildInMessages());
             OnMessage(new ModelUpdated(model, messageData));
             OnMessage(new ModelLoaded(model, messageData));
+        }
+
+        private MessageModel[] BuildInMessages()
+        {
+            return new[]
+            {
+                new MessageModel("InitializeMessage", "Agents.Net", buildIn: true),
+                new MessageModel("ExceptionMessage", "Agents.Net", buildIn: true),
+            };
         }
     }
 }

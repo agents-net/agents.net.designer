@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Agents.Net;
@@ -17,11 +17,6 @@ namespace Agents.Net.Designer.Generator.Agents
     [Produces(typeof(GeneratorSettingsDefined))]
     public class ModelAnalyser : Agent
     {
-        private static readonly string[] BuildInMessages = new[]
-        {
-            "InitializeMessage",
-            "ExceptionMessage"
-        };
         private readonly MessageCollector<GenerateFilesRequested, ModelUpdated> collector;
 
         public ModelAnalyser(IMessageBoard messageBoard) : base(messageBoard)
@@ -46,6 +41,10 @@ namespace Agents.Net.Designer.Generator.Agents
 
             foreach (MessageModel modelMessage in set.Message2.Model.Messages)
             {
+                if (modelMessage.BuildIn)
+                {
+                    continue;
+                }
                 messages.Add(new MessageModelSelectedForGeneration(modelMessage, set,
                                      new ModelSelectedForGeneration(set.Message1.Path, set.Message2.Model, set)));
             }
@@ -60,19 +59,11 @@ namespace Agents.Net.Designer.Generator.Agents
                 OnMessages(messages);
             }
 
-            void FindMessageModels(IEnumerable<string> messageDefinitions, AgentModel agentModel, string type, List<MessageModel> messageModels)
+            void FindMessageModels(IEnumerable<Guid> messageDefinitions, AgentModel agentModel, string type, List<MessageModel> messageModels)
             {
-                foreach (string message in messageDefinitions)
+                foreach (Guid message in messageDefinitions)
                 {
-                    if (BuildInMessages.Contains(message))
-                    {
-                        messageModels.Add(new MessageModel(message, "Agents.Net"));
-                        continue;
-                    }
-                    MessageModel messageDefinition = set.Message2.Model.Messages
-                                              .FirstOrDefault(m => m.FullName(set.Message2.Model)
-                                                                    .EndsWith(message,
-                                                                              StringComparison.Ordinal));
+                    MessageModel messageDefinition = set.Message2.Model.Messages.FirstOrDefault(m => m.Id == message);
                     if (messageDefinition == null)
                     {
                         errors.Add(
