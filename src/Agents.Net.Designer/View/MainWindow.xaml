@@ -229,6 +229,36 @@
                             </Grid>
                         </DataTemplate>
 
+                        <DataTemplate DataType="{x:Type viewModel:FolderViewModel}">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+                                <TextBlock Style="{DynamicResource MaterialDesignTextBlock}"
+                                           Text="Name" Margin="0,4,8,4" VerticalAlignment="Center"
+                                           Grid.Column="0" Grid.Row="0"/>
+                                <TextBlock Style="{DynamicResource MaterialDesignTextBlock}"
+                                           Text="{Binding Name}" TextTrimming="CharacterEllipsis"
+                                           ToolTip="{Binding Name}"
+                                           Grid.Column="1" Grid.Row="0"/>
+                                <TextBlock Style="{DynamicResource MaterialDesignTextBlock}"
+                                           Text="Is Relative Root" Margin="0,4,8,4" VerticalAlignment="Center"
+                                           ToolTip="Shows whether this is the relative root folder of the package. Meaning that all elements with relative namespaces are found below this folder."
+                                           Grid.Column="0" Grid.Row="1"/>
+                                <view:LockableToggleButton Style="{StaticResource MaterialDesignSwitchToggleButton}"
+                                                           ToolTip="Shows whether this is the relative root folder of the package. Meaning that all elements with relative namespaces are found below this folder."
+                                                           IsChecked="{Binding IsRelativeRoot}"
+                                                           HorizontalAlignment="Left"
+                                                           LockToggle="True"
+                                                           Grid.Column="1" Grid.Row="1"/>
+                            </Grid>
+                        </DataTemplate>
+
                         <DataTemplate DataType="{x:Type viewModel:MessageViewModel}">
                             <Grid>
                                 <Grid.ColumnDefinitions>
