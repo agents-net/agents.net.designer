@@ -17,20 +17,17 @@ namespace Agents.Net.Designer.Model.Agents
         {
         }
 
-        private CommunityModel latestModel;
         private readonly ConcurrentDictionary<ModifyModel, ModifyModel> originalModifications = new ConcurrentDictionary<ModifyModel, ModifyModel>();
 
         protected override void ExecuteCore(Message messageData)
         {
-            ModelUpdated updated = messageData.Get<ModelUpdated>();
-            CommunityModel oldModel = Interlocked.Exchange(ref latestModel, updated.Model);
             if (!messageData.TryGetPredecessor(out ModifyModel lastModification) ||
                 !originalModifications.TryGetValue(lastModification, out ModifyModel originalModification))
             {
                 return;
             }
 
-            Guid messageId = updated.Model.Messages.Except(oldModel.Messages).Single().Id;
+            Guid messageId = ((MessageModel)lastModification.Target).Id;
             OnMessage(new ModifyModel(originalModification.ModificationType,
                                       originalModification.OldValue,
                                       messageId,
@@ -42,7 +39,7 @@ namespace Agents.Net.Designer.Model.Agents
         {
             ModifyModel modifyModel = messageData.Get<ModifyModel>();
             if (modifyModel.ModificationType != ModelModification.Add ||
-                !(modifyModel.Target is AgentModel) ||
+                !(modifyModel.Target is AgentModel agentModel) ||
                 !(modifyModel.Property is AgentConsumingMessagesProperty ||
                   modifyModel.Property is AgentProducedMessagesProperty) ||
                 modifyModel.NewValue is Guid)
@@ -59,8 +56,8 @@ namespace Agents.Net.Designer.Model.Agents
                                                              ? messageDefinition.Substring(
                                                                  0, messageDefinition.LastIndexOf('.'))
                                                              : ".Messages"),
-                                                     latestModel,
-                                                     new MessagesProperty(),
+                                                     agentModel.ContainingPackage,
+                                                     new PackageMessagesProperty(),
                                                      messageData);
             originalModifications.TryAdd(addMessage, modifyModel);
             OnMessage(addMessage);

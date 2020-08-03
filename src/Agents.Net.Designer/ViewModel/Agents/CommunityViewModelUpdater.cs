@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using Agents.Net;
 using Agents.Net.Designer.Model;
 using Agents.Net.Designer.Model.Messages;
@@ -21,7 +22,8 @@ namespace Agents.Net.Designer.ViewModel.Agents
         private void OnMessagesCollected(MessageCollection<TreeViewModelCreated, ModifyModel> set)
         {
             set.MarkAsConsumed(set.Message2);
-            if (!(set.Message2.Target is CommunityModel oldModel))
+            if (!(set.Message2.Target is CommunityModel) &&
+                !(set.Message2.Target is GeneratorSettings))
             {
                 return;
             }
@@ -31,18 +33,104 @@ namespace Agents.Net.Designer.ViewModel.Agents
             {
                 switch (set.Message2.Property)
                 {
-                    case MessagesProperty _:
-                        ChangeMessages(set.Message2, changingViewModel, oldModel);
+                    case GeneratorSettingsPackageNamespaceProperty _:
+                        string newName = string.IsNullOrEmpty(set.Message2.NewValue.AssertTypeOf<string>())
+                                             ? "<Root>"
+                                             : set.Message2.NewValue.AssertTypeOf<string>();
+                        changingViewModel.Name = newName;
+                        RestructureViewModels(set.Message2, changingViewModel);
                         break;
-                    case AgentsProperty _:
-                        ChangeAgents(set.Message2, changingViewModel, oldModel);
+                    case GeneratorSettingsGenerateAutofacProperty _:
+                        changingViewModel.GenerateAutofacModule = set.Message2.NewValue.AssertTypeOf<bool>();
+                        break;
+                    case PackageMessagesProperty _:
+                        ChangeMessages(set.Message2, changingViewModel);
+                        break;
+                    case PackageAgentsProperty _:
+                        ChangeAgents(set.Message2, changingViewModel);
                         break;
                 }
             }, set));
         }
 
-        private void ChangeAgents(ModifyModel modifyModel, CommunityViewModel changingViewModel,
-                                  CommunityModel oldModel)
+        private void RestructureViewModels(ModifyModel modifyModel, CommunityViewModel changingViewModel)
+        {
+            AgentViewModel[] agents = changingViewModel.FindItemsByType<AgentViewModel>().ToArray();
+            MessageViewModel[] messages = changingViewModel.FindItemsByType<MessageViewModel>().ToArray();
+
+            foreach (AgentViewModel agent in agents)
+            {
+                changingViewModel.RemoveItem(agent);
+            }
+
+            foreach (MessageViewModel message in messages)
+            {
+                changingViewModel.RemoveItem(message);
+            }
+
+            string oldNamespace = modifyModel.OldValue.AssertTypeOf<string>() ?? string.Empty;
+            string newNamespace = modifyModel.NewValue.AssertTypeOf<string>() ?? string.Empty;
+
+            UpdateRelativeRootFolder(changingViewModel, oldNamespace, newNamespace);
+
+            foreach (AgentViewModel agent in agents)
+            {
+                agent.FullName = UpdateFullName(agent.FullName, agent.RelativeNamespace);
+                changingViewModel.AddItem(agent);
+            }
+
+            foreach (MessageViewModel message in messages)
+            {
+                message.FullName = UpdateFullName(message.FullName, message.RelativeNamespace);
+                changingViewModel.AddItem(message);
+            }
+
+            string UpdateFullName(string oldFullName, string relativeNamespace)
+            {
+                if (!relativeNamespace.StartsWith("."))
+                {
+                    return oldFullName;
+                }
+                string relativeFullName = oldFullName.Substring(oldNamespace.Length);
+                if (!relativeFullName.StartsWith('.'))
+                {
+                    relativeFullName = $".{relativeFullName}";
+                }
+
+                return string.IsNullOrEmpty(newNamespace)
+                           ? relativeFullName.Substring(1)
+                           : newNamespace + relativeFullName;
+            }
+        }
+
+        private static void UpdateRelativeRootFolder(CommunityViewModel changingViewModel, string oldNamespace,
+                                                     string newNamespace)
+        {
+            if (!string.IsNullOrEmpty(oldNamespace))
+            {
+                FolderViewModel rootFolder = changingViewModel.Items.OfType<FolderViewModel>()
+                                                              .First(f => f.IsRelativeRoot);
+                if (!string.IsNullOrEmpty(newNamespace))
+                {
+                    rootFolder.Name = newNamespace;
+                }
+                else
+                {
+                    changingViewModel.RemoveItem(rootFolder);
+                }
+            }
+            else if (!string.IsNullOrEmpty(newNamespace))
+            {
+                FolderViewModel rootFolder = new FolderViewModel
+                {
+                    Name = newNamespace,
+                    IsRelativeRoot = true
+                };
+                changingViewModel.Items.Add(rootFolder);
+            }
+        }
+
+        private void ChangeAgents(ModifyModel modifyModel, CommunityViewModel changingViewModel)
         {
             switch (modifyModel.ModificationType)
             {
@@ -61,7 +149,7 @@ namespace Agents.Net.Designer.ViewModel.Agents
             void AddAgent()
             {
                 AgentModel agentModel = modifyModel.NewValue.AssertTypeOf<AgentModel>();
-                AgentViewModel viewModel = agentModel.CreateViewModel(oldModel, changingViewModel);
+                AgentViewModel viewModel = agentModel.CreateViewModel(changingViewModel);
                 changingViewModel.AddItem(viewModel);
             }
 
@@ -73,9 +161,7 @@ namespace Agents.Net.Designer.ViewModel.Agents
             }
         }
 
-        //TODO Add modelid updater on model updated.
-        private void ChangeMessages(ModifyModel modifyModel, CommunityViewModel changingViewModel,
-                                    CommunityModel oldModel)
+        private void ChangeMessages(ModifyModel modifyModel, CommunityViewModel changingViewModel)
         {
             switch (modifyModel.ModificationType)
             {
@@ -94,7 +180,7 @@ namespace Agents.Net.Designer.ViewModel.Agents
             void AddMessage()
             {
                 MessageModel messageModel = modifyModel.NewValue.AssertTypeOf<MessageModel>();
-                MessageViewModel viewModel = messageModel.CreateViewModel(oldModel);
+                MessageViewModel viewModel = messageModel.CreateViewModel();
                 if (!messageModel.BuildIn)
                 {
                     changingViewModel.AddItem(viewModel);

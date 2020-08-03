@@ -66,6 +66,9 @@ namespace Agents.Net.Designer
             builder.RegisterType<MessageViewModelWatcher>().As<Agent>().InstancePerLifetimeScope();
             builder.RegisterType<MessageViewModelUpdater>().As<Agent>().InstancePerLifetimeScope();
             builder.RegisterType<MessageModelModifier>().As<Agent>().InstancePerLifetimeScope();
+            builder.RegisterType<CommunityViewModelWatcher>().As<Agent>().InstancePerLifetimeScope();
+            builder.RegisterType<GeneratorSettingsModifier>().As<Agent>().InstancePerLifetimeScope();
+            builder.RegisterType<ContainingPackageSynchronizer>().As<Agent>().InstancePerLifetimeScope();
         }
     }
 }

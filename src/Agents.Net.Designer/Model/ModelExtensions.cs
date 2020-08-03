@@ -7,37 +7,58 @@ namespace Agents.Net.Designer.Model
 {
     public static class ModelExtensions
     {
-        public static string FullName(this MessageModel message, CommunityModel communityModel)
+        public static string FullName(this MessageModel message)
         {
-            return $"{message.Namespace.ExtendNamespace(communityModel)}.{message.Name}";
+            return $"{message.Namespace.ExtendNamespace(message)}.{message.Name}";
         }
 
-        public static string ExtendNamespace(this string modelNamespace, CommunityModel communityModel)
+        public static string FullNamespace(this MessageModel message)
+        {
+            return message.Namespace.ExtendNamespace(message);
+        }
+
+        public static string FullNamespace(this AgentModel agent)
+        {
+            return agent.Namespace.ExtendNamespace(agent);
+        }
+
+        public static string ExtendNamespace(this string modelNamespace, MessageModel messageModel)
+        {
+            return modelNamespace.ExtendNamespace(messageModel.ContainingPackage.GeneratorSettings);
+        }
+
+        public static string ExtendNamespace(this string modelNamespace, AgentModel agentModel)
+        {
+            return modelNamespace.ExtendNamespace(agentModel.ContainingPackage.GeneratorSettings);
+        }
+
+        private static string ExtendNamespace(this string modelNamespace, GeneratorSettings settings)
         {
             if (string.IsNullOrEmpty(modelNamespace))
             {
-                return communityModel.GeneratorSettings?.PackageNamespace ?? string.Empty;
+                return settings.PackageNamespace ?? string.Empty;
             }
             
             if (modelNamespace.StartsWith('.'))
             {
-                if (string.IsNullOrEmpty(communityModel.GeneratorSettings?.PackageNamespace))
+                if (string.IsNullOrEmpty(settings.PackageNamespace))
                 {
                     modelNamespace = modelNamespace.Substring(1);
                 }
                 else
                 {
-                    modelNamespace = communityModel.GeneratorSettings.PackageNamespace + modelNamespace;
+                    modelNamespace = settings.PackageNamespace + modelNamespace;
                 }
             }
 
             return modelNamespace;
         }
 
-        public static string FullName(this AgentModel agent, CommunityModel communityModel)
+        public static string FullName(this AgentModel agent)
         {
-            return $"{agent.Namespace.ExtendNamespace(communityModel)}.{agent.Name}";
+            return $"{agent.Namespace.ExtendNamespace(agent)}.{agent.Name}";
         }
+
         public static T AssertTypeOf<T>(this object value)
         {
             if (value == null)

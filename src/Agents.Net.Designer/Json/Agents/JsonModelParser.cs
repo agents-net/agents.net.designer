@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -34,8 +34,7 @@ namespace Agents.Net.Designer.Json.Agents
                 using JsonTextReader jsonReader = new JsonTextReader(reader);
                 CommunityModel model = serializer.Deserialize<CommunityModel>(jsonReader);
                 
-                OnMessage(new ModelUpdated(model, messageData));
-                OnMessage(new ModelLoaded(model, messageData));
+                OnMessage(new ModelLoaded(model, messageData, new ModelUpdated(model, messageData)));
             }
             catch (JsonReaderException e)
             {

@@ -29,16 +29,18 @@ namespace Agents.Net.Designer.ViewModel.Agents
             CommunityViewModel GenerateCommunityViewModel()
             {
                 CommunityModel model = set.Message1.Model;
-                string rootNamespace = model.GeneratorSettings?.PackageNamespace ?? string.Empty;
+                string rootNamespace = model.GeneratorSettings.PackageNamespace;
                 CommunityViewModel root = new CommunityViewModel
                 {
-                    Name = string.IsNullOrEmpty(rootNamespace)?"<Root>":rootNamespace
+                    Name = string.IsNullOrEmpty(rootNamespace)?"<Root>":rootNamespace,
+                    GenerateAutofacModule = model.GeneratorSettings.GenerateAutofacModule
                 };
                 if (!string.IsNullOrEmpty(rootNamespace))
                 {
                     FolderViewModel folder = new FolderViewModel
                     {
-                        Name = rootNamespace
+                        Name = rootNamespace,
+                        IsRelativeRoot = true
                     };
                     root.Items.Add(folder);
                 }
@@ -49,7 +51,7 @@ namespace Agents.Net.Designer.ViewModel.Agents
                 };
                 foreach (MessageModel message in model.Messages)
                 {
-                    MessageViewModel messageViewModel = message.CreateViewModel(model);
+                    MessageViewModel messageViewModel = message.CreateViewModel();
                     if (!message.BuildIn)
                     {
                         root.AddItem(messageViewModel);
@@ -59,7 +61,7 @@ namespace Agents.Net.Designer.ViewModel.Agents
 
                 foreach (AgentModel agent in model.Agents)
                 {
-                    root.AddItem(agent.CreateViewModel(model, availableViewModel));
+                    root.AddItem(agent.CreateViewModel(availableViewModel));
                 }
 
                 return root;

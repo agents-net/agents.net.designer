@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using Agents.Net.Designer.Model.Messages;
 
@@ -28,17 +28,13 @@ namespace Agents.Net.Designer.Model.Agents
             CommunityModel updatedModel;
             switch (set.Message1.Property)
             {
-                case GeneratorSettingProperty _:
-                    updatedModel = new CommunityModel(set.Message1.NewValue.AssertTypeOf<GeneratorSettings>(),
-                                                      set.Message2.Model.Agents, set.Message2.Model.Messages);
-                    break;
-                case MessagesProperty _:
+                case PackageMessagesProperty _:
                     updatedModel = UpdateMessage(set.Message1.OldValue.AssertTypeOf<MessageModel>(),
                                                  set.Message1.NewValue.AssertTypeOf<MessageModel>(),
                                                  set.Message1.ModificationType,
                                                  set.Message2.Model);
                     break;
-                case AgentsProperty _:
+                case PackageAgentsProperty _:
                     updatedModel = UpdateAgent(set.Message1.OldValue.AssertTypeOf<AgentModel>(),
                                                  set.Message1.NewValue.AssertTypeOf<AgentModel>(),
                                                  set.Message1.ModificationType,

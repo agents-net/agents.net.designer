@@ -9,7 +9,6 @@ namespace Agents.Net.Designer.ViewModel
     public class AgentViewModel : TreeViewItem
     {
         private string fullName;
-        private string ns;
         private ObservableCollection<string> incomingEvents;
         private ObservableCollection<string> producedEvents;
         private ObservableCollection<MessageViewModel> consumingMessages;
@@ -21,6 +20,7 @@ namespace Agents.Net.Designer.ViewModel
         private AvailableItemsViewModel availableItems;
         private string newIncomingEvent;
         private string newProducedEvent;
+        private string relativeNamespace;
 
         public AgentViewModel()
         {
@@ -49,13 +49,13 @@ namespace Agents.Net.Designer.ViewModel
             }
         }
 
-        public string Namespace
+        public string RelativeNamespace
         {
-            get => ns;
+            get => relativeNamespace;
             set
             {
-                if (value == ns) return;
-                ns = value;
+                if (value == relativeNamespace) return;
+                relativeNamespace = value;
                 OnPropertyChanged();
             }
         }

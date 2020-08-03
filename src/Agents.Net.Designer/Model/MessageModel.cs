@@ -15,6 +15,9 @@ namespace Agents.Net.Designer.Model
             Id = id == default ? Guid.NewGuid() : id;
             BuildIn = buildIn;
         }
+
+        [JsonIgnore]
+        public CommunityModel ContainingPackage { get; set; }
         
         public Guid Id { get; }
 

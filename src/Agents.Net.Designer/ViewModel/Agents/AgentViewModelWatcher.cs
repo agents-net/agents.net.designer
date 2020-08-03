@@ -108,10 +108,10 @@ namespace Agents.Net.Designer.ViewModel.Agents
                                               new AgentNameProperty(),
                                               changedMessage));
                     break;
-                case nameof(AgentViewModel.Namespace):
+                case nameof(AgentViewModel.RelativeNamespace):
                     OnMessage(new ModifyModel(ModelModification.Change,
                                               oldModel.Namespace,
-                                              viewModel.Namespace,
+                                              viewModel.RelativeNamespace,
                                               oldModel,
                                               new AgentNamespaceProperty(),
                                               changedMessage));

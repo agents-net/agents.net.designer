@@ -42,14 +42,14 @@ namespace Agents.Net.Designer.ViewModel.Agents
                     agentViewModel.ModelId == default)
                 {
                     agentViewModel.ModelId =
-                        newAgents.FirstOrDefault(a => a.FullName(set.Message2.Model) == agentViewModel.FullName)
+                        newAgents.FirstOrDefault(a => a.FullName() == agentViewModel.FullName)
                                  ?.Id ?? default;
                 }
                 if (item is MessageViewModel messageViewModel &&
                     messageViewModel.ModelId == default)
                 {
                     messageViewModel.ModelId =
-                        newMessages.FirstOrDefault(a => a.FullName(set.Message2.Model) == messageViewModel.FullName)
+                        newMessages.FirstOrDefault(a => a.FullName() == messageViewModel.FullName)
                                  ?.Id ?? default;
                 }
 

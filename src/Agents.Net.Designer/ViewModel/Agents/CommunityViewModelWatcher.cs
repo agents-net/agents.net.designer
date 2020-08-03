@@ -12,13 +12,13 @@ namespace Agents.Net.Designer.ViewModel.Agents
     [Consumes(typeof(SelectedTreeViewItemChanged))]
     [Consumes(typeof(ModelUpdated))]
     [Produces(typeof(ModifyModel))]
-    public class MessageViewModelWatcher : Agent, IDisposable
+    public class CommunityViewModelWatcher : Agent, IDisposable
     {
         private Message changedMessage;
-        private MessageViewModel viewModel;
+        private CommunityViewModel viewModel;
         private CommunityModel latestModel;
 
-        public MessageViewModelWatcher(IMessageBoard messageBoard) : base(messageBoard)
+        public CommunityViewModelWatcher(IMessageBoard messageBoard) : base(messageBoard)
         {
         }
 
@@ -30,39 +30,40 @@ namespace Agents.Net.Designer.ViewModel.Agents
                 return;
             }
             SelectedTreeViewItemChanged viewModelChanged = messageData.Get<SelectedTreeViewItemChanged>();
-            if (!(viewModelChanged.SelectedItem is MessageViewModel messageViewModel))
+            if (!(viewModelChanged.SelectedItem is CommunityViewModel communityViewModel))
             {
                 return;
             }
 
-            MessageViewModel oldViewModel = Interlocked.Exchange(ref viewModel, messageViewModel);
+            CommunityViewModel oldViewModel = Interlocked.Exchange(ref viewModel, communityViewModel);
             if (oldViewModel != null)
             {
                 oldViewModel.PropertyChanged -= ViewModelOnPropertyChanged;
             }
             changedMessage = messageData;
-            messageViewModel.PropertyChanged += ViewModelOnPropertyChanged;
+            communityViewModel.PropertyChanged += ViewModelOnPropertyChanged;
         }
 
         private void ViewModelOnPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            MessageModel oldModel = latestModel.Messages.First(a => a.Id == viewModel.ModelId);
+            CommunityModel oldModel = latestModel;
             switch (e.PropertyName)
             {
-                case nameof(MessageViewModel.Name):
+                case nameof(CommunityViewModel.Name):
+                    string newNamespace = viewModel.Name == "<Root>" ? string.Empty : viewModel.Name;
                     OnMessage(new ModifyModel(ModelModification.Change,
-                                              oldModel.Name,
-                                              viewModel.Name,
-                                              oldModel,
-                                              new MessageNameProperty(), 
+                                              oldModel.GeneratorSettings.PackageNamespace,
+                                              newNamespace,
+                                              oldModel.GeneratorSettings,
+                                              new GeneratorSettingsPackageNamespaceProperty(), 
                                               changedMessage));
                     break;
-                case nameof(MessageViewModel.RelativeNamespace):
+                case nameof(CommunityViewModel.GenerateAutofacModule):
                     OnMessage(new ModifyModel(ModelModification.Change,
-                                              oldModel.Namespace,
-                                              viewModel.RelativeNamespace,
-                                              oldModel,
-                                              new MessageNamespaceProperty(), 
+                                              oldModel.GeneratorSettings.GenerateAutofacModule,
+                                              viewModel.GenerateAutofacModule,
+                                              oldModel.GeneratorSettings,
+                                              new GeneratorSettingsGenerateAutofacProperty(), 
                                               changedMessage));
                     break;
             }

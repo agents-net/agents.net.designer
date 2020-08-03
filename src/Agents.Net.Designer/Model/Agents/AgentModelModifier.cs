@@ -39,13 +39,8 @@ namespace Agents.Net.Designer.Model.Agents
                                                   agentModel.Id);
                     break;
                 case AgentNamespaceProperty _:
-                    string newNamespace = set.Message1.NewValue.AssertTypeOf<string>();
-                    bool clipNamespace = !string.IsNullOrEmpty(set.Message2.Model.GeneratorSettings?.PackageNamespace) &&
-                                         newNamespace.StartsWith(set.Message2.Model.GeneratorSettings.PackageNamespace);
                     updatedModel = new AgentModel(agentModel.Name,
-                                                  clipNamespace
-                                                  ?newNamespace.Substring(set.Message2.Model.GeneratorSettings.PackageNamespace.Length)
-                                                  :newNamespace,
+                                                  set.Message1.NewValue.AssertTypeOf<string>(),
                                                   agentModel.ConsumingMessages,
                                                   agentModel.ProducedMessages,
                                                   agentModel.IncomingEvents,

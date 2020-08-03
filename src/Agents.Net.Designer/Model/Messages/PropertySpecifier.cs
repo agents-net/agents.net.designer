@@ -44,24 +44,31 @@ namespace Agents.Net.Designer.Model.Messages
             return propertyName.GetHashCode();
         }
     }
-    
-    public class GeneratorSettingProperty : PropertySpecifier
+
+    public class GeneratorSettingsPackageNamespaceProperty : PropertySpecifier
     {
-        public GeneratorSettingProperty() : base(nameof(CommunityModel.GeneratorSettings))
+        public GeneratorSettingsPackageNamespaceProperty() : base(nameof(GeneratorSettings.PackageNamespace))
         {
         }
     }
 
-    public class MessagesProperty : PropertySpecifier
+    public class GeneratorSettingsGenerateAutofacProperty : PropertySpecifier
     {
-        public MessagesProperty() : base(nameof(CommunityModel.Messages))
+        public GeneratorSettingsGenerateAutofacProperty() : base(nameof(GeneratorSettings.GenerateAutofacModule))
         {
         }
     }
 
-    public class AgentsProperty : PropertySpecifier
+    public class PackageMessagesProperty : PropertySpecifier
     {
-        public AgentsProperty() : base(nameof(CommunityModel.Agents))
+        public PackageMessagesProperty() : base(nameof(CommunityModel.Messages))
+        {
+        }
+    }
+
+    public class PackageAgentsProperty : PropertySpecifier
+    {
+        public PackageAgentsProperty() : base(nameof(CommunityModel.Agents))
         {
         }
     }

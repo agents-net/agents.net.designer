@@ -5,8 +5,8 @@ namespace Agents.Net.Designer.ViewModel
     public class MessageViewModel : TreeViewItem
     {
         private string fullName;
-        private string ns;
-        
+        private string relativeNamespace;
+
         internal Guid ModelId { get; set; }
 
         public string FullName
@@ -20,13 +20,13 @@ namespace Agents.Net.Designer.ViewModel
             }
         }
 
-        public string Namespace
+        public string RelativeNamespace
         {
-            get => ns;
+            get => relativeNamespace;
             set
             {
-                if (value == ns) return;
-                ns = value;
+                if (value == relativeNamespace) return;
+                relativeNamespace = value;
                 OnPropertyChanged();
             }
         }

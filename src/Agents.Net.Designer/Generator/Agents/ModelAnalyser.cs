@@ -36,7 +36,7 @@ namespace Agents.Net.Designer.Generator.Agents
                 FindMessageModels(agentModel.ConsumingMessages, agentModel, "consuming", consuming);
                 FindMessageModels(agentModel.ProducedMessages, agentModel, "producing", producing);
                 messages.Add(new AgentModelSelectedForGeneration(agentModel,consuming.ToArray(),producing.ToArray(),set, 
-                                     new ModelSelectedForGeneration(set.Message1.Path, set.Message2.Model, set)));
+                                     new ModelSelectedForGeneration(set.Message1.Path, set)));
             }
 
             foreach (MessageModel modelMessage in set.Message2.Model.Messages)
@@ -46,7 +46,7 @@ namespace Agents.Net.Designer.Generator.Agents
                     continue;
                 }
                 messages.Add(new MessageModelSelectedForGeneration(modelMessage, set,
-                                     new ModelSelectedForGeneration(set.Message1.Path, set.Message2.Model, set)));
+                                     new ModelSelectedForGeneration(set.Message1.Path, set)));
             }
 
             if (errors.Any())
@@ -67,7 +67,7 @@ namespace Agents.Net.Designer.Generator.Agents
                     if (messageDefinition == null)
                     {
                         errors.Add(
-                            $"No message definition found for agent definition {agentModel.FullName(set.Message2.Model)} with " +
+                            $"No message definition found for agent definition {agentModel.FullName()} with " +
                             $"defined {type} message {message}");
                     }
                     else

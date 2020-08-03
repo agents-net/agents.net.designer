@@ -10,12 +10,12 @@ namespace Agents.Net.Designer.ViewModel
     {
         public static void AddItem(this CommunityViewModel viewModel, AgentViewModel agentViewModel)
         {
-            viewModel.AddItem(agentViewModel,agentViewModel.Namespace);
+            viewModel.AddItem(agentViewModel,agentViewModel.RelativeNamespace);
         }
         
         public static void AddItem(this CommunityViewModel viewModel, MessageViewModel messageViewModel)
         {
-            viewModel.AddItem(messageViewModel,messageViewModel.Namespace);
+            viewModel.AddItem(messageViewModel,messageViewModel.RelativeNamespace);
         }
 
         public static T FindItemByType<T>(this CommunityViewModel community)
@@ -80,11 +80,18 @@ namespace Agents.Net.Designer.ViewModel
             foreach (TreeViewItem parent in viewItemPath)
             {
                 parent.Items.Remove(child);
-                if (parent.Items.Any())
+                if (IsIndestructible(parent))
                 {
                     break;
                 }
                 child = parent;
+            }
+
+            static bool IsIndestructible(TreeViewItem item)
+            {
+                return item.Items.Any() || 
+                       (item is FolderViewModel folder &&
+                        folder.IsRelativeRoot);
             }
 
             List<TreeViewItem> FindViewItem()
@@ -110,14 +117,11 @@ namespace Agents.Net.Designer.ViewModel
 
         private static void AddItem(this CommunityViewModel viewModel, TreeViewItem viewItem, string ns)
         {
-            Dictionary<string, FolderViewModel> rootNames = viewModel.Items
-                                                                     .OfType<FolderViewModel>()
-                                                                     .ToDictionary(i => i.Name,
-                                                                                   i => i);
-            string rootName = rootNames.Keys.FirstOrDefault(ns.StartsWith) ?? string.Empty;
-            FolderViewModel root = string.IsNullOrEmpty(rootName) ? viewModel : rootNames[rootName];
-            string[] path = ns.Substring(rootName.Length)
-                              .Split('.', StringSplitOptions.RemoveEmptyEntries);
+            FolderViewModel relativeRoot = viewModel.Items.OfType<FolderViewModel>()
+                                                    .FirstOrDefault(f => f.IsRelativeRoot)
+                                           ?? viewModel;
+            FolderViewModel root = ns.StartsWith('.') ?  relativeRoot : viewModel;
+            string[] path = ns.Split('.', StringSplitOptions.RemoveEmptyEntries);
             FolderViewModel parent = GeneratePath();
             parent.Items.Add(viewItem);
             
@@ -141,19 +145,18 @@ namespace Agents.Net.Designer.ViewModel
             }
         }
 
-        public static MessageViewModel CreateViewModel(this MessageModel message, CommunityModel model)
+        public static MessageViewModel CreateViewModel(this MessageModel message)
         {
             return new MessageViewModel
             {
                 Name = message.Name,
-                FullName = message.FullName(model),
-                Namespace = message.Namespace.ExtendNamespace(model),
+                FullName = message.FullName(),
+                RelativeNamespace = message.Namespace,
                 ModelId = message.Id
             };
         }
 
-        public static AgentViewModel CreateViewModel(this AgentModel agent, CommunityModel model,
-                                                     CommunityViewModel community)
+        public static AgentViewModel CreateViewModel(this AgentModel agent, CommunityViewModel community)
         {
             AvailableItemsViewModel availableItems = community.FindItemByType<AgentViewModel>()?.AvailableItems
                                                      ?? new AvailableItemsViewModel
@@ -163,17 +166,16 @@ namespace Agents.Net.Designer.ViewModel
                                                                  community.FindItemsByType<MessageViewModel>())
                                                      };
 
-            return agent.CreateViewModel(model, availableItems);
+            return agent.CreateViewModel(availableItems);
         }
 
-        public static AgentViewModel CreateViewModel(this AgentModel agent, CommunityModel model,
-                                                     AvailableItemsViewModel availableViewModel)
+        public static AgentViewModel CreateViewModel(this AgentModel agent, AvailableItemsViewModel availableViewModel)
         {
             return new AgentViewModel
             {
                 Name = agent.Name,
-                FullName = agent.FullName(model),
-                Namespace = agent.Namespace.ExtendNamespace(model),
+                FullName = agent.FullName(),
+                RelativeNamespace = agent.Namespace,
                 IncomingEvents = new ObservableCollection<string>(agent.IncomingEvents),
                 ProducedEvents = new ObservableCollection<string>(agent.ProducedEvents),
                 ConsumingMessages =

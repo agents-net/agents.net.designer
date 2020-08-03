@@ -33,11 +33,12 @@ namespace Agents.Net.Designer.ViewModel.Agents
                 {
                     case MessageNameProperty _:
                         changingViewModel.Name = set.Message2.NewValue.AssertTypeOf<string>();
-                        changingViewModel.FullName = $"{changingViewModel.Namespace}.{changingViewModel.Name}";
+                        string fullNamespace = changingViewModel.FullName.Substring(0,changingViewModel.FullName.Length-set.Message2.OldValue.AssertTypeOf<string>().Length+1);
+                        changingViewModel.FullName =  $"{fullNamespace}.{changingViewModel.Name}";
                         break;
                     case MessageNamespaceProperty _:
-                        changingViewModel.Namespace = set.Message2.NewValue.AssertTypeOf<string>();
-                        changingViewModel.FullName = $"{changingViewModel.Namespace}.{changingViewModel.Name}";
+                        changingViewModel.RelativeNamespace = set.Message2.NewValue.AssertTypeOf<string>();
+                        changingViewModel.FullName = $"{set.Message2.NewValue.AssertTypeOf<string>().ExtendNamespace(oldModel)}.{changingViewModel.Name}";
                         RestructureViewModel(changingViewModel, set.Message1.ViewModel);
                         break;
                 }

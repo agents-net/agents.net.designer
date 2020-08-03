@@ -19,6 +19,9 @@ namespace Agents.Net.Designer.Model
             ProducedEvents = producedEvents ?? new string[0];
             Id = id == default ? Guid.NewGuid() : id;
         }
+
+        [JsonIgnore]
+        public CommunityModel ContainingPackage { get; set; }
         
         public Guid Id { get; }
 

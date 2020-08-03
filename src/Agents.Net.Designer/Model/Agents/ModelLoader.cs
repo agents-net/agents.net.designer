@@ -16,8 +16,7 @@ namespace Agents.Net.Designer.Model.Agents
         protected override void ExecuteCore(Message messageData)
         {
             CommunityModel model = new CommunityModel(messages:BuildInMessages());
-            OnMessage(new ModelUpdated(model, messageData));
-            OnMessage(new ModelLoaded(model, messageData));
+            OnMessage(new ModelLoaded(model, messageData, new ModelUpdated(model, messageData)));
         }
 
         private MessageModel[] BuildInMessages()
