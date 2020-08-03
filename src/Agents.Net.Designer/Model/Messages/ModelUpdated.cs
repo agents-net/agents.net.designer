@@ -4,7 +4,8 @@ using Agents.Net;
 namespace Agents.Net.Designer.Model.Messages
 {
     public class ModelUpdated : Message
-    {        public ModelUpdated(CommunityModel model, Message predecessorMessage, params Message[] childMessages)
+    {
+        public ModelUpdated(CommunityModel model, Message predecessorMessage, params Message[] childMessages)
             : base(predecessorMessage, childMessages:childMessages)
         {
             Model = model;
@@ -21,7 +22,7 @@ namespace Agents.Net.Designer.Model.Messages
 
         protected override string DataToString()
         {
-            return $"{nameof(Model)}: {Model}";
+            return string.Empty;
         }
     }
 }

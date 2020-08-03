@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Agents.Net;
@@ -9,7 +9,7 @@ using Agents.Net.Designer.Model.Messages;
 namespace Agents.Net.Designer.Generator.Agents
 {
     [Consumes(typeof(GenerateFilesRequested))]
-    [Consumes(typeof(ModelCreated))]
+    [Consumes(typeof(ModelUpdated))]
     [Produces(typeof(ModelInvalid))]
     [Produces(typeof(AgentModelSelectedForGeneration))]
     [Produces(typeof(ModelSelectedForGeneration))]
@@ -17,19 +17,14 @@ namespace Agents.Net.Designer.Generator.Agents
     [Produces(typeof(GeneratorSettingsDefined))]
     public class ModelAnalyser : Agent
     {
-        private static readonly string[] BuildInMessages = new[]
-        {
-            "InitializeMessage",
-            "ExceptionMessage"
-        };
-        private readonly MessageCollector<GenerateFilesRequested, ModelCreated> collector;
+        private readonly MessageCollector<GenerateFilesRequested, ModelUpdated> collector;
 
         public ModelAnalyser(IMessageBoard messageBoard) : base(messageBoard)
         {
-            collector = new MessageCollector<GenerateFilesRequested, ModelCreated>(OnMessagesCollected);
+            collector = new MessageCollector<GenerateFilesRequested, ModelUpdated>(OnMessagesCollected);
         }
 
-        private void OnMessagesCollected(MessageCollection<GenerateFilesRequested, ModelCreated> set)
+        private void OnMessagesCollected(MessageCollection<GenerateFilesRequested, ModelUpdated> set)
         {
             set.MarkAsConsumed(set.Message1);
             List<Message> messages = new List<Message>();
@@ -41,13 +36,17 @@ namespace Agents.Net.Designer.Generator.Agents
                 FindMessageModels(agentModel.ConsumingMessages, agentModel, "consuming", consuming);
                 FindMessageModels(agentModel.ProducedMessages, agentModel, "producing", producing);
                 messages.Add(new AgentModelSelectedForGeneration(agentModel,consuming.ToArray(),producing.ToArray(),set, 
-                                     new ModelSelectedForGeneration(set.Message1.Path, set.Message2.Model, set)));
+                                     new ModelSelectedForGeneration(set.Message1.Path, set)));
             }
 
             foreach (MessageModel modelMessage in set.Message2.Model.Messages)
             {
+                if (modelMessage.BuildIn)
+                {
+                    continue;
+                }
                 messages.Add(new MessageModelSelectedForGeneration(modelMessage, set,
-                                     new ModelSelectedForGeneration(set.Message1.Path, set.Message2.Model, set)));
+                                     new ModelSelectedForGeneration(set.Message1.Path, set)));
             }
 
             if (errors.Any())
@@ -60,23 +59,15 @@ namespace Agents.Net.Designer.Generator.Agents
                 OnMessages(messages);
             }
 
-            void FindMessageModels(IEnumerable<string> messageDefinitions, AgentModel agentModel, string type, List<MessageModel> messageModels)
+            void FindMessageModels(IEnumerable<Guid> messageDefinitions, AgentModel agentModel, string type, List<MessageModel> messageModels)
             {
-                foreach (string message in messageDefinitions)
+                foreach (Guid message in messageDefinitions)
                 {
-                    if (BuildInMessages.Contains(message))
-                    {
-                        messageModels.Add(new MessageModel {Name = message, Namespace = "Agents.Net"});
-                        continue;
-                    }
-                    MessageModel messageDefinition = set.Message2.Model.Messages
-                                              .FirstOrDefault(m => m.FullName(set.Message2.Model)
-                                                                    .EndsWith(message,
-                                                                              StringComparison.Ordinal));
+                    MessageModel messageDefinition = set.Message2.Model.Messages.FirstOrDefault(m => m.Id == message);
                     if (messageDefinition == null)
                     {
                         errors.Add(
-                            $"No message definition found for agent definition {agentModel.FullName(set.Message2.Model)} with " +
+                            $"No message definition found for agent definition {agentModel.FullName()} with " +
                             $"defined {type} message {message}");
                     }
                     else

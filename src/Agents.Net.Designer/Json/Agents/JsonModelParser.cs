@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -13,27 +13,28 @@ using Newtonsoft.Json.Schema.Generation;
 
 namespace Agents.Net.Designer.Json.Agents
 {
-    [Consumes(typeof(JsonModelValidated))]
-    [Produces(typeof(ModelCreated))]
+    [Consumes(typeof(JsonTextLoaded))]
+    [Produces(typeof(ModelUpdated))]
+    [Produces(typeof(ModelLoaded))]
     [Produces(typeof(JsonModelParsingError))]
     public class JsonModelParser : Agent
-    {        private readonly JSchema schema;
+    {
         public JsonModelParser(IMessageBoard messageBoard) : base(messageBoard)
         {
-            JSchemaGenerator generator = new JSchemaGenerator();
-            schema = generator.Generate(typeof(CommunityModel));
         }
 
         protected override void ExecuteCore(Message messageData)
         {
-            JsonModelValidated validated = messageData.Get<JsonModelValidated>();
+            JsonTextLoaded loaded = messageData.Get<JsonTextLoaded>();
 
             try
             {
                 JsonSerializer serializer = new JsonSerializer();
-                CommunityModel model = serializer.Deserialize<CommunityModel>(validated.ValidatedModel.CreateReader());
+                using StringReader reader = new StringReader(loaded.Text);
+                using JsonTextReader jsonReader = new JsonTextReader(reader);
+                CommunityModel model = serializer.Deserialize<CommunityModel>(jsonReader);
                 
-                OnMessage(new ModelCreated(model, messageData));
+                OnMessage(new ModelLoaded(model, messageData, new ModelUpdated(model, messageData)));
             }
             catch (JsonReaderException e)
             {

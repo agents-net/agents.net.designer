@@ -1,23 +1,21 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using System.Text;
 using Agents.Net.Designer.Annotations;
 
 namespace Agents.Net.Designer.ViewModel
 {
-    public class JsonViewModel : INotifyPropertyChanged
+    public class DetailsViewModel : INotifyPropertyChanged
     {
-        private string text;
+        private TreeViewItem currentItem;
 
-        public string Text
+        public TreeViewItem CurrentItem
         {
-            get => text;
+            get => currentItem;
             set
             {
-                if (value == text) return;
-                text = value;
+                if (Equals(value, currentItem)) return;
+                currentItem = value;
                 OnPropertyChanged();
             }
         }

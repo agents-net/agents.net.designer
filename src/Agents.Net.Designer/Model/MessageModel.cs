@@ -1,22 +1,30 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Text;
+using Newtonsoft.Json;
 
 namespace Agents.Net.Designer.Model
 {
     public class MessageModel
     {
-        public string Name { get; set; }
-
-        public string Namespace { get; set; } = ".Messages";
-
-        public MessageModel Clone()
+        public MessageModel(string name = "", string @namespace = ".Messages",
+                            Guid id = default, bool buildIn = false)
         {
-            return new MessageModel
-            {
-                Name = Name,
-                Namespace = Namespace
-            };
+            Name = name;
+            Namespace = @namespace;
+            Id = id == default ? Guid.NewGuid() : id;
+            BuildIn = buildIn;
         }
+
+        [JsonIgnore]
+        public CommunityModel ContainingPackage { get; set; }
+        
+        public Guid Id { get; }
+
+        public string Name { get; }
+
+        public string Namespace { get; }
+
+        public bool BuildIn { get; }
     }
 }

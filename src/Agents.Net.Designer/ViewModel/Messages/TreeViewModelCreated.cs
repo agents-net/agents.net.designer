@@ -1,22 +1,24 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace Agents.Net.Designer.ViewModel.Messages
 {
-    public class JsonViewModelCreated : Message
-    {        public JsonViewModelCreated(JsonViewModel viewModel, Message predecessorMessage, params Message[] childMessages)
+    public class TreeViewModelCreated : Message
+    {
+        public TreeViewModelCreated(TreeViewModel viewModel, Message predecessorMessage, params Message[] childMessages)
             : base(predecessorMessage, childMessages:childMessages)
         {
             ViewModel = viewModel;
         }
 
-        public JsonViewModelCreated(JsonViewModel viewModel, IEnumerable<Message> predecessorMessages,
+        public TreeViewModelCreated(TreeViewModel viewModel, IEnumerable<Message> predecessorMessages,
                                     params Message[] childMessages)
             : base(predecessorMessages, childMessages:childMessages)
         {
             ViewModel = viewModel;
         }
-
-        public JsonViewModel ViewModel { get; }
+        
+        public TreeViewModel ViewModel { get; }
 
         protected override string DataToString()
         {

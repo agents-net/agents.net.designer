@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using Newtonsoft.Json;
@@ -7,31 +7,34 @@ namespace Agents.Net.Designer.Model
 {
     public class AgentModel
     {
-        public string Name { get; set; }
-
-        public string Namespace { get; set; } = ".Agents";
-
-        public string[] ConsumingMessages { get; set; } = new string[0];
-
-        public string[] ProducedMessages { get; set; } = new string[0];
-
-        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
-        public string[] IncomingEvents { get; set; }
-        
-        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
-        public string[] ProducedEvents { get; set; }
-
-        public AgentModel Clone()
+        public AgentModel(string name = "", string @namespace = ".Agents", Guid[] consumingMessages = null,
+                          Guid[] producedMessages = null, string[] incomingEvents = null, string[] producedEvents = null,
+                          Guid id = default)
         {
-            return new AgentModel
-            {
-                Name = Name,
-                Namespace = Namespace,
-                ConsumingMessages = ConsumingMessages,
-                ProducedMessages = ProducedMessages,
-                IncomingEvents = IncomingEvents,
-                ProducedEvents = ProducedEvents
-            };
+            Name = name;
+            Namespace = @namespace;
+            ConsumingMessages = consumingMessages ?? new Guid[0];
+            ProducedMessages = producedMessages ?? new Guid[0];
+            IncomingEvents = incomingEvents ?? new string[0];
+            ProducedEvents = producedEvents ?? new string[0];
+            Id = id == default ? Guid.NewGuid() : id;
         }
+
+        [JsonIgnore]
+        public CommunityModel ContainingPackage { get; set; }
+        
+        public Guid Id { get; }
+
+        public string Name { get; }
+
+        public string Namespace { get; }
+
+        public Guid[] ConsumingMessages { get; }
+
+        public Guid[] ProducedMessages { get; }
+
+        public string[] IncomingEvents { get; }
+        
+        public string[] ProducedEvents { get; }
     }
 }

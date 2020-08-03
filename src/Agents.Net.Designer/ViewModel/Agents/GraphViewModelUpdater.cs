@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Agents.Net;
 using Agents.Net.Designer.MicrosoftGraph.Messages;
 using Agents.Net.Designer.ViewModel.Messages;

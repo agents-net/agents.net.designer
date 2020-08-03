@@ -1,6 +1,5 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using Newtonsoft.Json;
 
@@ -8,22 +7,17 @@ namespace Agents.Net.Designer.Model
 {
     public class CommunityModel
     {
-        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
-        public GeneratorSettings GeneratorSettings { get; set; }
-
-        public AgentModel[] Agents { get; set; } = new AgentModel[0];
-
-        public MessageModel[] Messages { get; set; } = new MessageModel[0];
-
-        public CommunityModel Clone()
+        public CommunityModel(GeneratorSettings generatorSettings = null, AgentModel[] agents = null, MessageModel[] messages = null)
         {
-            CommunityModel clone = new CommunityModel
-            {
-                Agents = Agents.Select(a => a.Clone()).ToArray(),
-                Messages = Messages.Select(m => m.Clone()).ToArray(),
-                GeneratorSettings = GeneratorSettings?.Clone()
-            };
-            return clone;
+            GeneratorSettings = generatorSettings??new GeneratorSettings();
+            Agents = agents ?? new AgentModel[0];
+            Messages = messages?? new MessageModel[0];
         }
+
+        public GeneratorSettings GeneratorSettings { get; }
+
+        public AgentModel[] Agents { get; }
+
+        public MessageModel[] Messages { get; }
     }
 }

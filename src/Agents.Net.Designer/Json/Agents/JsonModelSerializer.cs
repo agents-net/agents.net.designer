@@ -11,7 +11,8 @@ namespace Agents.Net.Designer.Json.Agents
     [Consumes(typeof(ModelUpdated))]
     [Produces(typeof(JsonTextUpdated))]
     public class JsonModelSerializer : Agent
-    {        public JsonModelSerializer(IMessageBoard messageBoard) : base(messageBoard)
+    {
+        public JsonModelSerializer(IMessageBoard messageBoard) : base(messageBoard)
         {
         }
 

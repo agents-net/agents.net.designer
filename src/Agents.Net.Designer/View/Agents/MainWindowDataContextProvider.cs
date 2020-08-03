@@ -4,29 +4,30 @@ using Agents.Net.Designer.ViewModel.Messages;
 
 namespace Agents.Net.Designer.View.Agents
 {
-    [Consumes(typeof(JsonViewModelCreated))]
     [Consumes(typeof(GraphViewModelCreated))]
+    [Consumes(typeof(TreeViewModelCreated))]
+    [Consumes(typeof(DetailsViewModelCreated))]
     [Consumes(typeof(MainWindowCreated))]
     [Produces(typeof(GraphViewModelApplied))]
-    [Produces(typeof(JsonViewModelApplied))]
     public class MainWindowDataContextProvider : Agent
-    {        public MainWindowDataContextProvider(IMessageBoard messageBoard) : base(messageBoard)
+    {
+        public MainWindowDataContextProvider(IMessageBoard messageBoard) : base(messageBoard)
         {
-            collector = new MessageCollector<JsonViewModelCreated, GraphViewModelCreated, MainWindowCreated>(OnMessagesCollected);
+            collector = new MessageCollector<GraphViewModelCreated, MainWindowCreated, TreeViewModelCreated, DetailsViewModelCreated>(OnMessagesCollected);
         }
 
-        private void OnMessagesCollected(MessageCollection<JsonViewModelCreated, GraphViewModelCreated, MainWindowCreated> set)
+        private void OnMessagesCollected(MessageCollection<GraphViewModelCreated, MainWindowCreated, TreeViewModelCreated, DetailsViewModelCreated> set)
         {
-            set.Message3.Window.Dispatcher.Invoke(() =>
+            set.Message2.Window.Dispatcher.Invoke(() =>
             {
-                set.Message3.Window.DataContext = set.Message2.ViewModel;
-                set.Message3.Window.JsonTextBox.DataContext = set.Message1.ViewModel;
+                set.Message2.Window.DataContext = set.Message1.ViewModel;
+                set.Message2.Window.TreeView.DataContext = set.Message3.ViewModel;
+                set.Message2.Window.DetailsView.DataContext = set.Message4.ViewModel;
             });
-            OnMessage(new GraphViewModelApplied(set.Message2.ViewModel, set));
-            OnMessage(new JsonViewModelApplied(set.Message1.ViewModel, set));
+            OnMessage(new GraphViewModelApplied(set.Message1.ViewModel, set));
         }
 
-        private readonly MessageCollector<JsonViewModelCreated, GraphViewModelCreated, MainWindowCreated> collector;
+        private readonly MessageCollector<GraphViewModelCreated, MainWindowCreated, TreeViewModelCreated, DetailsViewModelCreated> collector;
 
         protected override void ExecuteCore(Message messageData)
         {

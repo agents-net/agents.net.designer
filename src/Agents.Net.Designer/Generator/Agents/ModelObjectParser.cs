@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Agents.Net;
@@ -34,17 +34,14 @@ namespace Agents.Net.Designer.Generator.Agents
         {
             OnMessage(new GeneratingMessage(messageModel, 
                                             new GeneratingFile(messageModel.Message.Name, 
-                                                               messageModel.Message.Namespace
-                                                                  .ExtendNamespace(messageModel.Get<ModelSelectedForGeneration>()
-                                                                                      .Model),
+                                                               messageModel.Message.FullNamespace(),
                                                 messageModel.Get<ModelSelectedForGeneration>().GenerationPath, messageModel)));
         }
 
         private void PrepareAgent(AgentModelSelectedForGeneration agentModel)
         {
             string name = agentModel.Agent.Name;
-            CommunityModel communityModel = agentModel.Get<ModelSelectedForGeneration>().Model;
-            string agentNamespace = agentModel.Agent.Namespace.ExtendNamespace(communityModel);
+            string agentNamespace = agentModel.Agent.FullNamespace();
             string path = agentModel.Get<ModelSelectedForGeneration>().GenerationPath;
             List<string> consumingMessages = new List<string>();
             List<string> producingMessages = new List<string>();
@@ -63,7 +60,7 @@ namespace Agents.Net.Designer.Generator.Agents
                 foreach (MessageModel messageModel in messageModels)
                 {
                     messageNames.Add(messageModel.Name);
-                    string messageNamespace = messageModel.Namespace.ExtendNamespace(communityModel);
+                    string messageNamespace = messageModel.FullNamespace();
                     if (messageNamespace != agentNamespace && messageNamespace != "Agents.Net")
                     {
                         dependencies.Add(messageNamespace);

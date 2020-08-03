@@ -4,15 +4,15 @@ using Microsoft.Msagl.Drawing;
 
 namespace Agents.Net.Designer.ViewModel.Messages
 {
-    public class SelectedObjectChanged : Message
-    {        public SelectedObjectChanged(DrawingObject selectedObject, Message predecessorMessage,
+    public class SelectedGraphObjectChanged : Message
+    {        public SelectedGraphObjectChanged(DrawingObject selectedObject, Message predecessorMessage,
                                      params Message[] childMessages)
             : base(predecessorMessage, childMessages:childMessages)
         {
             SelectedObject = selectedObject;
         }
 
-        public SelectedObjectChanged(DrawingObject selectedObject, IEnumerable<Message> predecessorMessages,
+        public SelectedGraphObjectChanged(DrawingObject selectedObject, IEnumerable<Message> predecessorMessages,
                                      params Message[] childMessages)
             : base(predecessorMessages, childMessages:childMessages)
         {

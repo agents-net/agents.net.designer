@@ -1,4 +1,4 @@
-﻿using Agents.Net.Designer.Generator.Agents;
+using Agents.Net.Designer.Generator.Agents;
 using Agents.Net.Designer.Json.Agents;
 using Agents.Net.Designer.MicrosoftGraph.Agents;
 using Agents.Net.Designer.Model.Agents;
@@ -23,22 +23,15 @@ namespace Agents.Net.Designer
             //TODO Feature: Include amodels -> Package view (Like one model per assembly)
             builder.RegisterType<MainWindow>().AsSelf().InstancePerLifetimeScope();
             builder.RegisterType<MessageBoard>().As<IMessageBoard>().InstancePerLifetimeScope();
-            builder.RegisterType<JsonViewModelCreator>().As<Agent>().InstancePerLifetimeScope();
             builder.RegisterType<GraphViewModelCreator>().As<Agent>().InstancePerLifetimeScope();
             builder.RegisterType<MainWindowDataContextProvider>().As<Agent>().InstancePerLifetimeScope();
-            builder.RegisterType<JsonTextObserver>().As<Agent>().InstancePerLifetimeScope();
             builder.RegisterType<GraphViewModelUpdater>().As<Agent>().InstancePerLifetimeScope();
             builder.RegisterType<JsonModelParser>().As<Agent>().InstancePerLifetimeScope();
             builder.RegisterType<GraphCreator>().As<Agent>().InstancePerLifetimeScope();
-            builder.RegisterType<JsonTextExampleLoader>().As<Agent>().InstancePerLifetimeScope();
             builder.RegisterType<MainWindowObserver>().As<Agent>().InstancePerLifetimeScope();
-            builder.RegisterType<JsonModelValidator>().As<Agent>().InstancePerLifetimeScope();
-            builder.RegisterType<SelectedModelObjectToSelectedTextPosition>().As<Agent>().InstancePerLifetimeScope();
             builder.RegisterType<SelectedObjectTranslator>().As<Agent>().InstancePerLifetimeScope();
-            builder.RegisterType<TextPositionUpdater>().As<Agent>().InstancePerLifetimeScope();
-            builder.RegisterType<JsonTextUpdater>().As<Agent>().InstancePerLifetimeScope();
             builder.RegisterType<JsonModelSerializer>().As<Agent>().InstancePerLifetimeScope();
-            builder.RegisterType<CommandModelUpdater>().As<Agent>().InstancePerLifetimeScope();
+            builder.RegisterType<ModelCommandExecuter>().As<Agent>().InstancePerLifetimeScope();
             builder.RegisterType<FileVerifier>().As<Agent>().InstancePerLifetimeScope();
             builder.RegisterType<JsonFileCreator>().As<Agent>().InstancePerLifetimeScope();
             builder.RegisterType<JsonFileLoader>().As<Agent>().InstancePerLifetimeScope();
@@ -54,6 +47,28 @@ namespace Agents.Net.Designer
             builder.RegisterType<TemplatesFinder>().As<Agent>().InstancePerLifetimeScope();
             builder.RegisterType<GraphToSvgConverter>().As<Agent>().InstancePerLifetimeScope();
             builder.RegisterType<AutofacModuleGenerator>().As<Agent>().InstancePerLifetimeScope();
+            builder.RegisterType<CommunityModelModifier>().As<Agent>().InstancePerLifetimeScope();
+            builder.RegisterType<TreeViewModelCreator>().As<Agent>().InstancePerLifetimeScope();
+            builder.RegisterType<TreeViewModelBuilder>().As<Agent>().InstancePerLifetimeScope();
+            builder.RegisterType<ModelLoader>().As<Agent>().InstancePerLifetimeScope();
+            builder.RegisterType<DetailsViewModelCreator>().As<Agent>().InstancePerLifetimeScope();
+            builder.RegisterType<DetailsViewModelUpdater>().As<Agent>().InstancePerLifetimeScope();
+            builder.RegisterType<AgentViewModelWatcher>().As<Agent>().InstancePerLifetimeScope();
+            builder.RegisterType<AgentModelModifier>().As<Agent>().InstancePerLifetimeScope();
+            builder.RegisterType<AgentViewModelUpdater>().As<Agent>().InstancePerLifetimeScope();
+            builder.RegisterType<ViewModelChangeApplier>().As<Agent>().InstancePerLifetimeScope();
+            builder.RegisterType<TreeItemSelector>().As<Agent>().InstancePerLifetimeScope();
+            builder.RegisterType<SelectionDirectionDecorator>().As<Agent>().InstancePerLifetimeScope();
+            builder.RegisterType<AutomaticMessageModelCreator>().As<Agent>().InstancePerLifetimeScope();
+            builder.RegisterType<CommunityViewModelUpdater>().As<Agent>().InstancePerLifetimeScope();
+            builder.RegisterType<ModelIdUpdater>().As<Agent>().InstancePerLifetimeScope();
+            builder.RegisterType<FileSynchronizationCoordinator>().As<Agent>().InstancePerLifetimeScope();
+            builder.RegisterType<MessageViewModelWatcher>().As<Agent>().InstancePerLifetimeScope();
+            builder.RegisterType<MessageViewModelUpdater>().As<Agent>().InstancePerLifetimeScope();
+            builder.RegisterType<MessageModelModifier>().As<Agent>().InstancePerLifetimeScope();
+            builder.RegisterType<CommunityViewModelWatcher>().As<Agent>().InstancePerLifetimeScope();
+            builder.RegisterType<GeneratorSettingsModifier>().As<Agent>().InstancePerLifetimeScope();
+            builder.RegisterType<ContainingPackageSynchronizer>().As<Agent>().InstancePerLifetimeScope();
         }
     }
 }

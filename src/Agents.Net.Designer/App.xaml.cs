@@ -63,6 +63,8 @@ namespace Agents.Net.Designer
 
         private void ConfigureLogging()
         {
+            //TODO exceptions are not logged properly
+            //Logger.Error(message,exc)
             LoggingConfiguration config = new LoggingConfiguration();
             Layout layout = new JsonLayout
             {

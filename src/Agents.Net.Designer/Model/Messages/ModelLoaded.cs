@@ -1,17 +1,18 @@
-﻿using System.Collections.Generic;
-using Agents.Net;
+﻿using System;
+using System.Collections.Generic;
 
 namespace Agents.Net.Designer.Model.Messages
 {
-    public class ModelCreated : Message
-    {        public ModelCreated(CommunityModel model, Message predecessorMessage, params Message[] childMessages)
+    public class ModelLoaded : Message
+    {
+        public ModelLoaded(CommunityModel model, Message predecessorMessage, params Message[] childMessages)
             : base(predecessorMessage, childMessages:childMessages)
         {
             Model = model;
         }
 
-        public ModelCreated(CommunityModel model, IEnumerable<Message> predecessorMessages,
-                            params Message[] childMessages)
+        public ModelLoaded(CommunityModel model, IEnumerable<Message> predecessorMessages,
+                           params Message[] childMessages)
             : base(predecessorMessages, childMessages:childMessages)
         {
             Model = model;
@@ -21,7 +22,7 @@ namespace Agents.Net.Designer.Model.Messages
 
         protected override string DataToString()
         {
-            return string.Empty;
+            return $"{nameof(Model)}: {Model}";
         }
     }
 }

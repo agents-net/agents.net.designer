@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+using System;
+using System.Collections.Generic;
 using System.Linq;
 using Agents.Net.Designer.MicrosoftGraph.Messages;
 using Agents.Net.Designer.Model;
@@ -7,7 +8,7 @@ using Microsoft.Msagl.Drawing;
 
 namespace Agents.Net.Designer.MicrosoftGraph.Agents
 {
-    [Consumes(typeof(ModelCreated))]
+    [Consumes(typeof(ModelUpdated))]
     [Produces(typeof(GraphCreated))]
     public class GraphCreator : Agent
     {
@@ -18,94 +19,111 @@ namespace Agents.Net.Designer.MicrosoftGraph.Agents
         protected override void ExecuteCore(Message messageData)
         {
             //Check uniqueness of nodes
-            ModelCreated created = messageData.Get<ModelCreated>();
+            ModelUpdated updated = messageData.Get<ModelUpdated>();
             Graph graph = new Graph();
-            List<Node> messages = new List<Node>();
-            foreach (MessageModel messageModel in created.Model.Messages)
+            List<Node> messages = AddMessages(updated, graph);
+
+            foreach (AgentModel agentModel in updated.Model.Agents)
             {
-                Node messageNode = new Node(messageModel.Name)
+                AddAgentNode(agentModel, graph);
+                AddMessageEdges(agentModel.ConsumingMessages, messages, true,
+                                agentModel.Id, graph);
+                AddMessageEdges(agentModel.ProducedMessages, messages, false,
+                                agentModel.Id, graph);
+                AddEventEdges(agentModel.IncomingEvents ?? Enumerable.Empty<string>(),
+                              true, agentModel.Id, graph);
+                AddEventEdges(agentModel.ProducedEvents ?? Enumerable.Empty<string>(),
+                              false, agentModel.Id, graph);
+            }
+
+            OnMessage(new GraphCreated(graph, messageData));
+        }
+
+        private void AddEventEdges(IEnumerable<string> events, bool addAsSource, Guid agentModelId,
+                                   Graph graph)
+        {
+            foreach (string @event in events)
+            {
+                if (string.IsNullOrEmpty(@event))
+                {
+                    continue;
+                }
+
+                Node eventNode;
+                if (addAsSource)
+                {
+                    Edge edge = graph.AddEdge(@event, agentModelId.ToString("D"));
+                    edge.Attr.Color = Color.Violet;
+                    eventNode = edge.SourceNode;
+                }
+                else
+                {
+                    Edge edge = graph.AddEdge(agentModelId.ToString("D"), @event);
+                    edge.Attr.Color = Color.Orange;
+                    eventNode = edge.TargetNode;
+                }
+                eventNode.Attr.Shape = Shape.Diamond;
+                eventNode.Attr.FillColor = Color.Gray;
+            }
+        }
+
+        private void AddMessageEdges(Guid[] messages, List<Node> messageNodes, bool addMessageAsSource,
+                                     Guid agentModelId, Graph graph)
+        {
+            foreach (Guid message in messages)
+            {
+                Node messageNode = messageNodes.FirstOrDefault(n => n.Id == message.ToString("D"));
+                Edge edge;
+                if (messageNode != null)
+                {
+                    edge = addMessageAsSource
+                               ? graph.AddEdge(messageNode.Id, agentModelId.ToString("D"))
+                               : graph.AddEdge(agentModelId.ToString("D"), messageNode.Id);
+                }
+                else
+                {
+                    throw new InvalidOperationException("Cannot happen.");
+                }
+
+                edge.Attr.Color = addMessageAsSource ? Color.Green : Color.Blue;
+            }
+        }
+
+        private static void AddAgentNode(AgentModel agentModel, Graph graph)
+        {
+            Node agentNode = new Node(agentModel.Id.ToString("D"))
+            {
+                Attr =
+                {
+                    Shape = Shape.Ellipse,
+                    FillColor = Color.White
+                },
+                LabelText = agentModel.Name,
+                UserData = agentModel
+            };
+            graph.AddNode(agentNode);
+        }
+
+        private static List<Node> AddMessages(ModelUpdated updated, Graph graph)
+        {
+            List<Node> messages = new List<Node>();
+            foreach (MessageModel messageModel in updated.Model.Messages)
+            {
+                Node messageNode = new Node(messageModel.Id.ToString("D"))
                 {
                     Attr =
                     {
                         Shape = Shape.Box,
-                        FillColor = Color.White
-                    }, 
+                        FillColor = Color.White,
+                    },
+                    LabelText = messageModel.Name,
                     UserData = messageModel
                 };
                 messages.Add(messageNode);
                 graph.AddNode(messageNode);
             }
 
-            foreach (AgentModel agentModel in created.Model.Agents)
-            {
-                Node agentNode =  new Node(agentModel.Name)
-                {
-                    Attr =
-                    {
-                        Shape = Shape.Ellipse,
-                        FillColor = Color.White
-                    },
-                    UserData = agentModel
-                };
-                graph.AddNode(agentNode);
-                foreach (string consumingMessage in agentModel.ConsumingMessages)
-                {
-                    if (string.IsNullOrEmpty(consumingMessage))
-                    {
-                        continue;
-                    }
-                    Edge edge = graph.AddEdge(consumingMessage, agentModel.Name);
-                    if (!messages.Contains(edge.SourceNode))
-                    {
-                        edge.SourceNode.Attr.Shape = Shape.Box;
-                        edge.SourceNode.Attr.FillColor = Color.Gray;
-                    }
-                    edge.Attr.Color = Color.Green;
-                }
-
-                foreach (string producingMessage in agentModel.ProducedMessages)
-                {
-                    if (string.IsNullOrEmpty(producingMessage))
-                    {
-                        continue;
-                    }
-                    Edge edge = graph.AddEdge(agentModel.Name, producingMessage);
-                    if (!messages.Contains(edge.TargetNode))
-                    {
-                        edge.TargetNode.Attr.Shape = Shape.Box;
-                        edge.TargetNode.Attr.FillColor = Color.Gray;
-                    }
-                    edge.Attr.Color = Color.Blue;
-                }
-
-                foreach (string incomingEvent in agentModel.IncomingEvents??Enumerable.Empty<string>())
-                {
-                    if (string.IsNullOrEmpty(incomingEvent))
-                    {
-                        continue;
-                    }
-
-                    Edge edge = graph.AddEdge(incomingEvent, agentModel.Name);
-                    edge.SourceNode.Attr.Shape = Shape.Diamond;
-                    edge.SourceNode.Attr.FillColor = Color.Gray;
-                    edge.Attr.Color = Color.Violet;
-                }
-
-                foreach (string producedEvent in agentModel.ProducedEvents??Enumerable.Empty<string>())
-                {
-                    if (string.IsNullOrEmpty(producedEvent))
-                    {
-                        continue;
-                    }
-
-                    Edge edge = graph.AddEdge(agentModel.Name, producedEvent);
-                    edge.TargetNode.Attr.Shape = Shape.Diamond;
-                    edge.TargetNode.Attr.FillColor = Color.Gray;
-                    edge.Attr.Color = Color.Orange;
-                }
-            }
-
-            OnMessage(new GraphCreated(graph, messageData));
+            return messages;
         }
     }
 }
