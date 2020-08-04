@@ -8,6 +8,7 @@ namespace Agents.Net.Designer.ViewModel.Agents
 {
     [Intercepts(typeof(SelectedModelObjectChanged))]
     [Produces(typeof(SelectTreeObjectRequested))]
+    [Produces(typeof(SelectGraphObjectRequested))]
     public class SelectionDirectionDecorator : InterceptorAgent
     {
         public SelectionDirectionDecorator(IMessageBoard messageBoard)
@@ -20,6 +21,15 @@ namespace Agents.Net.Designer.ViewModel.Agents
             if (messageData.TryGetPredecessor(out SelectedGraphObjectChanged _))
             {
                 SelectTreeObjectRequested.Decorate(messageData.Get<SelectedModelObjectChanged>());
+            }
+            else if (messageData.TryGetPredecessor(out SelectedTreeViewItemChanged _))
+            {
+                SelectGraphObjectRequested.Decorate(messageData.Get<SelectedModelObjectChanged>());
+            }
+            else
+            {
+                SelectTreeObjectRequested.Decorate(messageData.Get<SelectedModelObjectChanged>());
+                SelectGraphObjectRequested.Decorate(messageData.Get<SelectedModelObjectChanged>());
             }
             return InterceptionAction.Continue;
         }

@@ -8,8 +8,8 @@ namespace Agents.Net.Designer.ViewModel.Agents
 {
     [Consumes(typeof(SelectedGraphObjectChanged))]
     [Produces(typeof(SelectedModelObjectChanged))]
-    public class SelectedObjectTranslator : Agent
-    {        public SelectedObjectTranslator(IMessageBoard messageBoard) : base(messageBoard)
+    public class SelectedGraphObjectTranslator : Agent
+    {        public SelectedGraphObjectTranslator(IMessageBoard messageBoard) : base(messageBoard)
         {
         }
 

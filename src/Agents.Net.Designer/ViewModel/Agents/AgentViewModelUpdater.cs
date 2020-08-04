@@ -12,6 +12,7 @@ namespace Agents.Net.Designer.ViewModel.Agents
     [Consumes(typeof(ModifyModel))]
     [Consumes(typeof(TreeViewModelCreated))]
     [Produces(typeof(ViewModelChangeApplying))]
+    [Produces(typeof(TreeViewModelUpdated))]
     public class AgentViewModelUpdater : Agent
     {
         private readonly MessageCollector<TreeViewModelCreated, ModifyModel> collector;
@@ -59,6 +60,7 @@ namespace Agents.Net.Designer.ViewModel.Agents
                         ChangeEvents(changingViewModel.ProducedEvents, set.Message2);
                         break;
                 }
+                OnMessage(new TreeViewModelUpdated(set));
             }, set));
         }
 

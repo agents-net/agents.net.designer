@@ -125,8 +125,6 @@
                           x:Name="TreeView"
                           SelectedItemChanged="TreeViewOnSelectedItemChanged">
                     <TreeView.ItemContainerStyle>
-      
-                        <!--Expand each TreeViewItem in the first level as there is only one.-->
                         <Style TargetType="TreeViewItem">
                             <Setter Property="IsExpanded" Value="True"/>
                             <Setter Property="view:AttachedBehaviors.IsBringSelectedIntoView" Value="True"/>

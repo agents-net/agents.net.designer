@@ -27,7 +27,7 @@ namespace Agents.Net.Designer.Model.Agents
                 return;
             }
 
-            Guid messageId = ((MessageModel)lastModification.Target).Id;
+            Guid messageId = ((MessageModel)lastModification.NewValue).Id;
             OnMessage(new ModifyModel(originalModification.ModificationType,
                                       originalModification.OldValue,
                                       messageId,

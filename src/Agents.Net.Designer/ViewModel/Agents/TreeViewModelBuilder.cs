@@ -10,6 +10,7 @@ namespace Agents.Net.Designer.ViewModel.Agents
 {
     [Consumes(typeof(ModelLoaded))]
     [Consumes(typeof(TreeViewModelCreated))]
+    [Produces(typeof(TreeViewModelUpdated))]
     public class TreeViewModelBuilder : Agent
     {
         private readonly MessageCollector<ModelLoaded, TreeViewModelCreated> collector;
@@ -25,6 +26,7 @@ namespace Agents.Net.Designer.ViewModel.Agents
             TreeViewModel viewModel = set.Message2.ViewModel;
             CommunityViewModel newCommunity = GenerateCommunityViewModel();
             viewModel.Community = newCommunity;
+            OnMessage(new TreeViewModelUpdated(set));
             
             CommunityViewModel GenerateCommunityViewModel()
             {
@@ -52,10 +54,7 @@ namespace Agents.Net.Designer.ViewModel.Agents
                 foreach (MessageModel message in model.Messages)
                 {
                     MessageViewModel messageViewModel = message.CreateViewModel();
-                    if (!message.BuildIn)
-                    {
-                        root.AddItem(messageViewModel);
-                    }
+                    root.AddItem(messageViewModel);
                     availableViewModel.AvailableMessages.Add(messageViewModel);
                 }
 

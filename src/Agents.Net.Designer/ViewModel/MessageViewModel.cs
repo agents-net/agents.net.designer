@@ -9,6 +9,8 @@ namespace Agents.Net.Designer.ViewModel
 
         internal Guid ModelId { get; set; }
 
+        internal bool BuildIn { get; set; }
+
         public string FullName
         {
             get => fullName;

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Agents.Net.Designer.View.Messages;
 using Agents.Net.Designer.ViewModel.Messages;
 
@@ -8,7 +8,6 @@ namespace Agents.Net.Designer.View.Agents
     [Consumes(typeof(TreeViewModelCreated))]
     [Consumes(typeof(DetailsViewModelCreated))]
     [Consumes(typeof(MainWindowCreated))]
-    [Produces(typeof(GraphViewModelApplied))]
     public class MainWindowDataContextProvider : Agent
     {
         public MainWindowDataContextProvider(IMessageBoard messageBoard) : base(messageBoard)
@@ -24,7 +23,6 @@ namespace Agents.Net.Designer.View.Agents
                 set.Message2.Window.TreeView.DataContext = set.Message3.ViewModel;
                 set.Message2.Window.DetailsView.DataContext = set.Message4.ViewModel;
             });
-            OnMessage(new GraphViewModelApplied(set.Message1.ViewModel, set));
         }
 
         private readonly MessageCollector<GraphViewModelCreated, MainWindowCreated, TreeViewModelCreated, DetailsViewModelCreated> collector;

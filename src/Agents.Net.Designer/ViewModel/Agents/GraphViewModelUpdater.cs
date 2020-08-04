@@ -7,6 +7,7 @@ namespace Agents.Net.Designer.ViewModel.Agents
 {
     [Consumes(typeof(GraphCreated))]
     [Consumes(typeof(GraphViewModelCreated))]
+    [Produces(typeof(GraphViewModelUpdated))]
     public class GraphViewModelUpdater : Agent
     {        public GraphViewModelUpdater(IMessageBoard messageBoard) : base(messageBoard)
         {

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Documents;
@@ -32,6 +32,7 @@ namespace Agents.Net.Designer.View.Agents
         private void GraphViewerOnGraphChanged(object? sender, EventArgs e)
         {
             UpdateSelectionChangedEvents();
+            OnMessage(new GraphViewModelUpdated(mainWindowCreated));
         }
 
         private void UpdateSelectionChangedEvents()

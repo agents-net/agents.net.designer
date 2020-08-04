@@ -26,6 +26,11 @@ namespace Agents.Net.Designer.ViewModel.Agents
                 TreeViewItem viewItem = set.Message1.ViewModel.Community.FindViewItemById(agentModel.Id);
                 OnMessage(new ViewModelChangeApplying(() => viewItem.IsSelected = true, set));
             }
+            else if (set.Message2.SelectedObject is MessageModel messageModel && !messageModel.BuildIn)
+            {
+                TreeViewItem viewItem = set.Message1.ViewModel.Community.FindViewItemById(messageModel.Id);
+                OnMessage(new ViewModelChangeApplying(() => viewItem.IsSelected = true, set));
+            }
         }
 
         protected override void ExecuteCore(Message messageData)

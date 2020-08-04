@@ -10,6 +10,7 @@ namespace Agents.Net.Designer.ViewModel.Agents
     [Consumes(typeof(ModifyModel))]
     [Consumes(typeof(TreeViewModelCreated))]
     [Produces(typeof(ViewModelChangeApplying))]
+    [Produces(typeof(TreeViewModelUpdated))]
     public class CommunityViewModelUpdater : Agent
     {
         private readonly MessageCollector<TreeViewModelCreated, ModifyModel> collector;
@@ -50,6 +51,7 @@ namespace Agents.Net.Designer.ViewModel.Agents
                         ChangeAgents(set.Message2, changingViewModel);
                         break;
                 }
+                OnMessage(new TreeViewModelUpdated(set));
             }, set));
         }
 
@@ -181,10 +183,7 @@ namespace Agents.Net.Designer.ViewModel.Agents
             {
                 MessageModel messageModel = modifyModel.NewValue.AssertTypeOf<MessageModel>();
                 MessageViewModel viewModel = messageModel.CreateViewModel();
-                if (!messageModel.BuildIn)
-                {
-                    changingViewModel.AddItem(viewModel);
-                }
+                changingViewModel.AddItem(viewModel);
 
                 changingViewModel.FindItemByType<AgentViewModel>()?.AvailableItems.AvailableMessages.Add(viewModel);
             }

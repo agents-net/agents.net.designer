@@ -1,3 +1,5 @@
+using System.Collections.ObjectModel;
+
 namespace Agents.Net.Designer.ViewModel
 {
     public class CommunityViewModel : FolderViewModel
@@ -19,5 +21,7 @@ namespace Agents.Net.Designer.ViewModel
                 OnPropertyChanged();
             }
         }
+
+        public ObservableCollection<TreeViewItem> BuildInTypes { get; } = new ObservableCollection<TreeViewItem>();
     }
 }

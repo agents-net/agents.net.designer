@@ -29,7 +29,7 @@ namespace Agents.Net.Designer
             builder.RegisterType<JsonModelParser>().As<Agent>().InstancePerLifetimeScope();
             builder.RegisterType<GraphCreator>().As<Agent>().InstancePerLifetimeScope();
             builder.RegisterType<MainWindowObserver>().As<Agent>().InstancePerLifetimeScope();
-            builder.RegisterType<SelectedObjectTranslator>().As<Agent>().InstancePerLifetimeScope();
+            builder.RegisterType<SelectedGraphObjectTranslator>().As<Agent>().InstancePerLifetimeScope();
             builder.RegisterType<JsonModelSerializer>().As<Agent>().InstancePerLifetimeScope();
             builder.RegisterType<ModelCommandExecuter>().As<Agent>().InstancePerLifetimeScope();
             builder.RegisterType<FileVerifier>().As<Agent>().InstancePerLifetimeScope();
@@ -69,6 +69,8 @@ namespace Agents.Net.Designer
             builder.RegisterType<CommunityViewModelWatcher>().As<Agent>().InstancePerLifetimeScope();
             builder.RegisterType<GeneratorSettingsModifier>().As<Agent>().InstancePerLifetimeScope();
             builder.RegisterType<ContainingPackageSynchronizer>().As<Agent>().InstancePerLifetimeScope();
+            builder.RegisterType<SelectedTreeItemTranslator>().As<Agent>().InstancePerLifetimeScope();
+            builder.RegisterType<NewItemsSelector>().As<Agent>().InstancePerLifetimeScope();
         }
     }
 }

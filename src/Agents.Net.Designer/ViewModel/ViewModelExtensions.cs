@@ -15,6 +15,11 @@ namespace Agents.Net.Designer.ViewModel
         
         public static void AddItem(this CommunityViewModel viewModel, MessageViewModel messageViewModel)
         {
+            if (messageViewModel.BuildIn)
+            {
+                viewModel.BuildInTypes.Add(messageViewModel);
+                return;
+            }
             viewModel.AddItem(messageViewModel,messageViewModel.RelativeNamespace);
         }
 
@@ -152,7 +157,8 @@ namespace Agents.Net.Designer.ViewModel
                 Name = message.Name,
                 FullName = message.FullName(),
                 RelativeNamespace = message.Namespace,
-                ModelId = message.Id
+                ModelId = message.Id,
+                BuildIn = message.BuildIn
             };
         }
 
@@ -163,7 +169,8 @@ namespace Agents.Net.Designer.ViewModel
                                                      {
                                                          AvailableMessages =
                                                              new ObservableCollection<MessageViewModel>(
-                                                                 community.FindItemsByType<MessageViewModel>())
+                                                                 community.FindItemsByType<MessageViewModel>()
+                                                                          .Concat(community.BuildInTypes.OfType<MessageViewModel>()))
                                                      };
 
             return agent.CreateViewModel(availableItems);
