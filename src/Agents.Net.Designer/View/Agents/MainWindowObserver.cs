@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Documents;
+using System.Windows.Input;
 using Agents.Net;
 using Agents.Net.Designer.Generator.Messages;
 using Agents.Net.Designer.Model.Messages;
@@ -20,6 +21,7 @@ namespace Agents.Net.Designer.View.Agents
     [Produces(typeof(GenerateFilesRequested))]
     [Produces(typeof(ExportImageRequested))]
     [Produces(typeof(SelectedTreeViewItemChanged))]
+    [Produces(typeof(DeleteItemRequested))]
     public class MainWindowObserver : Agent, IDisposable
     {
         private List<IViewerObject> subscribedObjects = new List<IViewerObject>();
@@ -68,6 +70,16 @@ namespace Agents.Net.Designer.View.Agents
             mainWindowCreated.Window.ExportImageClicked += WindowOnExportImageClicked;
             mainWindowCreated.Window.AddGeneratorSettingsClicked += WindowOnAddGeneratorSettingsClicked;
             mainWindowCreated.Window.SelectedTreeViewItemChanged += WindowOnSelectedTreeViewItemChanged;
+            mainWindowCreated.Window.TreeView.KeyDown += TreeViewOnKeyDown;
+        }
+
+        private void TreeViewOnKeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Delete &&
+                !e.IsRepeat)
+            {
+                OnMessage(new DeleteItemRequested(mainWindowCreated));
+            }
         }
 
         private void WindowOnSelectedTreeViewItemChanged(object? sender, SelectedTreeViewItemChangedArgs e)

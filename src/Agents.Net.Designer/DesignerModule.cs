@@ -71,6 +71,7 @@ namespace Agents.Net.Designer
             builder.RegisterType<ContainingPackageSynchronizer>().As<Agent>().InstancePerLifetimeScope();
             builder.RegisterType<SelectedTreeItemTranslator>().As<Agent>().InstancePerLifetimeScope();
             builder.RegisterType<NewItemsSelector>().As<Agent>().InstancePerLifetimeScope();
+            builder.RegisterType<DeleteSelectedModelObject>().As<Agent>().InstancePerLifetimeScope();
         }
     }
 }

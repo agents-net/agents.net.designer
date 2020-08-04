@@ -31,11 +31,8 @@ namespace Agents.Net.Designer.ViewModel.Agents
             {
                 modelObject = set.Message1.Model.Messages.First(a => a.Id == message.ModelId);
             }
-
-            if (modelObject != null)
-            {
-                OnMessage(new SelectedModelObjectChanged(modelObject, set));
-            }
+            
+            OnMessage(new SelectedModelObjectChanged(modelObject, set));
         }
 
         protected override void ExecuteCore(Message messageData)
