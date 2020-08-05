@@ -178,7 +178,7 @@ namespace Agents.Net.Designer.ViewModel
 
         public static AgentViewModel CreateViewModel(this AgentModel agent, AvailableItemsViewModel availableViewModel)
         {
-            return new AgentViewModel
+            AgentViewModel viewModel = new AgentViewModel
             {
                 Name = agent.Name,
                 FullName = agent.FullName(),
@@ -191,6 +191,16 @@ namespace Agents.Net.Designer.ViewModel
                 AvailableItems = availableViewModel,
                 ModelId = agent.Id
             };
+            if (agent is InterceptorAgentModel interceptor)
+            {
+                viewModel.InterceptingMessages = new ObservableCollection<MessageViewModel>(CollectMessages(interceptor.InterceptingMessages));
+                viewModel.AgentType = AgentType.Interceptor;
+            }
+            else
+            {
+                viewModel.AgentType = AgentType.Agent;
+            }
+            return viewModel;
             
             IEnumerable<MessageViewModel> CollectMessages(Guid[] agentMessages)
             {

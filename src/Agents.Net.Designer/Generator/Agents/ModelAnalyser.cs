@@ -12,6 +12,7 @@ namespace Agents.Net.Designer.Generator.Agents
     [Consumes(typeof(ModelUpdated))]
     [Produces(typeof(ModelInvalid))]
     [Produces(typeof(AgentModelSelectedForGeneration))]
+    [Produces(typeof(InterceptorAgentModelSelectedForGeneration))]
     [Produces(typeof(ModelSelectedForGeneration))]
     [Produces(typeof(MessageModelSelectedForGeneration))]
     [Produces(typeof(GeneratorSettingsDefined))]
@@ -33,10 +34,22 @@ namespace Agents.Net.Designer.Generator.Agents
             {
                 List<MessageModel> consuming = new List<MessageModel>();
                 List<MessageModel> producing = new List<MessageModel>();
-                FindMessageModels(agentModel.ConsumingMessages, agentModel, "consuming", consuming);
-                FindMessageModels(agentModel.ProducedMessages, agentModel, "producing", producing);
-                messages.Add(new AgentModelSelectedForGeneration(agentModel,consuming.ToArray(),producing.ToArray(),set, 
-                                     new ModelSelectedForGeneration(set.Message1.Path, set)));
+                FindMessageModels(agentModel.ConsumingMessages, agentModel, "consuming", consuming,
+                                  set.Message2.Model.Messages, errors);
+                FindMessageModels(agentModel.ProducedMessages, agentModel, "producing", producing,
+                                  set.Message2.Model.Messages, errors);
+                Message message = new AgentModelSelectedForGeneration(agentModel, consuming.ToArray(),
+                                                                      producing.ToArray(), set,
+                                                                      new ModelSelectedForGeneration(
+                                                                          set.Message1.Path, set));
+                if (agentModel is InterceptorAgentModel interceptorAgent)
+                {
+                    List<MessageModel> intercepting = new List<MessageModel>();
+                    FindMessageModels(interceptorAgent.InterceptingMessages, agentModel, "intercepting", intercepting,
+                                      set.Message2.Model.Messages, errors);
+                    message = new InterceptorAgentModelSelectedForGeneration(intercepting.ToArray(), set, message);
+                }
+                messages.Add(message);
             }
 
             foreach (MessageModel modelMessage in set.Message2.Model.Messages)
@@ -58,22 +71,22 @@ namespace Agents.Net.Designer.Generator.Agents
                 OnMessage(new GeneratorSettingsDefined(set.Message2.Model.GeneratorSettings??new GeneratorSettings(), set.Message1.Path, set));
                 OnMessages(messages);
             }
+        }
 
-            void FindMessageModels(IEnumerable<Guid> messageDefinitions, AgentModel agentModel, string type, List<MessageModel> messageModels)
+        private void FindMessageModels(IEnumerable<Guid> messageDefinitions, AgentModel agentModel, string type,
+                                       List<MessageModel> messageModels, MessageModel[] availableMessages, 
+                                       List<string> errors)
+        {
+            foreach (Guid message in messageDefinitions)
             {
-                foreach (Guid message in messageDefinitions)
+                MessageModel messageDefinition = availableMessages.FirstOrDefault(m => m.Id == message);
+                if (messageDefinition == null)
                 {
-                    MessageModel messageDefinition = set.Message2.Model.Messages.FirstOrDefault(m => m.Id == message);
-                    if (messageDefinition == null)
-                    {
-                        errors.Add(
-                            $"No message definition found for agent definition {agentModel.FullName()} with " +
-                            $"defined {type} message {message}");
-                    }
-                    else
-                    {
-                        messageModels.Add(messageDefinition);
-                    }
+                    errors.Add($"No message definition found for agent definition {agentModel.FullName()} with " + $"defined {type} message {message}");
+                }
+                else
+                {
+                    messageModels.Add(messageDefinition);
                 }
             }
         }

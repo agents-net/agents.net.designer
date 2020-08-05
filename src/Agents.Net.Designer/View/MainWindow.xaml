@@ -8,6 +8,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:viewModel="clr-namespace:Agents.Net.Designer.ViewModel"
         xmlns:view="clr-namespace:Agents.Net.Designer.View"
+        xmlns:System="clr-namespace:System;assembly=System.Runtime"
         mc:Ignorable="d"
         TextElement.Foreground="{DynamicResource MaterialDesignBody}"
         TextElement.FontWeight="Regular"
@@ -58,13 +59,14 @@
                     InputGestureText="Crtl+Alt+A">
                 </MenuItem>
                 <MenuItem
+                    Header="Add Interceptor Agent"
+                    Click="AddInterceptorAgentOnClick"
+                    InputGestureText="Crtl+Alt+I">
+                </MenuItem>
+                <MenuItem
                     Header="Add Message"
                     Click="AddMessageOnClick"
                     InputGestureText="Crtl+Alt+M">
-                </MenuItem>
-                <MenuItem
-                    Header="Add Generator Settings"
-                    Click="AddGeneratorSettingsOnClick">
                 </MenuItem>
             </MenuItem>
         </Menu>
@@ -103,10 +105,16 @@
                     <HierarchicalDataTemplate DataType="{x:Type viewModel:AgentViewModel}"
                                               ItemsSource="{Binding Items}">
                         <StackPanel Orientation="Horizontal" ToolTip="{Binding FullName}">
-                            <materialDesign:PackIcon Kind="FaceAgent" VerticalAlignment="Center"/>
+                            <materialDesign:PackIcon Kind="FaceAgent" VerticalAlignment="Center"
+                                                     x:Name="Icon"/>
                             <TextBlock Style="{DynamicResource MaterialDesignTextBlock}"
                                        Text="{Binding Name}" Margin="8,0,0,0" VerticalAlignment="Center"/>
                         </StackPanel>
+                        <HierarchicalDataTemplate.Triggers>
+                            <DataTrigger Binding="{Binding AgentType}" Value="Interceptor">
+                                <Setter TargetName="Icon" Property="Kind" Value="LightningBolt"/>
+                            </DataTrigger>
+                        </HierarchicalDataTemplate.Triggers>
                     </HierarchicalDataTemplate>
                     
                     <HierarchicalDataTemplate DataType="{x:Type viewModel:MessageViewModel}"
@@ -301,6 +309,13 @@
                                             </Button>
                                         </Grid>
                                     </DataTemplate>
+                                    
+                                    <ObjectDataProvider x:Key="AgentTypeEnum" MethodName="GetValues"
+                                                        ObjectType="{x:Type System:Enum}">
+                                        <ObjectDataProvider.MethodParameters>
+                                            <x:Type TypeName="viewModel:AgentType"/>
+                                        </ObjectDataProvider.MethodParameters>
+                                    </ObjectDataProvider>
                                 </Grid.Resources>
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="Auto"/>
@@ -317,60 +332,91 @@
                                     <RowDefinition Height="Auto"/>
                                     <RowDefinition Height="Auto"/>
                                     <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
                                 </Grid.RowDefinitions>
                                 <TextBlock Style="{DynamicResource MaterialDesignTextBlock}"
-                                           Text="Name" Margin="0,4,8,4" VerticalAlignment="Center"
+                                           Text="Type" Margin="0,4,8,4" VerticalAlignment="Center"
                                            Grid.Column="0" Grid.Row="0"/>
-                                <TextBox Style="{DynamicResource UpdateOnEnterBox}"
-                                         Text="{Binding Name, Mode=TwoWay}"
-                                         Grid.Column="1" Grid.Row="0"/>
+                                <ComboBox Style="{DynamicResource MaterialDesignComboBox}"
+                                          ItemsSource="{Binding Source={StaticResource AgentTypeEnum}}"
+                                          SelectedItem="{Binding AgentType, Mode=TwoWay}"
+                                          Grid.Column="1" Grid.Row="0"/>
                                 <TextBlock Style="{DynamicResource MaterialDesignTextBlock}"
-                                           Text="Namespace" Margin="0,4,8,4" VerticalAlignment="Center"
+                                           Text="Name" Margin="0,4,8,4" VerticalAlignment="Center"
                                            Grid.Column="0" Grid.Row="1"/>
                                 <TextBox Style="{DynamicResource UpdateOnEnterBox}"
-                                         Text="{Binding RelativeNamespace, Mode=TwoWay}"
+                                         Text="{Binding Name, Mode=TwoWay}"
                                          Grid.Column="1" Grid.Row="1"/>
                                 <TextBlock Style="{DynamicResource MaterialDesignTextBlock}"
+                                           Text="Namespace" Margin="0,4,8,4" VerticalAlignment="Center"
+                                           Grid.Column="0" Grid.Row="2"/>
+                                <TextBox Style="{DynamicResource UpdateOnEnterBox}"
+                                         Text="{Binding RelativeNamespace, Mode=TwoWay}"
+                                         Grid.Column="1" Grid.Row="2"/>
+                                <TextBlock Style="{DynamicResource MaterialDesignTextBlock}"
+                                           x:Name="InterceptorTextBlock" Visibility="Collapsed"
+                                           Text="Intercepting Messages" Margin="0,4,8,4" VerticalAlignment="Top"
+                                           Grid.Column="0" Grid.Row="3" Grid.RowSpan="2"/>
+                                <ComboBox ItemsSource="{Binding AvailableItems.AvailableMessages}"
+                                          x:Name="InterceptorComboBox" Visibility="Collapsed"
+                                          Style="{StaticResource EditableComboBox}"
+                                          Text="{Binding NewInterceptingMessage, Mode=TwoWay, UpdateSourceTrigger=Explicit}"
+                                          SelectedItem="{Binding NewInterceptingMessageObject, Mode=OneWayToSource}"
+                                          Grid.Column="1" Grid.Row="3"/>
+                                <ListBox ItemsSource="{Binding InterceptingMessages}"
+                                         x:Name="InterceptorListBox" Visibility="Collapsed"
+                                          Style="{StaticResource MessageListBox}"
+                                          Grid.Column="1" Grid.Row="4"/>
+                                <TextBlock Style="{DynamicResource MaterialDesignTextBlock}"
                                            Text="Consuming Messages" Margin="0,4,8,4" VerticalAlignment="Top"
-                                           Grid.Column="0" Grid.Row="2" Grid.RowSpan="2"/>
+                                           Grid.Column="0" Grid.Row="5" Grid.RowSpan="2"/>
                                 <ComboBox ItemsSource="{Binding AvailableItems.AvailableMessages}"
                                           Style="{StaticResource EditableComboBox}"
                                           Text="{Binding NewConsumingMessage, Mode=TwoWay, UpdateSourceTrigger=Explicit}"
                                           SelectedItem="{Binding NewConsumingMessageObject, Mode=OneWayToSource}"
-                                          Grid.Column="1" Grid.Row="2"/>
+                                          Grid.Column="1" Grid.Row="5"/>
                                 <ListBox ItemsSource="{Binding ConsumingMessages}"
                                           Style="{StaticResource MessageListBox}"
-                                          Grid.Column="1" Grid.Row="3"/>
+                                          Grid.Column="1" Grid.Row="6"/>
                                 <TextBlock Style="{DynamicResource MaterialDesignTextBlock}"
                                            Text="Producing Messages" Margin="0,4,8,4" VerticalAlignment="Top"
-                                           Grid.Column="0" Grid.Row="4" Grid.RowSpan="2"/>
+                                           Grid.Column="0" Grid.Row="7" Grid.RowSpan="2"/>
                                 <ComboBox ItemsSource="{Binding AvailableItems.AvailableMessages}"
                                           Style="{StaticResource EditableComboBox}"
                                           Text="{Binding NewProducingMessage, Mode=TwoWay, UpdateSourceTrigger=Explicit}"
                                           SelectedItem="{Binding NewProducingMessageObject, Mode=OneWayToSource}"
-                                          Grid.Column="1" Grid.Row="4"/>
+                                          Grid.Column="1" Grid.Row="7"/>
                                 <ListBox ItemsSource="{Binding ProducingMessages}"
                                           Style="{StaticResource MessageListBox}"
-                                          Grid.Column="1" Grid.Row="5"/>
+                                          Grid.Column="1" Grid.Row="8"/>
                                 <TextBlock Style="{DynamicResource MaterialDesignTextBlock}"
                                            Text="Incoming Events" Margin="0,4,8,4" VerticalAlignment="Top"
-                                           Grid.Column="0" Grid.Row="6" Grid.RowSpan="2"/>
+                                           Grid.Column="0" Grid.Row="9" Grid.RowSpan="2"/>
                                 <TextBox Style="{DynamicResource UpdateOnEnterBox}"
                                           Text="{Binding NewIncomingEvent, Mode=TwoWay, UpdateSourceTrigger=Explicit}"
-                                          Grid.Column="1" Grid.Row="6"/>
+                                          Grid.Column="1" Grid.Row="9"/>
                                 <ListBox ItemsSource="{Binding IncomingEvents}"
                                           Style="{StaticResource EventsListBox}"
-                                          Grid.Column="1" Grid.Row="7" />
+                                          Grid.Column="1" Grid.Row="10" />
                                 <TextBlock Style="{DynamicResource MaterialDesignTextBlock}"
                                            Text="Produced Events" Margin="0,4,8,4" VerticalAlignment="Top"
-                                           Grid.Column="0" Grid.Row="8" Grid.RowSpan="2"/>
+                                           Grid.Column="0" Grid.Row="11" Grid.RowSpan="2"/>
                                 <TextBox Style="{DynamicResource UpdateOnEnterBox}"
                                          Text="{Binding NewProducedEvent, Mode=TwoWay, UpdateSourceTrigger=Explicit}"
-                                         Grid.Column="1" Grid.Row="8"/>
+                                         Grid.Column="1" Grid.Row="11"/>
                                 <ListBox ItemsSource="{Binding ProducedEvents}"
                                           Style="{StaticResource EventsListBox}" 
-                                          Grid.Column="1" Grid.Row="9"/>
+                                          Grid.Column="1" Grid.Row="12"/>
                             </Grid>
+                            <DataTemplate.Triggers>
+                                <DataTrigger Binding="{Binding AgentType}" Value="Interceptor">
+                                    <Setter TargetName="InterceptorTextBlock" Property="Visibility" Value="Visible"/>
+                                    <Setter TargetName="InterceptorComboBox" Property="Visibility" Value="Visible"/>
+                                    <Setter TargetName="InterceptorListBox" Property="Visibility" Value="Visible"/>
+                                </DataTrigger>
+                            </DataTemplate.Triggers>
                         </DataTemplate>
                     </ScrollViewer.Resources>
                 </ScrollViewer>

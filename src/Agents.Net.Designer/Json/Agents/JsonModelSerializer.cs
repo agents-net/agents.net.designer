@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Text;
 using Agents.Net;
@@ -21,7 +21,8 @@ namespace Agents.Net.Designer.Json.Agents
             ModelUpdated updated = messageData.Get<ModelUpdated>();
             JsonSerializer serializer = JsonSerializer.Create(new JsonSerializerSettings
             {
-                Formatting = Formatting.Indented
+                Formatting = Formatting.Indented,
+                TypeNameHandling = TypeNameHandling.Auto
             });
             StringBuilder updatedText = new StringBuilder();
             using StringWriter stringWriter = new StringWriter(updatedText);

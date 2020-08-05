@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
 
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
@@ -9,6 +9,7 @@
   <ItemGroup>
     <Compile Remove="Templates\AgentTemplate.cs" />
     <Compile Remove="Templates\AutofacModuleTemplate.cs" />
+    <Compile Remove="Templates\InterceptorAgentTemplate.cs" />
     <Compile Remove="Templates\MessageTemplate.cs" />
   </ItemGroup>
 
@@ -25,6 +26,9 @@
     <PackageReference Include="Ookii.Dialogs.Wpf.NETCore" Version="2.1.0" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Templates\InterceptorAgentTemplate.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="Templates\AgentTemplate.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

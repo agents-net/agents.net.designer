@@ -9,18 +9,29 @@ namespace Agents.Net.Designer.Model.Agents
 {
     [Consumes(typeof(AddAgentRequested))]
     [Consumes(typeof(AddMessageRequested))]
-    [Consumes(typeof(AddGeneratorSettingsRequested))]
+    [Consumes(typeof(AddInterceptorAgentRequested))]
     [Consumes(typeof(ModelUpdated))]
     [Produces(typeof(ModifyModel))]
     public class ModelCommandExecuter : Agent
     {
         private readonly MessageCollector<AddAgentRequested, ModelUpdated> addAgentCollector;
         private readonly MessageCollector<AddMessageRequested, ModelUpdated> addMessageCollector;
+        private readonly MessageCollector<AddInterceptorAgentRequested, ModelUpdated> addInterceptorCollector;
 
         public ModelCommandExecuter(IMessageBoard messageBoard) : base(messageBoard)
         {
             addAgentCollector = new MessageCollector<AddAgentRequested, ModelUpdated>(OnMessagesCollected);
             addMessageCollector = new MessageCollector<AddMessageRequested, ModelUpdated>(OnMessagesCollected);
+            addInterceptorCollector = new MessageCollector<AddInterceptorAgentRequested, ModelUpdated>(OnMessagesCollected);
+        }
+
+        private void OnMessagesCollected(MessageCollection<AddInterceptorAgentRequested, ModelUpdated> set)
+        {
+            set.MarkAsConsumed(set.Message1);
+
+            OnMessage(new ModifyModel(ModelModification.Add,
+                                      null, new InterceptorAgentModel("InterceptorX"), set.Message2.Model,
+                                      new PackageAgentsProperty(), set));
         }
 
         private void OnMessagesCollected(MessageCollection<AddMessageRequested, ModelUpdated> set)
@@ -45,6 +56,7 @@ namespace Agents.Net.Designer.Model.Agents
         {
             addAgentCollector.TryPush(messageData);
             addMessageCollector.TryPush(messageData);
+            addInterceptorCollector.TryPush(messageData);
         }
     }
 }

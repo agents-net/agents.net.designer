@@ -20,6 +20,21 @@ namespace Agents.Net.Designer.Model
             Id = id == default ? Guid.NewGuid() : id;
         }
 
+        public virtual AgentModel Clone(string name = null, string @namespace = null,
+                                        Guid[] consumingMessages = null,
+                                        Guid[] producedMessages = null, string[] incomingEvents = null,
+                                        string[] producedEvents = null,
+                                        Guid id = default)
+        {
+            return new AgentModel(name ?? Name,
+                                  @namespace ?? Namespace,
+                                  consumingMessages ?? ConsumingMessages,
+                                  producedMessages ?? ProducedMessages,
+                                  incomingEvents ?? IncomingEvents,
+                                  producedEvents ?? ProducedEvents,
+                                  id == default ? Id : id);
+        }
+
         [JsonIgnore]
         public CommunityModel ContainingPackage { get; set; }
         

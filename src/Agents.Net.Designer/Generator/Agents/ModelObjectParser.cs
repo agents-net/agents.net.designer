@@ -10,7 +10,9 @@ namespace Agents.Net.Designer.Generator.Agents
     [Consumes(typeof(AgentModelSelectedForGeneration))]
     [Consumes(typeof(MessageModelSelectedForGeneration))]
     [Consumes(typeof(ModelSelectedForGeneration), Implicitly = true)]
+    [Consumes(typeof(InterceptorAgentModelSelectedForGeneration), Implicitly = true)]
     [Produces(typeof(GeneratingAgent))]
+    [Produces(typeof(GeneratingInterceptorAgent))]
     [Produces(typeof(GeneratingMessage))]
     [Produces(typeof(GeneratingFile))]
     public class ModelObjectParser : Agent
@@ -49,11 +51,19 @@ namespace Agents.Net.Designer.Generator.Agents
             AddMessages(agentModel.ProducingMessages, producingMessages);
             AddMessages(agentModel.ConsumingMessages, consumingMessages);
 
-            OnMessage(new GeneratingAgent(consumingMessages.ToArray(),
-                                          producingMessages.ToArray(),
-                                          dependencies.ToArray(),
-                                          agentModel,
-                                          new GeneratingFile(name, agentNamespace, path, agentModel)));
+            Message message = new GeneratingAgent(consumingMessages.ToArray(),
+                                                  producingMessages.ToArray(),
+                                                  dependencies.ToArray(),
+                                                  agentModel,
+                                                  new GeneratingFile(name, agentNamespace, path,
+                                                                     agentModel));
+            if (agentModel.TryGet(out InterceptorAgentModelSelectedForGeneration interceptorAgent))
+            {
+                List<string> interceptingMessages = new List<string>();
+                AddMessages(interceptorAgent.InterceptingMessages, interceptingMessages);
+                message = new GeneratingInterceptorAgent(interceptingMessages.ToArray(), agentModel, message);
+            }
+            OnMessage(message);
 
             void AddMessages(IEnumerable<MessageModel> messageModels, List<string> messageNames)
             {

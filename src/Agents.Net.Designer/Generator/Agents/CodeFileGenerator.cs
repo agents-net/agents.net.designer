@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -12,6 +12,7 @@ namespace Agents.Net.Designer.Generator.Agents
     [Consumes(typeof(GeneratingFile))]
     [Consumes(typeof(GeneratingMessage), Implicitly = true)]
     [Consumes(typeof(GeneratingAgent), Implicitly = true)]
+    [Consumes(typeof(GeneratingInterceptorAgent), Implicitly = true)]
     [Produces(typeof(FileGenerated))]
     public class CodeFileGenerator : Agent
     {
@@ -32,7 +33,10 @@ namespace Agents.Net.Designer.Generator.Agents
             else
             {
                 GeneratingAgent agent = set.Message2.Get<GeneratingAgent>();
-                GenerateAgent(set.Message2, set.Message1.Templates["AgentTemplate"], agent);
+                GenerateAgent(set.Message2,
+                              agent.Is<GeneratingInterceptorAgent>()
+                                  ? set.Message1.Templates["InterceptorAgentTemplate"]
+                                  : set.Message1.Templates["AgentTemplate"], agent);
             }
             OnMessage(new FileGenerated(set.Message2.Path, set));
         }
@@ -46,6 +50,12 @@ namespace Agents.Net.Designer.Generator.Agents
             string consumingMessages = AggregateMessages(agent.ConsumingMessages, "Consumes", false);
             string producingMessages = AggregateMessages(agent.ProducingMessages, "Produces", !string.IsNullOrEmpty(consumingMessages));
             string attributes = consumingMessages + producingMessages;
+            if (agent.TryGet(out GeneratingInterceptorAgent interceptorAgent))
+            {
+                string interceptingMessages = AggregateMessages(interceptorAgent.InterceptingMessages, "Intercepts",
+                                                                !string.IsNullOrEmpty(attributes));
+                attributes += interceptingMessages;
+            }
             if (!string.IsNullOrEmpty(attributes))
             {
                 attributes = attributes.Substring(emptySpace);

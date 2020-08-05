@@ -128,4 +128,11 @@ namespace Agents.Net.Designer.Model.Messages
         {
         }
     }
+
+    public class InterceptorAgentInterceptingMessagesProperty : PropertySpecifier
+    {
+        public InterceptorAgentInterceptingMessagesProperty() : base(nameof(InterceptorAgentModel.InterceptingMessages))
+        {
+        }
+    }
 }

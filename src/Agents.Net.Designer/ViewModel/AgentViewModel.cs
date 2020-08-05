@@ -13,6 +13,7 @@ namespace Agents.Net.Designer.ViewModel
         private ObservableCollection<string> producedEvents;
         private ObservableCollection<MessageViewModel> consumingMessages;
         private ObservableCollection<MessageViewModel> producingMessages;
+        private ObservableCollection<MessageViewModel> interceptingMessages;
         private string newConsumingMessage;
         private string newProducingMessage;
         private object newConsumingMessageObject;
@@ -21,6 +22,9 @@ namespace Agents.Net.Designer.ViewModel
         private string newIncomingEvent;
         private string newProducedEvent;
         private string relativeNamespace;
+        private AgentType agentType;
+        private string newInterceptingMessage;
+        private object newInterceptingMessageObject;
 
         public AgentViewModel()
         {
@@ -37,6 +41,17 @@ namespace Agents.Net.Designer.ViewModel
         internal event EventHandler<DeleteItemEventArgs> DeleteItemRequested; 
 
         public ICommand DeleteItemCommand { get; }
+
+        public AgentType AgentType
+        {
+            get => agentType;
+            set
+            {
+                if (value == agentType) return;
+                agentType = value;
+                OnPropertyChanged();
+            }
+        }
 
         public string FullName
         {
@@ -56,6 +71,28 @@ namespace Agents.Net.Designer.ViewModel
             {
                 if (value == relativeNamespace) return;
                 relativeNamespace = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public string NewInterceptingMessage
+        {
+            get => newInterceptingMessage;
+            set
+            {
+                if (value == newInterceptingMessage) return;
+                newInterceptingMessage = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public object NewInterceptingMessageObject
+        {
+            get => newInterceptingMessageObject;
+            set
+            {
+                if (Equals(value, newInterceptingMessageObject)) return;
+                newInterceptingMessageObject = value;
                 OnPropertyChanged();
             }
         }
@@ -144,6 +181,17 @@ namespace Agents.Net.Designer.ViewModel
             {
                 if (Equals(value, producedEvents)) return;
                 producedEvents = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public ObservableCollection<MessageViewModel> InterceptingMessages
+        {
+            get => interceptingMessages;
+            set
+            {
+                if (Equals(value, interceptingMessages)) return;
+                interceptingMessages = value;
                 OnPropertyChanged();
             }
         }

@@ -98,6 +98,12 @@ namespace Agents.Net.Designer.View
                         OnAddMessageClicked();
                     }
                     break;
+                case Key.I:
+                    if (Keyboard.Modifiers.HasFlag(ModifierKeys.Alt) && Keyboard.Modifiers.HasFlag(ModifierKeys.Control))
+                    {
+                        OnAddInterceptorAgentClicked();
+                    }
+                    break;
                 default:
                     e.Handled = false;
                     break;
@@ -112,6 +118,11 @@ namespace Agents.Net.Designer.View
         private void AddAgentOnClick(object sender, RoutedEventArgs e)
         {
             OnAddAgentClicked();
+        }
+
+        private void AddInterceptorAgentOnClick(object sender, RoutedEventArgs e)
+        {
+            OnAddInterceptorAgentClicked();
         }
 
         private void AddMessageOnClick(object sender, RoutedEventArgs e)
@@ -174,11 +185,6 @@ namespace Agents.Net.Designer.View
             }
         }
 
-        private void AddGeneratorSettingsOnClick(object sender, RoutedEventArgs e)
-        {
-            OnAddGeneratorSettingsClicked();
-        }
-
         private void TreeViewOnSelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
         {
             OnSelectedTreeViewItemChanged(new SelectedTreeViewItemChangedArgs(e.NewValue as TreeViewItem));
@@ -186,7 +192,7 @@ namespace Agents.Net.Designer.View
 
         public event EventHandler<EventArgs> AddMessageClicked; 
         public event EventHandler<EventArgs> AddAgentClicked;
-        public event EventHandler<EventArgs> AddGeneratorSettingsClicked;
+        public event EventHandler<EventArgs> AddInterceptorAgentClicked;
         public event EventHandler<ConnectFileArgs> ConnectFileClicked;
         public event EventHandler<ExportImageArgs> ExportImageClicked;
         public event EventHandler<GenerateClassesArgs> GenerateClassesClicked;
@@ -217,11 +223,6 @@ namespace Agents.Net.Designer.View
             ExportImageClicked?.Invoke(this, e);
         }
 
-        protected virtual void OnAddGeneratorSettingsClicked()
-        {
-            AddGeneratorSettingsClicked?.Invoke(this, EventArgs.Empty);
-        }
-
         protected virtual void OnSelectedTreeViewItemChanged(SelectedTreeViewItemChangedArgs e)
         {
             SelectedTreeViewItemChanged?.Invoke(this, e);
@@ -230,6 +231,11 @@ namespace Agents.Net.Designer.View
         public void Dispose()
         {
             Loaded -= OnLoaded;
+        }
+
+        protected virtual void OnAddInterceptorAgentClicked()
+        {
+            AddInterceptorAgentClicked?.Invoke(this, EventArgs.Empty);
         }
     }
 }

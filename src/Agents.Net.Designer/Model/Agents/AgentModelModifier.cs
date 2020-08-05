@@ -30,58 +30,26 @@ namespace Agents.Net.Designer.Model.Agents
             switch (set.Message1.Property)
             {
                 case AgentNameProperty _:
-                    updatedModel = new AgentModel(set.Message1.NewValue.AssertTypeOf<string>(),
-                                                  agentModel.Namespace,
-                                                  agentModel.ConsumingMessages,
-                                                  agentModel.ProducedMessages,
-                                                  agentModel.IncomingEvents,
-                                                  agentModel.ProducedEvents,
-                                                  agentModel.Id);
+                    updatedModel = agentModel.Clone(name:set.Message1.NewValue.AssertTypeOf<string>());
                     break;
                 case AgentNamespaceProperty _:
-                    updatedModel = new AgentModel(agentModel.Name,
-                                                  set.Message1.NewValue.AssertTypeOf<string>(),
-                                                  agentModel.ConsumingMessages,
-                                                  agentModel.ProducedMessages,
-                                                  agentModel.IncomingEvents,
-                                                  agentModel.ProducedEvents,
-                                                  agentModel.Id);
+                    updatedModel = agentModel.Clone(@namespace:set.Message1.NewValue.AssertTypeOf<string>());
                     break;
                 case AgentConsumingMessagesProperty _:
-                    updatedModel = new AgentModel(agentModel.Name,
-                                                  agentModel.Namespace,
-                                                  ModifyMessages(set.Message1, agentModel.ConsumingMessages),
-                                                  agentModel.ProducedMessages,
-                                                  agentModel.IncomingEvents,
-                                                  agentModel.ProducedEvents,
-                                                  agentModel.Id);
+                    updatedModel = agentModel.Clone(consumingMessages:ModifyMessages(set.Message1, agentModel.ConsumingMessages));
                     break;
                 case AgentProducedMessagesProperty _:
-                    updatedModel = new AgentModel(agentModel.Name,
-                                                  agentModel.Namespace,
-                                                  agentModel.ConsumingMessages,
-                                                  ModifyMessages(set.Message1, agentModel.ProducedMessages),
-                                                  agentModel.IncomingEvents,
-                                                  agentModel.ProducedEvents,
-                                                  agentModel.Id);
+                    updatedModel = agentModel.Clone(producedMessages:ModifyMessages(set.Message1, agentModel.ProducedMessages));
+                    break;
+                case InterceptorAgentInterceptingMessagesProperty _:
+                    InterceptorAgentModel interceptorAgentModel = (InterceptorAgentModel) agentModel;
+                    updatedModel = interceptorAgentModel.Clone(ModifyMessages(set.Message1, interceptorAgentModel.InterceptingMessages));
                     break;
                 case AgentIncomingEventsProperty _:
-                    updatedModel = new AgentModel(agentModel.Name,
-                                                  agentModel.Namespace,
-                                                  agentModel.ConsumingMessages,
-                                                  agentModel.ProducedMessages,
-                                                  ModifyEvents(set.Message1, agentModel.IncomingEvents),
-                                                  agentModel.ProducedEvents,
-                                                  agentModel.Id);
+                    updatedModel = agentModel.Clone(incomingEvents:ModifyEvents(set.Message1, agentModel.IncomingEvents));
                     break;
                 case AgentProducedEventsProperty _:
-                    updatedModel = new AgentModel(agentModel.Name,
-                                                  agentModel.Namespace,
-                                                  agentModel.ConsumingMessages,
-                                                  agentModel.ProducedMessages,
-                                                  agentModel.IncomingEvents,
-                                                  ModifyEvents(set.Message1, agentModel.ProducedEvents),
-                                                  agentModel.Id);
+                    updatedModel = agentModel.Clone(producedEvents:ModifyEvents(set.Message1, agentModel.ProducedEvents));
                     break;
                 default:
                     throw new InvalidOperationException($"Property {set.Message1.Property} unknown for agent model.");

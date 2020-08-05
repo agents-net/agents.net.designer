@@ -3,7 +3,6 @@ using Agents.Net;
 
 namespace Agents.Net.Designer.Model.Messages
 {
-    //TODO Add Interceptor agents
     public class SelectedModelObjectChanged : Message
     {        public SelectedModelObjectChanged(object selectedObject, Message predecessorMessage,
                                           params Message[] childMessages)

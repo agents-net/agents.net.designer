@@ -41,7 +41,8 @@ namespace Agents.Net.Designer.Model.Agents
             if (modifyModel.ModificationType != ModelModification.Add ||
                 !(modifyModel.Target is AgentModel agentModel) ||
                 !(modifyModel.Property is AgentConsumingMessagesProperty ||
-                  modifyModel.Property is AgentProducedMessagesProperty) ||
+                  modifyModel.Property is AgentProducedMessagesProperty ||
+                  modifyModel.Property is InterceptorAgentInterceptingMessagesProperty) ||
                 modifyModel.NewValue is Guid)
             {
                 return InterceptionAction.Continue;

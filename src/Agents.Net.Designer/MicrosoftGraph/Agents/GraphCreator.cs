@@ -30,6 +30,11 @@ namespace Agents.Net.Designer.MicrosoftGraph.Agents
                                 agentModel.Id, graph);
                 AddMessageEdges(agentModel.ProducedMessages, messages, false,
                                 agentModel.Id, graph);
+                if (agentModel is InterceptorAgentModel interceptor)
+                {
+                    AddMessageEdges(interceptor.InterceptingMessages, messages, true,
+                                    agentModel.Id, graph, true);
+                }
                 AddEventEdges(agentModel.IncomingEvents ?? Enumerable.Empty<string>(),
                               true, agentModel.Id, graph);
                 AddEventEdges(agentModel.ProducedEvents ?? Enumerable.Empty<string>(),
@@ -68,7 +73,7 @@ namespace Agents.Net.Designer.MicrosoftGraph.Agents
         }
 
         private void AddMessageEdges(Guid[] messages, List<Node> messageNodes, bool addMessageAsSource,
-                                     Guid agentModelId, Graph graph)
+                                     Guid agentModelId, Graph graph, bool isInterception = false)
         {
             foreach (Guid message in messages)
             {
@@ -77,7 +82,9 @@ namespace Agents.Net.Designer.MicrosoftGraph.Agents
                 if (messageNode != null)
                 {
                     edge = addMessageAsSource
-                               ? graph.AddEdge(messageNode.Id, agentModelId.ToString("D"))
+                               ? isInterception
+                                     ? graph.AddEdge(messageNode.Id, "intercepted", agentModelId.ToString("D"))
+                                     : graph.AddEdge(messageNode.Id, agentModelId.ToString("D"))
                                : graph.AddEdge(agentModelId.ToString("D"), messageNode.Id);
                 }
                 else
@@ -86,6 +93,11 @@ namespace Agents.Net.Designer.MicrosoftGraph.Agents
                 }
 
                 edge.Attr.Color = addMessageAsSource ? Color.Green : Color.Blue;
+                if (isInterception)
+                {
+                    edge.Attr.Color = Color.Red;
+                    edge.Attr.ArrowheadAtSource = ArrowStyle.Normal;
+                }
             }
         }
 
@@ -96,7 +108,7 @@ namespace Agents.Net.Designer.MicrosoftGraph.Agents
                 Attr =
                 {
                     Shape = Shape.Ellipse,
-                    FillColor = Color.White
+                    FillColor = agentModel is InterceptorAgentModel? Color.LightGoldenrodYellow : Color.White
                 },
                 LabelText = agentModel.Name,
                 UserData = agentModel

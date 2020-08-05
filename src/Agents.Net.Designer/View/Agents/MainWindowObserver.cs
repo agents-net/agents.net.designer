@@ -12,11 +12,12 @@ using Microsoft.Msagl.Drawing;
 
 namespace Agents.Net.Designer.View.Agents
 {
+    //TODO Enable nullable for whole project
     [Consumes(typeof(MainWindowCreated))]
     [Produces(typeof(SelectedGraphObjectChanged))]
     [Produces(typeof(AddAgentRequested))]
-    [Produces(typeof(AddGeneratorSettingsRequested))]
     [Produces(typeof(AddMessageRequested))]
+    [Produces(typeof(AddInterceptorAgentRequested))]
     [Produces(typeof(ConnectFileRequested))]
     [Produces(typeof(GenerateFilesRequested))]
     [Produces(typeof(ExportImageRequested))]
@@ -27,7 +28,7 @@ namespace Agents.Net.Designer.View.Agents
         private List<IViewerObject> subscribedObjects = new List<IViewerObject>();
         private MainWindowCreated mainWindowCreated;
 
-        public MainWindowObserver(IMessageBoard messageBoard, MainWindow mainWindow) : base(messageBoard)
+        public MainWindowObserver(IMessageBoard messageBoard) : base(messageBoard)
         {
         }
 
@@ -65,10 +66,10 @@ namespace Agents.Net.Designer.View.Agents
             mainWindowCreated.Window.GraphViewer.GraphChanged += GraphViewerOnGraphChanged;
             mainWindowCreated.Window.AddAgentClicked += WindowOnAddAgentClicked;
             mainWindowCreated.Window.AddMessageClicked += WindowOnAddMessageClicked;
+            mainWindowCreated.Window.AddInterceptorAgentClicked += WindowOnAddInterceptorAgentClicked;
             mainWindowCreated.Window.ConnectFileClicked += WindowOnConnectFileClicked;
             mainWindowCreated.Window.GenerateClassesClicked += WindowOnGenerateClassesClicked;
             mainWindowCreated.Window.ExportImageClicked += WindowOnExportImageClicked;
-            mainWindowCreated.Window.AddGeneratorSettingsClicked += WindowOnAddGeneratorSettingsClicked;
             mainWindowCreated.Window.SelectedTreeViewItemChanged += WindowOnSelectedTreeViewItemChanged;
             mainWindowCreated.Window.TreeView.KeyDown += TreeViewOnKeyDown;
         }
@@ -85,11 +86,6 @@ namespace Agents.Net.Designer.View.Agents
         private void WindowOnSelectedTreeViewItemChanged(object? sender, SelectedTreeViewItemChangedArgs e)
         {
             OnMessage(new SelectedTreeViewItemChanged(e.SelectedItem, mainWindowCreated));
-        }
-
-        private void WindowOnAddGeneratorSettingsClicked(object? sender, EventArgs e)
-        {
-            OnMessage(new AddGeneratorSettingsRequested(mainWindowCreated));
         }
 
         private void WindowOnExportImageClicked(object? sender, ExportImageArgs e)
@@ -117,6 +113,11 @@ namespace Agents.Net.Designer.View.Agents
             OnMessage(new AddAgentRequested(mainWindowCreated));
         }
 
+        private void WindowOnAddInterceptorAgentClicked(object? sender, EventArgs e)
+        {
+            OnMessage(new AddInterceptorAgentRequested(mainWindowCreated));
+        }
+
         public void Dispose()
         {
             mainWindowCreated.Window.GraphViewer.GraphChanged -= GraphViewerOnGraphChanged;
@@ -125,11 +126,12 @@ namespace Agents.Net.Designer.View.Agents
                 subscribedObject.MarkedForDraggingEvent -= SubscribedObjectOnMarkedForDraggingEvent;
                 mainWindowCreated.Window.AddAgentClicked -= WindowOnAddAgentClicked;
                 mainWindowCreated.Window.AddMessageClicked -= WindowOnAddMessageClicked;
+                mainWindowCreated.Window.AddInterceptorAgentClicked -= WindowOnAddInterceptorAgentClicked;
                 mainWindowCreated.Window.ConnectFileClicked -= WindowOnConnectFileClicked;
                 mainWindowCreated.Window.GenerateClassesClicked -= WindowOnGenerateClassesClicked;
                 mainWindowCreated.Window.ExportImageClicked -= WindowOnExportImageClicked;
-                mainWindowCreated.Window.AddGeneratorSettingsClicked -= WindowOnAddGeneratorSettingsClicked;
                 mainWindowCreated.Window.SelectedTreeViewItemChanged -= WindowOnSelectedTreeViewItemChanged;
+                mainWindowCreated.Window.AddInterceptorAgentClicked -= WindowOnAddInterceptorAgentClicked;
             }
         }
     }

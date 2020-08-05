@@ -1,4 +1,5 @@
 using System;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Threading;
@@ -74,6 +75,18 @@ namespace Agents.Net.Designer.ViewModel.Agents
                                               changedMessage));
                     break;
                 }
+                case nameof(AgentViewModel.InterceptingMessages):
+                {
+                    MessageViewModel message = e.DeletedItem.AssertTypeOf<MessageViewModel>();
+                    object messageId = message.ModelId != default ? (object) message.ModelId : message.FullName;
+                    OnMessage(new ModifyModel(ModelModification.Remove,
+                                              messageId,
+                                              null,
+                                              oldModel,
+                                              new InterceptorAgentInterceptingMessagesProperty(), 
+                                              changedMessage));
+                    break;
+                }
                 case nameof(AgentViewModel.IncomingEvents):
                     OnMessage(new ModifyModel(ModelModification.Remove,
                                               e.DeletedItem.AssertTypeOf<string>(),
@@ -117,73 +130,106 @@ namespace Agents.Net.Designer.ViewModel.Agents
                                               changedMessage));
                     break;
                 case nameof(AgentViewModel.NewConsumingMessage):
-                    AddConsumingMessage();
+                    AddConsumingMessage(oldModel);
                     break;
                 case nameof(AgentViewModel.NewProducingMessage):
-                    AddProducedMessage();
+                    AddProducedMessage(oldModel);
+                    break;
+                case nameof(AgentViewModel.NewInterceptingMessage):
+                    AddInterceptingMessage(oldModel);
                     break;
                 case nameof(AgentViewModel.NewIncomingEvent):
-                    AddEvent(viewModel.NewIncomingEvent, new AgentIncomingEventsProperty());
+                    AddEvent(viewModel.NewIncomingEvent, new AgentIncomingEventsProperty(), oldModel);
                     viewModel.NewIncomingEvent = string.Empty;
                     break;
                 case nameof(AgentViewModel.NewProducedEvent):
-                    AddEvent(viewModel.NewProducedEvent, new AgentProducedEventsProperty());
+                    AddEvent(viewModel.NewProducedEvent, new AgentProducedEventsProperty(), oldModel);
                     viewModel.NewProducedEvent = string.Empty;
                     break;
+                case nameof(AgentViewModel.AgentType):
+                    SwitchAgentType(oldModel);
+                    break;
             }
+        }
 
-            void AddConsumingMessage()
+        private void SwitchAgentType(AgentModel oldModel)
+        {
+            AgentModel newModel;
+            switch (viewModel.AgentType)
             {
-                if (string.IsNullOrEmpty(viewModel.NewConsumingMessage))
-                {
-                    return;
-                }
-
-                MessageViewModel selectedConsumingViewModel = viewModel.NewConsumingMessageObject as MessageViewModel;
-                OnMessage(new ModifyModel(ModelModification.Add,
-                                          null,
-                                          selectedConsumingViewModel != null
-                                              ? (object) selectedConsumingViewModel.ModelId
-                                              : viewModel.NewConsumingMessage,
-                                          oldModel,
-                                          new AgentConsumingMessagesProperty(),
-                                          changedMessage));
-                viewModel.NewConsumingMessage = string.Empty;
+                case AgentType.Agent:
+                    newModel = new AgentModel(oldModel.Name, oldModel.Namespace, oldModel.ConsumingMessages,
+                                              oldModel.ProducedMessages, oldModel.IncomingEvents,
+                                              oldModel.ProducedEvents,
+                                              oldModel.Id);
+                    break;
+                case AgentType.Interceptor:
+                    newModel = new InterceptorAgentModel(oldModel.Name, oldModel.Namespace, oldModel.ConsumingMessages,
+                                                         oldModel.ProducedMessages, oldModel.IncomingEvents,
+                                                         oldModel.ProducedEvents,
+                                                         oldModel.Id);
+                    break;
+                default:
+                    throw new InvalidOperationException($"Agent type {viewModel.AgentType} is not known.");
             }
 
-            void AddProducedMessage()
+            OnMessage(new ModifyModel(ModelModification.Change, oldModel, newModel,
+                                      oldModel.ContainingPackage, new PackageAgentsProperty(), changedMessage));
+        }
+
+        private void AddEvent(string @event, PropertySpecifier propertySpecifier, AgentModel oldModel)
+        {
+            if (string.IsNullOrEmpty(@event))
             {
-                if (string.IsNullOrEmpty(viewModel.NewProducingMessage))
-                {
-                    return;
-                }
-
-                MessageViewModel selectedProducingViewModel = viewModel.NewProducingMessageObject as MessageViewModel;
-                OnMessage(new ModifyModel(ModelModification.Add,
-                                          null,
-                                          selectedProducingViewModel != null
-                                              ? (object) selectedProducingViewModel.ModelId
-                                              : viewModel.NewProducingMessage,
-                                          oldModel,
-                                          new AgentProducedMessagesProperty(),
-                                          changedMessage));
-                viewModel.NewProducingMessage = string.Empty;
+                return;
             }
 
-            void AddEvent(string @event, PropertySpecifier propertySpecifier)
+            OnMessage(new ModifyModel(ModelModification.Add, null, @event,
+                                      oldModel, propertySpecifier, changedMessage));
+        }
+
+        private void AddProducedMessage(AgentModel oldModel)
+        {
+            if (string.IsNullOrEmpty(viewModel.NewProducingMessage))
             {
-                if (string.IsNullOrEmpty(@event))
-                {
-                    return;
-                }
-
-                OnMessage(new ModifyModel(ModelModification.Add,
-                                          null,
-                                          @event,
-                                          oldModel,
-                                          propertySpecifier,
-                                          changedMessage));
+                return;
             }
+
+            MessageViewModel selectedProducingViewModel = viewModel.NewProducingMessageObject as MessageViewModel;
+            OnMessage(new ModifyModel(ModelModification.Add, null, selectedProducingViewModel != null
+                                                                       ? (object) selectedProducingViewModel.ModelId
+                                                                       : viewModel.NewProducingMessage, oldModel, new AgentProducedMessagesProperty(), changedMessage));
+            viewModel.NewProducingMessage = string.Empty;
+        }
+
+        private void AddConsumingMessage(AgentModel oldModel)
+        {
+            if (string.IsNullOrEmpty(viewModel.NewConsumingMessage))
+            {
+                return;
+            }
+
+            MessageViewModel selectedConsumingViewModel = viewModel.NewConsumingMessageObject as MessageViewModel;
+            OnMessage(new ModifyModel(ModelModification.Add, null, selectedConsumingViewModel != null
+                                                                       ? (object) selectedConsumingViewModel.ModelId
+                                                                       : viewModel.NewConsumingMessage, oldModel, new AgentConsumingMessagesProperty(), changedMessage));
+            viewModel.NewConsumingMessage = string.Empty;
+        }
+
+        private void AddInterceptingMessage(AgentModel oldModel)
+        {
+            if (string.IsNullOrEmpty(viewModel.NewInterceptingMessage) ||
+                !(oldModel is InterceptorAgentModel))
+            {
+                return;
+            }
+
+            MessageViewModel selectedInterceptingViewModel = viewModel.NewInterceptingMessageObject as MessageViewModel;
+            OnMessage(new ModifyModel(ModelModification.Add, null, selectedInterceptingViewModel != null
+                                                                       ? (object) selectedInterceptingViewModel.ModelId
+                                                                       : viewModel.NewInterceptingMessage, oldModel, 
+                                      new InterceptorAgentInterceptingMessagesProperty(), changedMessage));
+            viewModel.NewInterceptingMessage = string.Empty;
         }
 
         public void Dispose()

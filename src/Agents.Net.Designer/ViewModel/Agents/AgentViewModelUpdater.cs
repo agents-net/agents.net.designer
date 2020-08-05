@@ -53,6 +53,10 @@ namespace Agents.Net.Designer.ViewModel.Agents
                         ChangeMessages(changingViewModel.ProducingMessages, set.Message2,
                                        changingViewModel.AvailableItems.AvailableMessages);
                         break;
+                    case InterceptorAgentInterceptingMessagesProperty _:
+                        ChangeMessages(changingViewModel.InterceptingMessages, set.Message2,
+                                       changingViewModel.AvailableItems.AvailableMessages);
+                        break;
                     case AgentIncomingEventsProperty _:
                         ChangeEvents(changingViewModel.IncomingEvents, set.Message2);
                         break;
