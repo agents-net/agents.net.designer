@@ -65,7 +65,40 @@ namespace Agents.Net.Designer.ViewModel.Agents
                                               new MessageNamespaceProperty(), 
                                               changedMessage));
                     break;
+                case nameof(MessageViewModel.DecoratedMessage):
+                    MessageDecoratorModel oldDecoratorModel = (MessageDecoratorModel) oldModel;
+                    OnMessage(new ModifyModel(ModelModification.Change,
+                                              oldDecoratorModel.DecoratedMessage,
+                                              viewModel.DecoratedMessage.ModelId,
+                                              oldModel,
+                                              new MessageDecoratorDecoratedMessageProperty(), 
+                                              changedMessage));
+                    break;
+                case nameof(MessageViewModel.MessageType):
+                    SwitchMessageType(oldModel);
+                    break;
             }
+        }
+
+        private void SwitchMessageType(MessageModel oldModel)
+        {
+            MessageModel newModel;
+            switch (viewModel.MessageType)
+            {
+                case MessageType.Message:
+                    newModel = new MessageModel(oldModel.Name, oldModel.Namespace, oldModel.Id,
+                                                oldModel.BuildIn);
+                    break;
+                case MessageType.MessageDecorator:
+                    newModel = new MessageDecoratorModel(oldModel.Name, oldModel.Namespace, oldModel.Id,
+                                                         oldModel.BuildIn);
+                    break;
+                default:
+                    throw new InvalidOperationException($"Message type {viewModel.MessageType} is not known.");
+            }
+
+            OnMessage(new ModifyModel(ModelModification.Change, oldModel, newModel,
+                                      oldModel.ContainingPackage, new PackageMessagesProperty(), changedMessage));
         }
 
         public void Dispose()

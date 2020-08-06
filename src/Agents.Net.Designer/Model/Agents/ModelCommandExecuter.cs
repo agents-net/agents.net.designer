@@ -10,6 +10,7 @@ namespace Agents.Net.Designer.Model.Agents
     [Consumes(typeof(AddAgentRequested))]
     [Consumes(typeof(AddMessageRequested))]
     [Consumes(typeof(AddInterceptorAgentRequested))]
+    [Consumes(typeof(AddMessageDecoratorRequested))]
     [Consumes(typeof(ModelUpdated))]
     [Produces(typeof(ModifyModel))]
     public class ModelCommandExecuter : Agent
@@ -17,12 +18,23 @@ namespace Agents.Net.Designer.Model.Agents
         private readonly MessageCollector<AddAgentRequested, ModelUpdated> addAgentCollector;
         private readonly MessageCollector<AddMessageRequested, ModelUpdated> addMessageCollector;
         private readonly MessageCollector<AddInterceptorAgentRequested, ModelUpdated> addInterceptorCollector;
+        private readonly MessageCollector<AddMessageDecoratorRequested, ModelUpdated> addDecoratorCollector;
 
         public ModelCommandExecuter(IMessageBoard messageBoard) : base(messageBoard)
         {
             addAgentCollector = new MessageCollector<AddAgentRequested, ModelUpdated>(OnMessagesCollected);
             addMessageCollector = new MessageCollector<AddMessageRequested, ModelUpdated>(OnMessagesCollected);
             addInterceptorCollector = new MessageCollector<AddInterceptorAgentRequested, ModelUpdated>(OnMessagesCollected);
+            addDecoratorCollector = new MessageCollector<AddMessageDecoratorRequested, ModelUpdated>(OnMessagesCollected);
+        }
+
+        private void OnMessagesCollected(MessageCollection<AddMessageDecoratorRequested, ModelUpdated> set)
+        {
+            set.MarkAsConsumed(set.Message1);
+
+            OnMessage(new ModifyModel(ModelModification.Add,
+                                      null, new MessageDecoratorModel("MessageDecoratorX"), set.Message2.Model,
+                                      new PackageMessagesProperty(), set));
         }
 
         private void OnMessagesCollected(MessageCollection<AddInterceptorAgentRequested, ModelUpdated> set)
@@ -57,6 +69,7 @@ namespace Agents.Net.Designer.Model.Agents
             addAgentCollector.TryPush(messageData);
             addMessageCollector.TryPush(messageData);
             addInterceptorCollector.TryPush(messageData);
+            addDecoratorCollector.TryPush(messageData);
         }
     }
 }

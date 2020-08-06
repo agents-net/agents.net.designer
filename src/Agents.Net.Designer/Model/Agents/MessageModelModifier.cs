@@ -28,16 +28,14 @@ namespace Agents.Net.Designer.Model.Agents
             switch (set.Message1.Property)
             {
                 case MessageNameProperty _:
-                    updatedModel = new MessageModel(set.Message1.NewValue.AssertTypeOf<string>(),
-                                                    messageModel.Namespace,
-                                                    messageModel.Id,
-                                                    messageModel.BuildIn);
+                    updatedModel = messageModel.Clone(name:set.Message1.NewValue.AssertTypeOf<string>());
                     break;
                 case MessageNamespaceProperty _:
-                    updatedModel = new MessageModel(messageModel.Name,
-                                                    set.Message1.NewValue.AssertTypeOf<string>(),
-                                                    messageModel.Id,
-                                                    messageModel.BuildIn);
+                    updatedModel = messageModel.Clone(@namespace:set.Message1.NewValue.AssertTypeOf<string>());
+                    break;
+                case MessageDecoratorDecoratedMessageProperty _:
+                    MessageDecoratorModel decoratorModel = (MessageDecoratorModel) messageModel;
+                    updatedModel = decoratorModel.Clone(set.Message1.NewValue.AssertTypeOf<Guid>());
                     break;
                 default:
                     throw new InvalidOperationException($"Property {set.Message1.Property} unknown for agent model.");

@@ -182,10 +182,11 @@ namespace Agents.Net.Designer.ViewModel.Agents
             void AddMessage()
             {
                 MessageModel messageModel = modifyModel.NewValue.AssertTypeOf<MessageModel>();
-                MessageViewModel viewModel = messageModel.CreateViewModel();
+                MessageViewModel viewModel = messageModel.CreateViewModel(changingViewModel);
                 changingViewModel.AddItem(viewModel);
 
-                changingViewModel.FindItemByType<AgentViewModel>()?.AvailableItems.AvailableMessages.Add(viewModel);
+                (changingViewModel.FindItemByType<AgentViewModel>()?.AvailableItems
+                                 ??changingViewModel.FindItemByType<MessageViewModel>()?.AvailableItems)?.AvailableMessages.Add(viewModel);
             }
 
             void RemoveMessage()
@@ -193,8 +194,9 @@ namespace Agents.Net.Designer.ViewModel.Agents
                 MessageModel messageModel = modifyModel.OldValue.AssertTypeOf<MessageModel>();
                 MessageViewModel viewModel = (MessageViewModel) changingViewModel.FindViewItemById(messageModel.Id);
                 changingViewModel.RemoveItem(viewModel);
-                changingViewModel.FindItemByType<AgentViewModel>()?.AvailableItems.AvailableMessages
-                                 .Remove(viewModel);
+
+                (changingViewModel.FindItemByType<AgentViewModel>()?.AvailableItems
+                 ??changingViewModel.FindItemByType<MessageViewModel>()?.AvailableItems)?.AvailableMessages.Remove(viewModel);
             }
         }
 

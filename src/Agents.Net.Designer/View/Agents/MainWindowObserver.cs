@@ -17,6 +17,7 @@ namespace Agents.Net.Designer.View.Agents
     [Produces(typeof(SelectedGraphObjectChanged))]
     [Produces(typeof(AddAgentRequested))]
     [Produces(typeof(AddMessageRequested))]
+    [Produces(typeof(AddMessageDecoratorRequested))]
     [Produces(typeof(AddInterceptorAgentRequested))]
     [Produces(typeof(ConnectFileRequested))]
     [Produces(typeof(GenerateFilesRequested))]
@@ -66,6 +67,7 @@ namespace Agents.Net.Designer.View.Agents
             mainWindowCreated.Window.GraphViewer.GraphChanged += GraphViewerOnGraphChanged;
             mainWindowCreated.Window.AddAgentClicked += WindowOnAddAgentClicked;
             mainWindowCreated.Window.AddMessageClicked += WindowOnAddMessageClicked;
+            mainWindowCreated.Window.AddMessageDecoratorClicked += WindowOnAddMessageDecoratorClicked;
             mainWindowCreated.Window.AddInterceptorAgentClicked += WindowOnAddInterceptorAgentClicked;
             mainWindowCreated.Window.ConnectFileClicked += WindowOnConnectFileClicked;
             mainWindowCreated.Window.GenerateClassesClicked += WindowOnGenerateClassesClicked;
@@ -118,6 +120,11 @@ namespace Agents.Net.Designer.View.Agents
             OnMessage(new AddInterceptorAgentRequested(mainWindowCreated));
         }
 
+        private void WindowOnAddMessageDecoratorClicked(object? sender, EventArgs e)
+        {
+            OnMessage(new AddMessageDecoratorRequested(mainWindowCreated));
+        }
+
         public void Dispose()
         {
             mainWindowCreated.Window.GraphViewer.GraphChanged -= GraphViewerOnGraphChanged;
@@ -132,6 +139,7 @@ namespace Agents.Net.Designer.View.Agents
                 mainWindowCreated.Window.ExportImageClicked -= WindowOnExportImageClicked;
                 mainWindowCreated.Window.SelectedTreeViewItemChanged -= WindowOnSelectedTreeViewItemChanged;
                 mainWindowCreated.Window.AddInterceptorAgentClicked -= WindowOnAddInterceptorAgentClicked;
+                mainWindowCreated.Window.AddMessageDecoratorClicked -= WindowOnAddMessageDecoratorClicked;
             }
         }
     }

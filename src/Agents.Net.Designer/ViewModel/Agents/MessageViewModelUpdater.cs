@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using Agents.Net;
 using Agents.Net.Designer.Model;
 using Agents.Net.Designer.Model.Messages;
@@ -41,6 +42,12 @@ namespace Agents.Net.Designer.ViewModel.Agents
                         changingViewModel.RelativeNamespace = set.Message2.NewValue.AssertTypeOf<string>();
                         changingViewModel.FullName = $"{set.Message2.NewValue.AssertTypeOf<string>().ExtendNamespace(oldModel)}.{changingViewModel.Name}";
                         RestructureViewModel(changingViewModel, set.Message1.ViewModel);
+                        break;
+                    case MessageDecoratorDecoratedMessageProperty _:
+                        changingViewModel.DecoratedMessage =  changingViewModel.AvailableItems
+                                                                               .AvailableMessages
+                                                                               .FirstOrDefault(m => m.ModelId == 
+                                                                                                    set.Message2.NewValue.AssertTypeOf<Guid>());
                         break;
                 }
                 OnMessage(new TreeViewModelUpdated(set));

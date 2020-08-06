@@ -131,8 +131,20 @@ namespace Agents.Net.Designer.MicrosoftGraph.Agents
                     LabelText = messageModel.Name,
                     UserData = messageModel
                 };
+
                 messages.Add(messageNode);
                 graph.AddNode(messageNode);
+
+                if (messageModel is MessageDecoratorModel decoratorModel)
+                {
+                    messageNode.Attr.FillColor = Color.LightGoldenrodYellow;
+                    if (decoratorModel.DecoratedMessage != default)
+                    {
+                        Edge edge = graph.AddEdge(decoratorModel.Id.ToString("D"), "decorates",
+                                                  decoratorModel.DecoratedMessage.ToString("D"));
+                        edge.Attr.Color = new Color(0xD8, 0x8B, 0x8B);
+                    }
+                }
             }
 
             return messages;

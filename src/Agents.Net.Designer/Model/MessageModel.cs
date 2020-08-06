@@ -15,6 +15,15 @@ namespace Agents.Net.Designer.Model
             Id = id == default ? Guid.NewGuid() : id;
             BuildIn = buildIn;
         }
+        
+        public virtual MessageModel Clone(string name = null, string @namespace = null,
+                                          Guid? id = null, bool? buildIn = null)
+        {
+            return new MessageModel(name ?? Name,
+                                    @namespace ?? Namespace,
+                                    id ?? Id,
+                                    buildIn ?? BuildIn);
+        }
 
         [JsonIgnore]
         public CommunityModel ContainingPackage { get; set; }

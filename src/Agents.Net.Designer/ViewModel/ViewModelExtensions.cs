@@ -150,29 +150,53 @@ namespace Agents.Net.Designer.ViewModel
             }
         }
 
-        public static MessageViewModel CreateViewModel(this MessageModel message)
+        public static MessageViewModel CreateViewModel(this MessageModel message, CommunityViewModel community)
         {
-            return new MessageViewModel
+            AvailableItemsViewModel availableItems = FindOrCreateAvailableItems(community);
+            return message.CreateViewModel(availableItems);
+        }
+
+        public static MessageViewModel CreateViewModel(this MessageModel message, AvailableItemsViewModel availableViewModel)
+        {
+            MessageViewModel viewModel = new MessageViewModel
             {
                 Name = message.Name,
                 FullName = message.FullName(),
                 RelativeNamespace = message.Namespace,
                 ModelId = message.Id,
-                BuildIn = message.BuildIn
+                BuildIn = message.BuildIn,
+                AvailableItems = availableViewModel
             };
+            if (message is MessageDecoratorModel decoratorModel)
+            {
+                viewModel.MessageType = MessageType.MessageDecorator;
+                viewModel.DecoratedMessage = availableViewModel.AvailableMessages.FirstOrDefault(m => m.ModelId == decoratorModel.DecoratedMessage);
+            }
+            else
+            {
+                viewModel.MessageType = MessageType.Message;
+            }
+            return viewModel;
         }
 
-        public static AgentViewModel CreateViewModel(this AgentModel agent, CommunityViewModel community)
+        private static AvailableItemsViewModel FindOrCreateAvailableItems(CommunityViewModel community)
         {
             AvailableItemsViewModel availableItems = community.FindItemByType<AgentViewModel>()?.AvailableItems
+                                                     ?? community.FindItemByType<MessageViewModel>()?.AvailableItems
                                                      ?? new AvailableItemsViewModel
                                                      {
                                                          AvailableMessages =
                                                              new ObservableCollection<MessageViewModel>(
                                                                  community.FindItemsByType<MessageViewModel>()
-                                                                          .Concat(community.BuildInTypes.OfType<MessageViewModel>()))
+                                                                          .Concat(community.BuildInTypes
+                                                                                           .OfType<MessageViewModel>()))
                                                      };
+            return availableItems;
+        }
 
+        public static AgentViewModel CreateViewModel(this AgentModel agent, CommunityViewModel community)
+        {
+            AvailableItemsViewModel availableItems = FindOrCreateAvailableItems(community);
             return agent.CreateViewModel(availableItems);
         }
 

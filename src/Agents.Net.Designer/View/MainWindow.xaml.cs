@@ -104,6 +104,12 @@ namespace Agents.Net.Designer.View
                         OnAddInterceptorAgentClicked();
                     }
                     break;
+                case Key.D:
+                    if (Keyboard.Modifiers.HasFlag(ModifierKeys.Alt) && Keyboard.Modifiers.HasFlag(ModifierKeys.Control))
+                    {
+                        OnAddMessageDecoratorClicked();
+                    }
+                    break;
                 default:
                     e.Handled = false;
                     break;
@@ -128,6 +134,11 @@ namespace Agents.Net.Designer.View
         private void AddMessageOnClick(object sender, RoutedEventArgs e)
         {
             OnAddMessageClicked();
+        }
+
+        private void AddMessageDecoratorOnClick(object sender, RoutedEventArgs e)
+        {
+            OnAddMessageDecoratorClicked();
         }
 
         private void ConnectFileOnClick(object sender, RoutedEventArgs e)
@@ -191,6 +202,7 @@ namespace Agents.Net.Designer.View
         }
 
         public event EventHandler<EventArgs> AddMessageClicked; 
+        public event EventHandler<EventArgs> AddMessageDecoratorClicked; 
         public event EventHandler<EventArgs> AddAgentClicked;
         public event EventHandler<EventArgs> AddInterceptorAgentClicked;
         public event EventHandler<ConnectFileArgs> ConnectFileClicked;
@@ -236,6 +248,11 @@ namespace Agents.Net.Designer.View
         protected virtual void OnAddInterceptorAgentClicked()
         {
             AddInterceptorAgentClicked?.Invoke(this, EventArgs.Empty);
+        }
+
+        protected virtual void OnAddMessageDecoratorClicked()
+        {
+            AddMessageDecoratorClicked?.Invoke(this, EventArgs.Empty);
         }
     }
 }

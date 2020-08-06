@@ -53,7 +53,7 @@ namespace Agents.Net.Designer.ViewModel.Agents
                 };
                 foreach (MessageModel message in model.Messages)
                 {
-                    MessageViewModel messageViewModel = message.CreateViewModel();
+                    MessageViewModel messageViewModel = message.CreateViewModel(availableViewModel);
                     root.AddItem(messageViewModel);
                     availableViewModel.AvailableMessages.Add(messageViewModel);
                 }

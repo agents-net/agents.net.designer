@@ -1,4 +1,5 @@
 using System;
+using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -10,6 +11,57 @@ namespace Agents.Net.Designer.View
 {
     public static class AttachedBehaviors
     {
+        public static readonly DependencyProperty UpdateTextOnDropDownClosedProperty = DependencyProperty.RegisterAttached(
+            "UpdateTextOnDropDownClosed", typeof (bool), typeof (AttachedBehaviors), new PropertyMetadata(default(bool), OnUpdateTextOnDropDownClosedPropertyChanged));
+
+        public static void SetUpdateTextOnDropDownClosed(DependencyObject element, bool value)
+        {
+            element.SetValue(UpdateTextOnDropDownClosedProperty, value);
+        }
+
+        public static bool GetUpdateTextOnDropDownClosed(DependencyObject element)
+        {
+            return (bool) element.GetValue(UpdateTextOnDropDownClosedProperty);
+        }
+
+        private static void OnUpdateTextOnDropDownClosedPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            if (!(d is ComboBox comboBox))
+            {
+                return;
+            }
+
+            if (!((bool) e.OldValue) &&
+                ((bool) e.NewValue))
+            {
+                comboBox.Unloaded += ComboBoxOnUnloaded;
+                comboBox.DropDownClosed += ComboBoxOnDropDownClosed;
+            }
+        }
+
+        private static void ComboBoxOnDropDownClosed(object sender, EventArgs e)
+        {
+            if (!(sender is ComboBox comboBox) ||
+                comboBox.SelectedItem == null ||
+                string.IsNullOrEmpty(comboBox.Text))
+            {
+                return;
+            }
+            
+            comboBox.GetBindingExpression(ComboBox.TextProperty)?.UpdateSource();
+        }
+
+        private static void ComboBoxOnUnloaded(object sender, RoutedEventArgs routedEventArgs)
+        {
+            if (!(sender is ComboBox comboBox))
+            {
+                return;
+            }
+            
+            comboBox.Unloaded -= ComboBoxOnUnloaded;
+            comboBox.DropDownClosed -= ComboBoxOnDropDownClosed;
+        }
+
         public static readonly DependencyProperty IsBringSelectedIntoViewProperty = DependencyProperty.RegisterAttached(
             "IsBringSelectedIntoView", typeof (bool), typeof (AttachedBehaviors), new PropertyMetadata(default(bool), PropertyChangedCallback));
 

@@ -87,6 +87,13 @@ namespace Agents.Net.Designer.Model.Messages
         }
     }
 
+    public class MessageDecoratorDecoratedMessageProperty : PropertySpecifier
+    {
+        public MessageDecoratorDecoratedMessageProperty() : base(nameof(MessageDecoratorModel.DecoratedMessage))
+        {
+        }
+    }
+
     public class AgentNameProperty : PropertySpecifier
     {
         public AgentNameProperty() : base(nameof(AgentModel.Name))
