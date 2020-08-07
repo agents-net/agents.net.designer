@@ -38,9 +38,9 @@ namespace Agents.Net.Designer
             builder.RegisterType<JsonFileSynchronizer>().As<Agent>().InstancePerLifetimeScope();
             builder.RegisterType<ModelAnalyser>().As<Agent>().InstancePerLifetimeScope();
             builder.RegisterType<DirectoryCreator>().As<Agent>().InstancePerLifetimeScope();
-            builder.RegisterType<ModelObjectParser>().As<Agent>().InstancePerLifetimeScope();
+            builder.RegisterType<MessageModelObjectParser>().As<Agent>().InstancePerLifetimeScope();
             builder.RegisterType<FilesGeneratedAggregator>().As<Agent>().InstancePerLifetimeScope();
-            builder.RegisterType<CodeFileGenerator>().As<Agent>().InstancePerLifetimeScope();
+            builder.RegisterType<AgentFileGenerator>().As<Agent>().InstancePerLifetimeScope();
             builder.RegisterType<PathCompiler>().As<Agent>().InstancePerLifetimeScope();
             builder.RegisterType<TemplateFileLoader>().As<Agent>().InstancePerLifetimeScope();
             builder.RegisterType<TemplatesAggregator>().As<Agent>().InstancePerLifetimeScope();
@@ -72,6 +72,8 @@ namespace Agents.Net.Designer
             builder.RegisterType<SelectedTreeItemTranslator>().As<Agent>().InstancePerLifetimeScope();
             builder.RegisterType<NewItemsSelector>().As<Agent>().InstancePerLifetimeScope();
             builder.RegisterType<DeleteSelectedModelObject>().As<Agent>().InstancePerLifetimeScope();
+            builder.RegisterType<AgentModelObjectParser>().As<Agent>().InstancePerLifetimeScope();
+            builder.RegisterType<MessageFileGenerator>().As<Agent>().InstancePerLifetimeScope();
         }
     }
 }

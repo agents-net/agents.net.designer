@@ -9,35 +9,28 @@ using Agents.Net.Designer.Templates.Messages;
 namespace Agents.Net.Designer.Generator.Agents
 {
     [Consumes(typeof(TemplatesLoaded))]
-    [Consumes(typeof(GeneratingFile))]
-    [Consumes(typeof(GeneratingMessage), Implicitly = true)]
-    [Consumes(typeof(GeneratingAgent), Implicitly = true)]
+    [Consumes(typeof(GeneratingFile), Implicitly = true)]
+    [Consumes(typeof(GeneratingAgent))]
     [Consumes(typeof(GeneratingInterceptorAgent), Implicitly = true)]
     [Produces(typeof(FileGenerated))]
-    public class CodeFileGenerator : Agent
+    public class AgentFileGenerator : Agent
     {
-        private const int Indentation = 4;
         private readonly MessageCollector<TemplatesLoaded, GeneratingFile> collector;
 
-        public CodeFileGenerator(IMessageBoard messageBoard) : base(messageBoard)
+        public AgentFileGenerator(IMessageBoard messageBoard) : base(messageBoard)
         {
             collector = new MessageCollector<TemplatesLoaded, GeneratingFile>(OnMessagesCollected);
         }
 
         private void OnMessagesCollected(MessageCollection<TemplatesLoaded, GeneratingFile> set)
         {
-            if (set.Message2.TryGet(out GeneratingMessage _))
-            {
-                GenerateFile(set.Message2, set.Message1.Templates["MessageTemplate"]);
-            }
-            else
-            {
-                GeneratingAgent agent = set.Message2.Get<GeneratingAgent>();
-                GenerateAgent(set.Message2,
-                              agent.Is<GeneratingInterceptorAgent>()
-                                  ? set.Message1.Templates["InterceptorAgentTemplate"]
-                                  : set.Message1.Templates["AgentTemplate"], agent);
-            }
+            set.MarkAsConsumed(set.Message2);
+
+            GeneratingAgent agent = set.Message2.Get<GeneratingAgent>();
+            GenerateAgent(set.Message2,
+                          agent.Is<GeneratingInterceptorAgent>()
+                              ? set.Message1.Templates["InterceptorAgentTemplate"]
+                              : set.Message1.Templates["AgentTemplate"], agent);
             OnMessage(new FileGenerated(set.Message2.Path, set));
         }
 
@@ -62,7 +55,7 @@ namespace Agents.Net.Designer.Generator.Agents
             }
             string content = template.Replace("$dependecies$", dependencies, StringComparison.Ordinal)
                                      .Replace("$attributes$", attributes, StringComparison.Ordinal);
-            GenerateFile(file, content);
+            file.GenerateFile(content);
 
             string AggregateMessages(string[] messages, string attributeName, bool prefixNewline)
             {
@@ -77,13 +70,6 @@ namespace Agents.Net.Designer.Generator.Agents
                 result.Append(string.Join(Environment.NewLine, messages.Select(m => $"{space}[{attributeName}(typeof({m}))]")));
                 return result.ToString();
             }
-        }
-
-        private void GenerateFile(GeneratingFile file, string template)
-        {
-            string content = template.Replace("$rootnamespace$", file.Namespace, StringComparison.Ordinal)
-                                     .Replace("$itemname$", file.Name, StringComparison.Ordinal);
-            File.WriteAllText(file.Path, content, Encoding.UTF8);
         }
 
         protected override void ExecuteCore(Message messageData)

@@ -134,16 +134,17 @@ namespace Agents.Net.Designer.MicrosoftGraph.Agents
 
                 messages.Add(messageNode);
                 graph.AddNode(messageNode);
+            }
 
-                if (messageModel is MessageDecoratorModel decoratorModel)
+            foreach (MessageDecoratorModel decoratorModel in updated.Model.Messages.OfType<MessageDecoratorModel>())
+            {
+                Node messageNode = messages.First(n => n.Id == decoratorModel.Id.ToString("D"));
+                messageNode.Attr.FillColor = Color.LightGoldenrodYellow;
+                if (decoratorModel.DecoratedMessage != default)
                 {
-                    messageNode.Attr.FillColor = Color.LightGoldenrodYellow;
-                    if (decoratorModel.DecoratedMessage != default)
-                    {
-                        Edge edge = graph.AddEdge(decoratorModel.Id.ToString("D"), "decorates",
-                                                  decoratorModel.DecoratedMessage.ToString("D"));
-                        edge.Attr.Color = new Color(0xD8, 0x8B, 0x8B);
-                    }
+                    Edge edge = graph.AddEdge(decoratorModel.Id.ToString("D"), "decorates",
+                                              decoratorModel.DecoratedMessage.ToString("D"));
+                    edge.Attr.Color = new Color(0xD8, 0x8B, 0x8B);
                 }
             }
 

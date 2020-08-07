@@ -13,6 +13,7 @@ namespace Agents.Net.Designer.Generator.Agents
     [Produces(typeof(ModelInvalid))]
     [Produces(typeof(AgentModelSelectedForGeneration))]
     [Produces(typeof(InterceptorAgentModelSelectedForGeneration))]
+    [Produces(typeof(MessageDecoratorSelectedForGeneration))]
     [Produces(typeof(ModelSelectedForGeneration))]
     [Produces(typeof(MessageModelSelectedForGeneration))]
     [Produces(typeof(GeneratorSettingsDefined))]
@@ -58,8 +59,20 @@ namespace Agents.Net.Designer.Generator.Agents
                 {
                     continue;
                 }
-                messages.Add(new MessageModelSelectedForGeneration(modelMessage, set,
-                                     new ModelSelectedForGeneration(set.Message1.Path, set)));
+
+                Message message = new MessageModelSelectedForGeneration(modelMessage, set,
+                                                                        new ModelSelectedForGeneration(
+                                                                            set.Message1.Path, set));
+                if (modelMessage is MessageDecoratorModel decoratorModel &&
+                    decoratorModel.DecoratedMessage != default)
+                {
+                    MessageModel decoratedMessage = GetMessageModel(decoratorModel.DecoratedMessage,
+                                                                    set.Message2.Model.Messages,
+                                                                    ()=> errors.Add($"No message definition found for message decorator definition {modelMessage.FullName()} with " +
+                                                                                    $"defined message decorator {decoratorModel.DecoratedMessage}"));
+                    message = new MessageDecoratorSelectedForGeneration(decoratedMessage, set, message);
+                }
+                messages.Add(message);
             }
 
             if (errors.Any())
@@ -73,6 +86,17 @@ namespace Agents.Net.Designer.Generator.Agents
             }
         }
 
+        private MessageModel GetMessageModel(Guid messageId, MessageModel[] availableMessages, Action errorAction)
+        {
+            MessageModel messageDefinition = availableMessages.FirstOrDefault(m => m.Id == messageId);
+            if (messageDefinition == null)
+            {
+                errorAction();
+                return null;
+            }
+            return messageDefinition;
+        }
+
         private void FindMessageModels(IEnumerable<Guid> messageDefinitions, AgentModel agentModel, string type,
                                        List<MessageModel> messageModels, MessageModel[] availableMessages, 
                                        List<string> errors)
@@ -82,7 +106,8 @@ namespace Agents.Net.Designer.Generator.Agents
                 MessageModel messageDefinition = availableMessages.FirstOrDefault(m => m.Id == message);
                 if (messageDefinition == null)
                 {
-                    errors.Add($"No message definition found for agent definition {agentModel.FullName()} with " + $"defined {type} message {message}");
+                    errors.Add($"No message definition found for agent definition {agentModel.FullName()} with " + 
+                               $"defined {type} message {message}");
                 }
                 else
                 {

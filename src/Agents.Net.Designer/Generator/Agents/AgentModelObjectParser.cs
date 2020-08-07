@@ -8,48 +8,33 @@ using Agents.Net.Designer.Model;
 namespace Agents.Net.Designer.Generator.Agents
 {
     [Consumes(typeof(AgentModelSelectedForGeneration))]
-    [Consumes(typeof(MessageModelSelectedForGeneration))]
     [Consumes(typeof(ModelSelectedForGeneration), Implicitly = true)]
     [Consumes(typeof(InterceptorAgentModelSelectedForGeneration), Implicitly = true)]
     [Produces(typeof(GeneratingAgent))]
     [Produces(typeof(GeneratingInterceptorAgent))]
-    [Produces(typeof(GeneratingMessage))]
     [Produces(typeof(GeneratingFile))]
-    public class ModelObjectParser : Agent
-    {        public ModelObjectParser(IMessageBoard messageBoard) : base(messageBoard)
+    public class AgentModelObjectParser : Agent
+    {
+        public AgentModelObjectParser(IMessageBoard messageBoard) : base(messageBoard)
         {
         }
 
         protected override void ExecuteCore(Message messageData)
         {
-            if (messageData.TryGet(out AgentModelSelectedForGeneration agentModel))
-            {
-                PrepareAgent(agentModel);
-            }
-            else
-            {
-                PrepareMessage(messageData.Get<MessageModelSelectedForGeneration>());
-            }
-        }
-
-        private void PrepareMessage(MessageModelSelectedForGeneration messageModel)
-        {
-            OnMessage(new GeneratingMessage(messageModel, 
-                                            new GeneratingFile(messageModel.Message.Name, 
-                                                               messageModel.Message.FullNamespace(),
-                                                messageModel.Get<ModelSelectedForGeneration>().GenerationPath, messageModel)));
-        }
-
-        private void PrepareAgent(AgentModelSelectedForGeneration agentModel)
-        {
+            AgentModelSelectedForGeneration agentModel = messageData.Get<AgentModelSelectedForGeneration>();
             string name = agentModel.Agent.Name;
             string agentNamespace = agentModel.Agent.FullNamespace();
             string path = agentModel.Get<ModelSelectedForGeneration>().GenerationPath;
             List<string> consumingMessages = new List<string>();
             List<string> producingMessages = new List<string>();
+            List<string> interceptingMessages = new List<string>();
             HashSet<string> dependencies = new HashSet<string>();
             AddMessages(agentModel.ProducingMessages, producingMessages);
             AddMessages(agentModel.ConsumingMessages, consumingMessages);
+            if (agentModel.TryGet(out InterceptorAgentModelSelectedForGeneration interceptorAgent))
+            {
+                AddMessages(interceptorAgent.InterceptingMessages, interceptingMessages);
+            }
 
             Message message = new GeneratingAgent(consumingMessages.ToArray(),
                                                   producingMessages.ToArray(),
@@ -57,10 +42,8 @@ namespace Agents.Net.Designer.Generator.Agents
                                                   agentModel,
                                                   new GeneratingFile(name, agentNamespace, path,
                                                                      agentModel));
-            if (agentModel.TryGet(out InterceptorAgentModelSelectedForGeneration interceptorAgent))
+            if (agentModel.Is<InterceptorAgentModelSelectedForGeneration>())
             {
-                List<string> interceptingMessages = new List<string>();
-                AddMessages(interceptorAgent.InterceptingMessages, interceptingMessages);
                 message = new GeneratingInterceptorAgent(interceptingMessages.ToArray(), agentModel, message);
             }
             OnMessage(message);
