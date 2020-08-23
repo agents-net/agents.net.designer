@@ -31,7 +31,8 @@ namespace Agents.Net.Designer.Json.Agents
             {
                 lock (syncRoot)
                 {
-                    if (updatingMessage != processedMessage)
+                    if (updatingMessage != processedMessage &&
+                        updatingMessage != null)
                     {
                         OnMessage(updatingMessage);
                     }
@@ -52,7 +53,8 @@ namespace Agents.Net.Designer.Json.Agents
             JsonTextUpdated textUpdated = messageData.Get<JsonTextUpdated>();
             lock (syncRoot)
             {
-                if (updatingMessage != null)
+                if (updatingMessage != null &&
+                    updatingMessage != textUpdated)
                 {
                     updatingMessage = textUpdated;
                     return InterceptionAction.DoNotPublish;

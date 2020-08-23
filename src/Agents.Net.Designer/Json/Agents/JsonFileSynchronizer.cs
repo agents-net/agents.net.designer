@@ -16,6 +16,7 @@ namespace Agents.Net.Designer.Json.Agents
 
         public JsonFileSynchronizer(IMessageBoard messageBoard) : base(messageBoard)
         {
+            collector = new MessageCollector<FileConnected, JsonTextUpdated>(OnMessagesCollected);
         }
 
         private void OnMessagesCollected(MessageCollection<FileConnected, JsonTextUpdated> set)
@@ -26,11 +27,12 @@ namespace Agents.Net.Designer.Json.Agents
 
         protected override void ExecuteCore(Message messageData)
         {
-            if (messageData.Is<FileConnected>())
+            if (messageData.TryGet(out FileConnected connected) &&
+                !connected.WasCreated)
             {
                 collector = new MessageCollector<FileConnected, JsonTextUpdated>(OnMessagesCollected);
             }
-            collector?.Push(messageData);
+            collector.Push(messageData);
         }
     }
 }

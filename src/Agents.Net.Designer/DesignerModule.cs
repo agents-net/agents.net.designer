@@ -14,10 +14,9 @@ namespace Agents.Net.Designer
     {
         protected override void Load(ContainerBuilder builder)
         {
+            //TODO exceptions are not logged properly
+            //TODO Consuming message marked as implicit; Produing as multiple (Make a line below each message Name with toggle button and icon and tooltip; delete button centered over both lines)
             //TODO Feature: Statusbar Synchronized/Connected position etc.
-            //TODO Feature: Json schema error as text box validation error.
-            //TODO Feature: Avalon Edit with line breaks and highlighting.
-            //TODO Feature: Block ui text update events until graph synchronized and file saved; exporting svg; generate files
             //TODO Feature: Connect to image
             //TODO Feature: Progressbar for file generation
             //TODO Feature: Include amodels -> Package view (Like one model per assembly)
