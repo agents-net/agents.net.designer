@@ -1,10 +1,7 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Windows;
 using System.Windows.Media;
 
-namespace Agents.Net.Designer.View
+namespace Agents.Net.Designer.WpfView
 {
     public static class ViewExtensions
     {

@@ -1,13 +1,12 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using Agents.Net;
-using Agents.Net.Designer.Generator.Messages;
-using Agents.Net.Designer.Templates.Messages;
+using Agents.Net.Designer.CodeGenerator.Messages;
+using Agents.Net.Designer.CodeGenerator.Templates.Messages;
 
-namespace Agents.Net.Designer.Generator.Agents
+namespace Agents.Net.Designer.CodeGenerator.Agents
 {
     [Intercepts(typeof(FilesGenerated))]
     [Consumes(typeof(GeneratorSettingsDefined))]

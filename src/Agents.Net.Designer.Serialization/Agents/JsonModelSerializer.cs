@@ -1,13 +1,10 @@
-using System;
 using System.IO;
 using System.Text;
-using Agents.Net;
-using Agents.Net.Designer.Json.Messages;
 using Agents.Net.Designer.Model.Messages;
-using Agents.Net.Designer.Serialization;
+using Agents.Net.Designer.Serialization.Messages;
 using Newtonsoft.Json;
 
-namespace Agents.Net.Designer.Json.Agents
+namespace Agents.Net.Designer.Serialization.Agents
 {
     [Consumes(typeof(ModelUpdated))]
     [Produces(typeof(JsonTextUpdated))]

@@ -1,9 +1,7 @@
 using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Windows.Markup;
 
-namespace Agents.Net.Designer.View
+namespace Agents.Net.Designer.WpfView
 {
     public abstract class BaseConverter : MarkupExtension
     {

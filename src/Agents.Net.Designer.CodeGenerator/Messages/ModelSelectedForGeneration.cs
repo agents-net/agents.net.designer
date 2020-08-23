@@ -1,8 +1,6 @@
 using System.Collections.Generic;
-using Agents.Net;
-using Agents.Net.Designer.Model;
 
-namespace Agents.Net.Designer.Generator.Messages
+namespace Agents.Net.Designer.CodeGenerator.Messages
 {
     public class ModelSelectedForGeneration : Message
     {        public ModelSelectedForGeneration(string generationPath, Message predecessorMessage,

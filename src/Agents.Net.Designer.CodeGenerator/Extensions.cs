@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
-namespace Agents.Net.Designer
+namespace Agents.Net.Designer.CodeGenerator
 {
     public static class Extensions
     {

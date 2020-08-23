@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
-using Agents.Net;
 
-namespace Agents.Net.Designer.Templates.Messages
+namespace Agents.Net.Designer.CodeGenerator.Templates.Messages
 {
     public class TemplateFileFound : Message
     {        public TemplateFileFound(string path, Message predecessorMessage, params Message[] childMessages)

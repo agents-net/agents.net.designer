@@ -4,7 +4,6 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Text;
-using Agents.Net.Designer.ViewModel.Annotations;
 
 namespace Agents.Net.Designer.ViewModel
 {

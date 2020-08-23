@@ -1,8 +1,7 @@
 ﻿using System.Collections.Generic;
-using Agents.Net;
 using Newtonsoft.Json.Linq;
 
-namespace Agents.Net.Designer.Json.Messages
+namespace Agents.Net.Designer.Serialization.Messages
 {
     public class JsonModelValidated : Message
     {        public JsonModelValidated(JObject validatedModel, Message predecessorMessage, params Message[] childMessages)

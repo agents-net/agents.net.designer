@@ -1,13 +1,11 @@
 using System;
-using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
-using Agents.Net.Designer.ViewModel;
 using TreeViewItem = System.Windows.Controls.TreeViewItem;
 
-namespace Agents.Net.Designer.View
+namespace Agents.Net.Designer.WpfView
 {
     public static class AttachedBehaviors
     {

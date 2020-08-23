@@ -1,8 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Agents.Net;
 
-namespace Agents.Net.Designer.Json.Messages
+namespace Agents.Net.Designer.Serialization.Messages
 {
     public class JsonModelParsingError : Message
     {        public JsonModelParsingError(IEnumerable<string> messages, Message predecessorMessage,

@@ -1,7 +1,7 @@
 using System;
 using Agents.Net;
-using Agents.Net.Designer.MicrosoftGraph.Messages;
 using Agents.Net.Designer.ViewModel.Messages;
+using Agents.Net.Designer.ViewModel.MicrosoftGraph.Messages;
 
 namespace Agents.Net.Designer.ViewModel.Agents
 {

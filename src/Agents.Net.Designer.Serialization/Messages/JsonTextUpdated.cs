@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
-using Agents.Net;
 
-namespace Agents.Net.Designer.Json.Messages
+namespace Agents.Net.Designer.Serialization.Messages
 {
     public class JsonTextUpdated : Message
     {        public JsonTextUpdated(string text, Message predecessorMessage, params Message[] childMessages)

@@ -1,4 +1,4 @@
-<Window x:Class="Agents.Net.Designer.View.MainWindow"
+<Window x:Class="Agents.Net.Designer.WpfView.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
           xmlns:wpfGraphControl="http://mlsagl"
@@ -7,8 +7,8 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:viewModel="clr-namespace:Agents.Net.Designer.ViewModel;assembly=Agents.Net.Designer.ViewModel"
-        xmlns:view="clr-namespace:Agents.Net.Designer.View"
         xmlns:System="clr-namespace:System;assembly=System.Runtime"
+        xmlns:wpfView="clr-namespace:Agents.Net.Designer.WpfView"
         mc:Ignorable="d"
         TextElement.Foreground="{DynamicResource MaterialDesignBody}"
         TextElement.FontWeight="Regular"
@@ -145,7 +145,7 @@
                     <TreeView.ItemContainerStyle>
                         <Style TargetType="TreeViewItem">
                             <Setter Property="IsExpanded" Value="True"/>
-                            <Setter Property="view:AttachedBehaviors.IsBringSelectedIntoView" Value="True"/>
+                            <Setter Property="wpfView:AttachedBehaviors.IsBringSelectedIntoView" Value="True"/>
                             <Setter Property="IsSelected" Value="{Binding IsSelected, Mode=TwoWay}" />
                         </Style>
                     </TreeView.ItemContainerStyle>
@@ -169,7 +169,7 @@
                             <Setter Property="Height" Value="30"/>
                             <Setter Property="ToolTip" Value="Delete"/>
                             <Setter Property="Command" Value="{Binding Path=DataContext.DeleteItemCommand, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}"/>
-                            <Setter Property="CommandParameter" Value="{Binding RelativeSource={RelativeSource Self}, Converter={view:ButtonToDeleteItemEventArgsConverter}}"/>
+                            <Setter Property="CommandParameter" Value="{Binding RelativeSource={RelativeSource Self}, Converter={wpfView:ButtonToDeleteItemEventArgsConverter}}"/>
                         </Style>
                         
                         <Style TargetType="ListBox" BasedOn="{StaticResource MaterialDesignListBox}" x:Key="MessageListBox">
@@ -208,8 +208,8 @@
                             <Setter Property="IsTextSearchEnabled" Value="True"/>
                             <Setter Property="IsTextSearchCaseSensitive" Value="True"/>
                             <Setter Property="TextSearch.TextPath" Value="Name"/>
-                            <Setter Property="view:AttachedBehaviors.UpdatePropertySourceWhenEnterPressed" Value="ComboBox.Text"/>
-                            <Setter Property="view:AttachedBehaviors.UpdateTextOnDropDownClosed" Value="True"/>
+                            <Setter Property="wpfView:AttachedBehaviors.UpdatePropertySourceWhenEnterPressed" Value="ComboBox.Text"/>
+                            <Setter Property="wpfView:AttachedBehaviors.UpdateTextOnDropDownClosed" Value="True"/>
                             <Setter Property="ItemTemplate">
                                 <Setter.Value>
                                     <DataTemplate DataType="{x:Type viewModel:MessageViewModel}">
@@ -224,7 +224,7 @@
                         
                         <Style TargetType="TextBox" BasedOn="{StaticResource MaterialDesignTextBox}" x:Key="UpdateOnEnterBox">
                             <Setter Property="VerticalAlignment" Value="Center"/>
-                            <Setter Property="view:AttachedBehaviors.UpdatePropertySourceWhenEnterPressed" Value="TextBox.Text"/>
+                            <Setter Property="wpfView:AttachedBehaviors.UpdatePropertySourceWhenEnterPressed" Value="TextBox.Text"/>
                         </Style>
 
                         <DataTemplate DataType="{x:Type viewModel:CommunityViewModel}">
@@ -277,7 +277,7 @@
                                            Text="Is Relative Root" Margin="0,4,8,4" VerticalAlignment="Center"
                                            ToolTip="Shows whether this is the relative root folder of the package. Meaning that all elements with relative namespaces are found below this folder."
                                            Grid.Column="0" Grid.Row="1"/>
-                                <view:LockableToggleButton Style="{StaticResource MaterialDesignSwitchToggleButton}"
+                                <wpfView:LockableToggleButton Style="{StaticResource MaterialDesignSwitchToggleButton}"
                                                            ToolTip="Shows whether this is the relative root folder of the package. Meaning that all elements with relative namespaces are found below this folder."
                                                            IsChecked="{Binding IsRelativeRoot}"
                                                            HorizontalAlignment="Left"

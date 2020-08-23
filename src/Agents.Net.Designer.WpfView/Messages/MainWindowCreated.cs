@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using Agents.Net;
 
-namespace Agents.Net.Designer.View.Messages
+namespace Agents.Net.Designer.WpfView.Messages
 {
     public class MainWindowCreated : Message
     {        public MainWindowCreated(MainWindow window, params Message[] childMessages)

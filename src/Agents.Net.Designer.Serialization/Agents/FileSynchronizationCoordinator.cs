@@ -1,11 +1,7 @@
-using System;
-using System.Collections.Concurrent;
-using System.Threading;
-using Agents.Net;
-using Agents.Net.Designer.Json.Messages;
 using Agents.Net.Designer.Model.Messages;
+using Agents.Net.Designer.Serialization.Messages;
 
-namespace Agents.Net.Designer.Json.Agents
+namespace Agents.Net.Designer.Serialization.Agents
 {
     [Intercepts(typeof(JsonTextUpdated))]
     [Consumes(typeof(FileConnected))]

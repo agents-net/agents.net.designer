@@ -1,7 +1,6 @@
 using System;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using Agents.Net.Designer.ViewModel.Annotations;
 
 namespace Agents.Net.Designer.ViewModel
 {

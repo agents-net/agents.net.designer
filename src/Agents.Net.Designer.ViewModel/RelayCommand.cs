@@ -1,9 +1,7 @@
 using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Windows.Input;
 
-namespace Agents.Net.Designer.View
+namespace Agents.Net.Designer.ViewModel
 {
     public class RelayCommand : ICommand    
     {    

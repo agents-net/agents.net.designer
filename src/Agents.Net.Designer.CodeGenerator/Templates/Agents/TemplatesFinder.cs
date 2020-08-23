@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
-using Agents.Net;
-using Agents.Net.Designer.Templates.Messages;
+using Agents.Net.Designer.CodeGenerator.Templates.Messages;
 
-namespace Agents.Net.Designer.Templates.Agents
+namespace Agents.Net.Designer.CodeGenerator.Templates.Agents
 {
     [Consumes(typeof(InitializeMessage))]
     [Produces(typeof(TemplateFileFound))]

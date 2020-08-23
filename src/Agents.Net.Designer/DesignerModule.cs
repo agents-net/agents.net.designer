@@ -1,11 +1,11 @@
-using Agents.Net.Designer.Generator.Agents;
-using Agents.Net.Designer.Json.Agents;
-using Agents.Net.Designer.MicrosoftGraph.Agents;
+using Agents.Net.Designer.CodeGenerator.Agents;
+using Agents.Net.Designer.CodeGenerator.Templates.Agents;
 using Agents.Net.Designer.Model.Agents;
-using Agents.Net.Designer.Templates.Agents;
-using Agents.Net.Designer.View;
-using Agents.Net.Designer.View.Agents;
+using Agents.Net.Designer.Serialization.Agents;
 using Agents.Net.Designer.ViewModel.Agents;
+using Agents.Net.Designer.ViewModel.MicrosoftGraph.Agents;
+using Agents.Net.Designer.WpfView;
+using Agents.Net.Designer.WpfView.Agents;
 using Autofac;
 
 namespace Agents.Net.Designer

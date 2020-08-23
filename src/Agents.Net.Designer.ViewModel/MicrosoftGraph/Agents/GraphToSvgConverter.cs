@@ -1,14 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Xml.Linq;
-using Agents.Net;
-using Agents.Net.Designer.MicrosoftGraph.Messages;
 using Agents.Net.Designer.Model.Messages;
+using Agents.Net.Designer.ViewModel.MicrosoftGraph.Messages;
 using Ganss.XSS;
 using Microsoft.Msagl.Drawing;
 
-namespace Agents.Net.Designer.MicrosoftGraph.Agents
+namespace Agents.Net.Designer.ViewModel.MicrosoftGraph.Agents
 {
     [Consumes(typeof(ExportImageRequested))]
     [Consumes(typeof(GraphCreated))]

@@ -1,15 +1,12 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Windows.Documents;
 using System.Windows.Input;
-using Agents.Net;
 using Agents.Net.Designer.Model.Messages;
-using Agents.Net.Designer.View.Messages;
 using Agents.Net.Designer.ViewModel.Messages;
+using Agents.Net.Designer.WpfView.Messages;
 using Microsoft.Msagl.Drawing;
 
-namespace Agents.Net.Designer.View.Agents
+namespace Agents.Net.Designer.WpfView.Agents
 {
     //TODO Enable nullable for whole project
     [Consumes(typeof(MainWindowCreated))]

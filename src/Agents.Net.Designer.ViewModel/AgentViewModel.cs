@@ -2,7 +2,6 @@ using System;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
 using Agents.Net.Designer.Model;
-using Agents.Net.Designer.View;
 
 namespace Agents.Net.Designer.ViewModel
 {

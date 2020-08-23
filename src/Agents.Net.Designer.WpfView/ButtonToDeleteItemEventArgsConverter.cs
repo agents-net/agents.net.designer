@@ -1,11 +1,9 @@
 using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Windows.Controls;
 using System.Windows.Data;
 using Agents.Net.Designer.ViewModel;
 
-namespace Agents.Net.Designer.View
+namespace Agents.Net.Designer.WpfView
 {
     [ValueConversion(typeof(Button), typeof(DeleteItemEventArgs))]
     public class ButtonToDeleteItemEventArgsConverter : BaseConverter, IValueConverter

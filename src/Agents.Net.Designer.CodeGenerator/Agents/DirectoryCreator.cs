@@ -1,11 +1,9 @@
-using System;
 using System.Collections.Generic;
 using System.IO;
-using Agents.Net;
-using Agents.Net.Designer.Generator.Messages;
+using Agents.Net.Designer.CodeGenerator.Messages;
 using Agents.Net.Designer.Model.Messages;
 
-namespace Agents.Net.Designer.Generator.Agents
+namespace Agents.Net.Designer.CodeGenerator.Agents
 {
     [Intercepts(typeof(GeneratingFile))]
     [Intercepts(typeof(GenerateFilesRequested))]

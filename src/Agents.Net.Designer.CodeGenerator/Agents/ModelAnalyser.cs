@@ -1,12 +1,11 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Agents.Net;
-using Agents.Net.Designer.Generator.Messages;
+using Agents.Net.Designer.CodeGenerator.Messages;
 using Agents.Net.Designer.Model;
 using Agents.Net.Designer.Model.Messages;
 
-namespace Agents.Net.Designer.Generator.Agents
+namespace Agents.Net.Designer.CodeGenerator.Agents
 {
     [Consumes(typeof(GenerateFilesRequested))]
     [Consumes(typeof(ModelUpdated))]

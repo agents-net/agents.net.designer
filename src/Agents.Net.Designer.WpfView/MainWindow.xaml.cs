@@ -1,14 +1,8 @@
 using System;
-using System.ComponentModel;
-using System.Diagnostics;
-using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
 using System.Windows.Input;
-using System.Windows.Media;
 using Microsoft.Msagl.Drawing;
 using Microsoft.Msagl.WpfGraphControl;
 using Microsoft.Win32;
@@ -16,7 +10,7 @@ using Ookii.Dialogs.Wpf;
 using ModifierKeys = System.Windows.Input.ModifierKeys;
 using TreeViewItem = Agents.Net.Designer.ViewModel.TreeViewItem;
 
-namespace Agents.Net.Designer.View
+namespace Agents.Net.Designer.WpfView
 {
     public partial class MainWindow : IDisposable
     {

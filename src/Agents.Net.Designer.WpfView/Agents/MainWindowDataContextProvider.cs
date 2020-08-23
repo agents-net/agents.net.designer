@@ -1,8 +1,7 @@
-using System;
-using Agents.Net.Designer.View.Messages;
 using Agents.Net.Designer.ViewModel.Messages;
+using Agents.Net.Designer.WpfView.Messages;
 
-namespace Agents.Net.Designer.View.Agents
+namespace Agents.Net.Designer.WpfView.Agents
 {
     [Consumes(typeof(GraphViewModelCreated))]
     [Consumes(typeof(TreeViewModelCreated))]

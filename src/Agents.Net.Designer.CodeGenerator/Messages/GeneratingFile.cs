@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
-using Agents.Net;
 
-namespace Agents.Net.Designer.Generator.Messages
+namespace Agents.Net.Designer.CodeGenerator.Messages
 {
     public class GeneratingFile : Message
     {        public GeneratingFile(string name, string ns, string path, Message predecessorMessage,

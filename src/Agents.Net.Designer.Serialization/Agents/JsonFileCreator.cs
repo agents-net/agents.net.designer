@@ -1,11 +1,7 @@
-﻿using System;
-using System.IO;
-using System.Threading;
-using Agents.Net;
-using Agents.Net.Designer.Json.Messages;
+﻿using System.IO;
 using Agents.Net.Designer.Model.Messages;
 
-namespace Agents.Net.Designer.Json.Agents
+namespace Agents.Net.Designer.Serialization.Agents
 {
     [Consumes(typeof(FileConnectionVerified))]
     [Produces(typeof(FileConnected))]

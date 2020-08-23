@@ -1,7 +1,7 @@
 ﻿using System;
 using Agents.Net.Designer.ViewModel;
 
-namespace Agents.Net.Designer.View
+namespace Agents.Net.Designer.WpfView
 {
     public class SelectedTreeViewItemChangedArgs : EventArgs
     {

@@ -1,11 +1,8 @@
-using System;
-using System.Collections.Generic;
 using System.IO;
-using Agents.Net;
-using Agents.Net.Designer.Json.Messages;
 using Agents.Net.Designer.Model.Messages;
+using Agents.Net.Designer.Serialization.Messages;
 
-namespace Agents.Net.Designer.Json.Agents
+namespace Agents.Net.Designer.Serialization.Agents
 {
     [Consumes(typeof(FileConnected))]
     [Consumes(typeof(JsonTextUpdated))]

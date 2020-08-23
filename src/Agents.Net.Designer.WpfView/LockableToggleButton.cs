@@ -1,10 +1,7 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Windows;
 using System.Windows.Controls.Primitives;
 
-namespace Agents.Net.Designer.View
+namespace Agents.Net.Designer.WpfView
 {
     public class LockableToggleButton : ToggleButton
     {
