@@ -94,7 +94,7 @@ namespace Agents.Net.Designer.ViewModel.Agents
                     return oldFullName;
                 }
                 string relativeFullName = oldFullName.Substring(oldNamespace.Length);
-                if (!relativeFullName.StartsWith('.'))
+                if (!relativeFullName.StartsWith(".", StringComparison.Ordinal))
                 {
                     relativeFullName = $".{relativeFullName}";
                 }

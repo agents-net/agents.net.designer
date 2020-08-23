@@ -1,21 +1,24 @@
-﻿using System;
+using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using Agents.Net.Designer.Annotations;
+using System.Text;
+using Agents.Net.Designer.ViewModel.Annotations;
+using Microsoft.Msagl.Drawing;
 
 namespace Agents.Net.Designer.ViewModel
 {
-    public class DetailsViewModel : INotifyPropertyChanged
+    public class GraphViewModel : INotifyPropertyChanged
     {
-        private TreeViewItem currentItem;
+        private Graph graph;
 
-        public TreeViewItem CurrentItem
+        public Graph Graph
         {
-            get => currentItem;
+            get => graph;
             set
             {
-                if (Equals(value, currentItem)) return;
-                currentItem = value;
+                if (Equals(value, graph)) return;
+                graph = value;
                 OnPropertyChanged();
             }
         }

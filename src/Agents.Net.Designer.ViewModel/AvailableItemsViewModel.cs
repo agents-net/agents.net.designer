@@ -1,24 +1,24 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Text;
-using Agents.Net.Designer.Annotations;
-using Microsoft.Msagl.Drawing;
+using Agents.Net.Designer.ViewModel.Annotations;
 
 namespace Agents.Net.Designer.ViewModel
 {
-    public class GraphViewModel : INotifyPropertyChanged
+    public class AvailableItemsViewModel : INotifyPropertyChanged
     {
-        private Graph graph;
+        private ObservableCollection<MessageViewModel> availableMessages;
 
-        public Graph Graph
+        public ObservableCollection<MessageViewModel> AvailableMessages
         {
-            get => graph;
+            get => availableMessages;
             set
             {
-                if (Equals(value, graph)) return;
-                graph = value;
+                if (Equals(value, availableMessages)) return;
+                availableMessages = value;
                 OnPropertyChanged();
             }
         }

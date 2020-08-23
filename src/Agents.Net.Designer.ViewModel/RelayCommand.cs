@@ -8,13 +8,9 @@ namespace Agents.Net.Designer.View
     public class RelayCommand : ICommand    
     {    
         private readonly Action<object> execute;    
-        private readonly Func<object, bool> canExecute;    
-     
-        public event EventHandler CanExecuteChanged    
-        {    
-            add => CommandManager.RequerySuggested += value;
-            remove => CommandManager.RequerySuggested -= value;
-        }    
+        private readonly Func<object, bool> canExecute;
+
+        public event EventHandler CanExecuteChanged;
      
         public RelayCommand(Action<object> execute, Func<object, bool> canExecute = null)    
         {    
@@ -30,6 +26,11 @@ namespace Agents.Net.Designer.View
         public void Execute(object parameter)    
         {    
             execute(parameter);    
-        }    
+        }
+
+        public void OnCanExecuteChanged()
+        {
+            CanExecuteChanged?.Invoke(this, EventArgs.Empty);
+        }
     }  
 }

@@ -1,8 +1,8 @@
-﻿using System;
+using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using Agents.Net.Designer.Annotations;
+using Agents.Net.Designer.ViewModel.Annotations;
 
 namespace Agents.Net.Designer.ViewModel
 {

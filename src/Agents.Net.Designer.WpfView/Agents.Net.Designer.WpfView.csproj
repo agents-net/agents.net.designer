@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <PackageReference Include="Agents.Net" Version="2021.0.0-prerelease-20200812060541" />
+    <PackageReference Include="AutomaticGraphLayout.Drawing" Version="1.1.7" />
   </ItemGroup>
 
 </Project>

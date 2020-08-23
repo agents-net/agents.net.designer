@@ -105,7 +105,7 @@ namespace Agents.Net.Designer.ViewModel
                 while (unvisitedPaths.Any())
                 {
                     List<TreeViewItem> currentPath = unvisitedPaths.Pop();
-                    TreeViewItem currentParent = currentPath[^1];
+                    TreeViewItem currentParent = currentPath[currentPath.Count-1];
                     if (currentParent == viewItem)
                     {
                         return currentPath;
@@ -125,8 +125,8 @@ namespace Agents.Net.Designer.ViewModel
             FolderViewModel relativeRoot = viewModel.Items.OfType<FolderViewModel>()
                                                     .FirstOrDefault(f => f.IsRelativeRoot)
                                            ?? viewModel;
-            FolderViewModel root = ns.StartsWith('.') ?  relativeRoot : viewModel;
-            string[] path = ns.Split('.', StringSplitOptions.RemoveEmptyEntries);
+            FolderViewModel root = ns.StartsWith(".", StringComparison.Ordinal) ?  relativeRoot : viewModel;
+            string[] path = ns.Split(new []{'.'}, StringSplitOptions.RemoveEmptyEntries);
             FolderViewModel parent = GeneratePath();
             parent.Items.Add(viewItem);
             

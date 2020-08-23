@@ -1,24 +1,21 @@
 using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using System.Text;
-using Agents.Net.Designer.Annotations;
+using Agents.Net.Designer.ViewModel.Annotations;
 
 namespace Agents.Net.Designer.ViewModel
 {
-    public class AvailableItemsViewModel : INotifyPropertyChanged
+    public class DetailsViewModel : INotifyPropertyChanged
     {
-        private ObservableCollection<MessageViewModel> availableMessages;
+        private TreeViewItem currentItem;
 
-        public ObservableCollection<MessageViewModel> AvailableMessages
+        public TreeViewItem CurrentItem
         {
-            get => availableMessages;
+            get => currentItem;
             set
             {
-                if (Equals(value, availableMessages)) return;
-                availableMessages = value;
+                if (Equals(value, currentItem)) return;
+                currentItem = value;
                 OnPropertyChanged();
             }
         }
