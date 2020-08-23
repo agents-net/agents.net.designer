@@ -1,7 +1,6 @@
-﻿using System.Collections.Generic;
-using Agents.Net;
+using System.Collections.Generic;
 
-namespace Agents.Net.Designer.Generator.Messages
+namespace Agents.Net.Designer.Model.Messages
 {
     public class GenerateFilesRequested : Message
     {        public GenerateFilesRequested(string path, Message predecessorMessage, params Message[] childMessages)

@@ -1,8 +1,9 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using Agents.Net;
 using Agents.Net.Designer.Generator.Messages;
+using Agents.Net.Designer.Model.Messages;
 
 namespace Agents.Net.Designer.Generator.Agents
 {

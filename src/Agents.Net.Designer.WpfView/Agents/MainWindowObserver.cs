@@ -4,7 +4,6 @@ using System.Linq;
 using System.Windows.Documents;
 using System.Windows.Input;
 using Agents.Net;
-using Agents.Net.Designer.Generator.Messages;
 using Agents.Net.Designer.Model.Messages;
 using Agents.Net.Designer.View.Messages;
 using Agents.Net.Designer.ViewModel.Messages;
