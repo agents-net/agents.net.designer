@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using Newtonsoft.Json;
 
 namespace Agents.Net.Designer.Model
 {
@@ -25,7 +24,6 @@ namespace Agents.Net.Designer.Model
                                     buildIn ?? BuildIn);
         }
 
-        [JsonIgnore]
         public CommunityModel ContainingPackage { get; set; }
         
         public Guid Id { get; }

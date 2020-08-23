@@ -39,7 +39,7 @@ namespace Agents.Net.Designer.Model
                 return settings.PackageNamespace ?? string.Empty;
             }
             
-            if (modelNamespace.StartsWith('.'))
+            if (modelNamespace.StartsWith(".", StringComparison.Ordinal))
             {
                 if (string.IsNullOrEmpty(settings.PackageNamespace))
                 {

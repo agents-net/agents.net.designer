@@ -4,6 +4,7 @@ using System.Text;
 using Agents.Net;
 using Agents.Net.Designer.Json.Messages;
 using Agents.Net.Designer.Model.Messages;
+using Agents.Net.Designer.Serialization;
 using Newtonsoft.Json;
 
 namespace Agents.Net.Designer.Json.Agents
@@ -22,7 +23,8 @@ namespace Agents.Net.Designer.Json.Agents
             JsonSerializer serializer = JsonSerializer.Create(new JsonSerializerSettings
             {
                 Formatting = Formatting.Indented,
-                TypeNameHandling = TypeNameHandling.Auto
+                TypeNameHandling = TypeNameHandling.Auto,
+                ContractResolver = new DesignerModelContractResolver()
             });
             StringBuilder updatedText = new StringBuilder();
             using StringWriter stringWriter = new StringWriter(updatedText);

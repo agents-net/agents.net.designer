@@ -4,7 +4,6 @@ using System.Linq;
 using System.Threading;
 using Agents.Net;
 using Agents.Net.Designer.Model.Messages;
-using AngleSharp.Common;
 
 namespace Agents.Net.Designer.Model.Agents
 {
