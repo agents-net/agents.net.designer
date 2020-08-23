@@ -10,8 +10,8 @@ namespace Agents.Net.Designer.Generator.Agents
     {
         public static void GenerateFile(this GeneratingFile file, string template)
         {
-            string content = template.Replace("$rootnamespace$", file.Namespace, StringComparison.Ordinal)
-                                     .Replace("$itemname$", file.Name, StringComparison.Ordinal);
+            string content = template.Replace("$rootnamespace$", file.Namespace)
+                                     .Replace("$itemname$", file.Name);
             File.WriteAllText(file.Path, content, Encoding.UTF8);
         }
     }

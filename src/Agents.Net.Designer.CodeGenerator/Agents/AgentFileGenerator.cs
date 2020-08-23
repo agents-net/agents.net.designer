@@ -53,8 +53,8 @@ namespace Agents.Net.Designer.Generator.Agents
             {
                 attributes = attributes.Substring(emptySpace);
             }
-            string content = template.Replace("$dependecies$", dependencies, StringComparison.Ordinal)
-                                     .Replace("$attributes$", attributes, StringComparison.Ordinal);
+            string content = template.Replace("$dependecies$", dependencies)
+                                     .Replace("$attributes$", attributes);
             file.GenerateFile(content);
 
             string AggregateMessages(string[] messages, string attributeName, bool prefixNewline)

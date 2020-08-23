@@ -6,7 +6,37 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Templates\AgentTemplate.cs" />
+    <Compile Remove="Templates\AutofacModuleTemplate.cs" />
+    <Compile Remove="Templates\InterceptorAgentTemplate.cs" />
+    <Compile Remove="Templates\MessageDecoratorTemplate.cs" />
+    <Compile Remove="Templates\MessageTemplate.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="Templates\AgentTemplate.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Templates\AutofacModuleTemplate.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Templates\InterceptorAgentTemplate.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Templates\MessageDecoratorTemplate.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Templates\MessageTemplate.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Agents.Net" Version="2021.0.0-prerelease-20200812060541" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Agents.Net.Designer.Model\Agents.Net.Designer.Model.csproj" />
   </ItemGroup>
 
 </Project>
