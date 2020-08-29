@@ -1,0 +1,45 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Deployment\EmptyModel.amodel" />
+    <None Remove="Deployment\SingleAgent.amodel" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Deployment\EmptyModel.amodel" />
+    <EmbeddedResource Include="Deployment\SingleAgent.amodel" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Agents.Net" Version="2021.0.0-prerelease-20200829044535" />
+    <PackageReference Include="FluentAssertions" Version="5.10.3" />
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+    <PackageReference Include="NLog" Version="4.7.2" />
+    <PackageReference Include="nunit" Version="3.12.0" />
+    <PackageReference Include="NUnit3TestAdapter" Version="3.15.1" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.4.0" />
+    <PackageReference Include="SpecFlow" Version="3.4.3" />
+    <PackageReference Include="SpecFlow.NUnit" Version="3.4.3" />
+    <PackageReference Include="SpecFlow.Tools.MsBuild.Generation" Version="3.4.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Agents.Net.Designer.CodeGenerator\Agents.Net.Designer.CodeGenerator.csproj" />
+    <ProjectReference Include="..\Agents.Net.Designer.Model\Agents.Net.Designer.Model.csproj" />
+    <ProjectReference Include="..\Agents.Net.Designer.Serialization\Agents.Net.Designer.Serialization.csproj" />
+    <ProjectReference Include="..\Agents.Net.Designer.ViewModel\Agents.Net.Designer.ViewModel.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="StepDefinitions\GeneralStepDefinitions.Then.cs">
+      <SubType>Code</SubType>
+    </Compile>
+  </ItemGroup>
+
+</Project>

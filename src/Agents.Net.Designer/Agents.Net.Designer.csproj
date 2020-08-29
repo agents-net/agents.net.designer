@@ -8,7 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Agents.Net" Version="2021.0.0-prerelease-20200812060541" />
+    <PackageReference Include="Agents.Net" Version="2021.0.0-prerelease-20200829044535" />
     <PackageReference Include="Autofac" Version="5.2.0" />
     <PackageReference Include="MaterialDesignThemes" Version="3.1.3" />
     <PackageReference Include="NLog" Version="4.7.2" />

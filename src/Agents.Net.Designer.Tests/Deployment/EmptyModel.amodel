@@ -1,0 +1,21 @@
+{
+  "GeneratorSettings": {
+    "PackageNamespace": "",
+    "GenerateAutofacModule": false
+  },
+  "Agents": [],
+  "Messages": [
+    {
+      "Id": "d4a71bbe-98bb-45ad-9772-40a39fc15f05",
+      "Name": "InitializeMessage",
+      "Namespace": "Agents.Net",
+      "BuildIn": true
+    },
+    {
+      "Id": "22374e8c-fdef-4a97-87c6-9d947bfce45a",
+      "Name": "ExceptionMessage",
+      "Namespace": "Agents.Net",
+      "BuildIn": true
+    }
+  ]
+}

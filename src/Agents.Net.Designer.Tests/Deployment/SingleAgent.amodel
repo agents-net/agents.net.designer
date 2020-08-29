@@ -1,0 +1,31 @@
+{
+  "GeneratorSettings": {
+    "PackageNamespace": "",
+    "GenerateAutofacModule": false
+  },
+  "Agents": [
+    {
+      "Id": "9346d67b-58d6-4ee5-84e7-c4f7af8daf94",
+      "Name": "AgentX",
+      "Namespace": ".Agents",
+      "ConsumingMessages": [],
+      "ProducedMessages": [],
+      "IncomingEvents": [],
+      "ProducedEvents": []
+    }
+  ],
+  "Messages": [
+    {
+      "Id": "82260b60-b25c-4ec2-b663-a891bf1db637",
+      "Name": "InitializeMessage",
+      "Namespace": "Agents.Net",
+      "BuildIn": true
+    },
+    {
+      "Id": "26f36a9c-57f8-4a6e-bd25-afc099366c36",
+      "Name": "ExceptionMessage",
+      "Namespace": "Agents.Net",
+      "BuildIn": true
+    }
+  ]
+}
