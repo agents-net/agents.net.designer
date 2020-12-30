@@ -6,7 +6,7 @@ on:
 jobs:
   build:
 
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
 
     steps:
     - name: Checkout repo
@@ -17,7 +17,7 @@ jobs:
       
   publish:
 
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
     needs: build
 
     steps:
@@ -28,7 +28,7 @@ jobs:
         expire-in: 0 #will purge immediately
       
     - name: Publish single executable artifact
-      run: dotnet build src --configuration Release
+      run: dotnet publish src\Agents.Net.Designer -r win-x64 -o publish -p:PublishSingleFile=true -p:PublishReadyToRun=true --self-contained true
       
     - name: Upload artifact
       uses: actions/upload-artifact@v2
