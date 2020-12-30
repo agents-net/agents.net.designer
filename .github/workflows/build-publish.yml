@@ -1,0 +1,39 @@
+name: Build Documentation
+
+on:
+  push:
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repo
+      uses: actions/checkout@v2
+      
+    - name: Build with dotnet
+      run: dotnet build src --configuration Release
+      
+  publish:
+
+    runs-on: ubuntu-latest
+    needs: build
+
+    steps:
+    - name: Purge old artifacts
+      uses: kolpav/purge-artifacts-action@v1
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        expire-in: 0 #will purge immediately
+      
+    - name: Publish single executable artifact
+      run: dotnet build src --configuration Release
+      
+    - name: Upload artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: executable
+        path: |
+          publish/*
+          !publish/*.pdb
