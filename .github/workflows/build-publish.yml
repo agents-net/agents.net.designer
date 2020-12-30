@@ -1,4 +1,4 @@
-name: Build Documentation
+name: Build and Publish Executable
 
 on:
   push:
@@ -11,6 +11,14 @@ jobs:
     steps:
     - name: Checkout repo
       uses: actions/checkout@v2
+      
+    - name: Ensure GitHub NuGet Source
+      run: |
+        dotnet nuget add source https://nuget.pkg.github.com/agents-net/index.json \
+          -n agents-net \
+          -u bearer \
+          -p ${{ secrets.GITHUB_TOKEN }} \
+          --store-password-in-clear-text
       
     - name: Build with dotnet
       run: dotnet build src --configuration Release
