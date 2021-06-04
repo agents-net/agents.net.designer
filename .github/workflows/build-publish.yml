@@ -13,12 +13,7 @@ jobs:
       uses: actions/checkout@v2
       
     - name: Ensure GitHub NuGet Source
-      run: |
-        dotnet nuget add source https://nuget.pkg.github.com/agents-net/index.json \
-          -n agents-net \
-          -u bearer \
-          -p ${{ secrets.PACKAGE_ACCESS_TOKEN }} \
-          --store-password-in-clear-text
+      run: dotnet nuget add source https://nuget.pkg.github.com/agents-net/index.json -n agents-net -u bearer -p ${{ secrets.PACKAGE_ACCESS_TOKEN }} --store-password-in-clear-text
       
     - name: Build with dotnet
       run: dotnet build src --configuration Release
