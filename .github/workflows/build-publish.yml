@@ -24,14 +24,17 @@ jobs:
     needs: build
 
     steps:
+    - name: Checkout repo
+      uses: actions/checkout@v2
+          
     - name: Purge old artifacts
       uses: kolpav/purge-artifacts-action@v1
       with:
-        token: ${{ secrets.GITHUB_TOKEN }}
+        token: ${{ secrets.PACKAGE_ACCESS_TOKEN }}
         expire-in: 0 #will purge immediately
       
     - name: Publish single executable artifact
-      run: dotnet publish src\Agents.Net.Designer -r win-x64 -o publish -p:PublishSingleFile=true -p:PublishReadyToRun=true --self-contained true
+      run: dotnet publish src -r win-x64 -o publish -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -p:PublishReadyToRun=true --self-contained true
       
     - name: Upload artifact
       uses: actions/upload-artifact@v2
