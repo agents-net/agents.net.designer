@@ -37,7 +37,7 @@ jobs:
         expire-in: 0 #will purge immediately
       
     - name: Publish single executable artifact
-      run: dotnet publish src -r win-x64 -o publish -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -p:PublishReadyToRun=true --self-contained true --configuration Release
+      run: dotnet publish src\Agents.Net.Designer\Agents.Net.Designer.csproj -r win-x64 -o publish -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -p:PublishReadyToRun=true --self-contained true --configuration Release
       
     - name: Upload artifact
       uses: actions/upload-artifact@v2
