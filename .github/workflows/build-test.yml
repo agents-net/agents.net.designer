@@ -1,0 +1,37 @@
+name: Build and Test
+
+on:
+  push:
+    branches-ignore:
+      - master
+
+jobs:
+  build:
+
+    runs-on: windows-latest
+
+    steps:
+    - name: Checkout repo
+      uses: actions/checkout@v2
+      
+    - name: Ensure GitHub NuGet Source
+      run: dotnet nuget add source https://nuget.pkg.github.com/agents-net/index.json -n agents-net -u bearer -p ${{ secrets.PACKAGE_ACCESS_TOKEN }} --store-password-in-clear-text
+      
+    - name: Build with dotnet
+      run: dotnet build src --configuration Release
+      
+  test:
+  
+    name: test
+    runs-on: windows-latest
+    needs: build
+    
+    steps:
+    - name: Checkout repo
+      uses: actions/checkout@v2
+          
+    - name: Ensure GitHub NuGet Source
+      run: dotnet nuget add source https://nuget.pkg.github.com/agents-net/index.json -n agents-net -u bearer -p ${{ secrets.PACKAGE_ACCESS_TOKEN }} --store-password-in-clear-text
+      
+    - name: Test with dotnet
+      run: dotnet test src --configuration Release
