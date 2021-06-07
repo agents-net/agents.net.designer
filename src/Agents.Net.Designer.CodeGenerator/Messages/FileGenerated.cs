@@ -3,23 +3,24 @@
 namespace Agents.Net.Designer.CodeGenerator.Messages
 {
     public class FileGenerated : Message
-    {        public FileGenerated(string path, Message predecessorMessage, params Message[] childMessages)
-            : base(predecessorMessage, childMessages:childMessages)
+    {
+        public FileGenerated(FileGenerationResult result, Message predecessorMessage)
+            : base(predecessorMessage)
         {
-            Path = path;
+            Result = result;
         }
 
-        public FileGenerated(string path, IEnumerable<Message> predecessorMessages, params Message[] childMessages)
-            : base(predecessorMessages, childMessages:childMessages)
+        public FileGenerated(FileGenerationResult result, IEnumerable<Message> predecessorMessages)
+            : base(predecessorMessages)
         {
-            Path = path;
+            Result = result;
         }
 
-        public string Path { get; }
+        public FileGenerationResult Result { get; }
 
         protected override string DataToString()
         {
-            return $"{nameof(Path)}: {Path}";
+            return $"{nameof(Result)}: {Result}";
         }
     }
 }

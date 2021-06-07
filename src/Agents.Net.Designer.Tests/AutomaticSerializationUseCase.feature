@@ -3,7 +3,6 @@ Feature: Automatic Serialization Use Case
     As a software architect
     I want to automatically save after each modification
 
-@enableLogging
 Scenario: Save file after modification
 In this scenario the model will be modified after a file was connected. 
 Expected is that the modification is than saved to the connected file.

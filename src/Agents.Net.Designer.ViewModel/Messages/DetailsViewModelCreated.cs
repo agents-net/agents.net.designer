@@ -5,16 +5,14 @@ namespace Agents.Net.Designer.ViewModel.Messages
 {
     public class DetailsViewModelCreated : Message
     {
-        public DetailsViewModelCreated(DetailsViewModel viewModel, Message predecessorMessage,
-                                       params Message[] childMessages)
-            : base(predecessorMessage, childMessages:childMessages)
+        public DetailsViewModelCreated(DetailsViewModel viewModel, Message predecessorMessage)
+            : base(predecessorMessage)
         {
             ViewModel = viewModel;
         }
 
-        public DetailsViewModelCreated(DetailsViewModel viewModel, IEnumerable<Message> predecessorMessages,
-                                       params Message[] childMessages)
-            : base(predecessorMessages, childMessages:childMessages)
+        public DetailsViewModelCreated(DetailsViewModel viewModel, IEnumerable<Message> predecessorMessages)
+            : base(predecessorMessages)
         {
             ViewModel = viewModel;
         }

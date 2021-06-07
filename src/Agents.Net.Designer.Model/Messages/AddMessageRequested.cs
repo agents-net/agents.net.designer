@@ -4,13 +4,14 @@ using Agents.Net;
 namespace Agents.Net.Designer.Model.Messages
 {
     public class AddMessageRequested : Message
-    {        public AddMessageRequested(Message predecessorMessage, params Message[] childMessages)
-            : base(predecessorMessage, childMessages:childMessages)
+    {
+        public AddMessageRequested(Message predecessorMessage)
+            : base(predecessorMessage)
         {
         }
 
-        public AddMessageRequested(IEnumerable<Message> predecessorMessages, params Message[] childMessages)
-            : base(predecessorMessages, childMessages:childMessages)
+        public AddMessageRequested(IEnumerable<Message> predecessorMessages)
+            : base(predecessorMessages)
         {
         }
 

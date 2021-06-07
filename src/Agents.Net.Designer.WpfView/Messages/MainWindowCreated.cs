@@ -3,8 +3,9 @@
 namespace Agents.Net.Designer.WpfView.Messages
 {
     public class MainWindowCreated : Message
-    {        public MainWindowCreated(MainWindow window, params Message[] childMessages)
-            : base(Array.Empty<Message>(), childMessages:childMessages)
+    {
+        public MainWindowCreated(MainWindow window)
+            : base(Array.Empty<Message>())
         {
             Window = window;
         }

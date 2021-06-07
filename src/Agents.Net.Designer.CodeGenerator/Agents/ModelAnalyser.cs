@@ -8,7 +8,7 @@ using Agents.Net.Designer.Model.Messages;
 namespace Agents.Net.Designer.CodeGenerator.Agents
 {
     [Consumes(typeof(GenerateFilesRequested))]
-    [Consumes(typeof(ModelUpdated))]
+    [Consumes(typeof(ModelVersionCreated))]
     [Produces(typeof(ModelInvalid))]
     [Produces(typeof(AgentModelSelectedForGeneration))]
     [Produces(typeof(InterceptorAgentModelSelectedForGeneration))]
@@ -18,36 +18,35 @@ namespace Agents.Net.Designer.CodeGenerator.Agents
     [Produces(typeof(GeneratorSettingsDefined))]
     public class ModelAnalyser : Agent
     {
-        private readonly MessageCollector<GenerateFilesRequested, ModelUpdated> collector;
+        private readonly MessageCollector<GenerateFilesRequested, ModelVersionCreated> collector;
 
         public ModelAnalyser(IMessageBoard messageBoard) : base(messageBoard)
         {
-            collector = new MessageCollector<GenerateFilesRequested, ModelUpdated>(OnMessagesCollected);
+            collector = new MessageCollector<GenerateFilesRequested, ModelVersionCreated>(OnMessagesCollected);
         }
 
-        private void OnMessagesCollected(MessageCollection<GenerateFilesRequested, ModelUpdated> set)
+        private void OnMessagesCollected(MessageCollection<GenerateFilesRequested, ModelVersionCreated> set)
         {
             set.MarkAsConsumed(set.Message1);
-            List<Message> messages = new List<Message>();
-            List<string> errors = new List<string>();
+            List<Message> messages = new();
+            List<string> errors = new();
             foreach (AgentModel agentModel in set.Message2.Model.Agents)
             {
-                List<MessageModel> consuming = new List<MessageModel>();
-                List<MessageModel> producing = new List<MessageModel>();
+                List<MessageModel> consuming = new();
+                List<MessageModel> producing = new();
                 FindMessageModels(agentModel.ConsumingMessages, agentModel, "consuming", consuming,
                                   set.Message2.Model.Messages, errors);
                 FindMessageModels(agentModel.ProducedMessages, agentModel, "producing", producing,
                                   set.Message2.Model.Messages, errors);
-                Message message = new AgentModelSelectedForGeneration(agentModel, consuming.ToArray(),
-                                                                      producing.ToArray(), set,
-                                                                      new ModelSelectedForGeneration(
-                                                                          set.Message1.Path, set));
+                Message message = AgentModelSelectedForGeneration.Decorate(new ModelSelectedForGeneration(
+                                                                               set.Message1.Path, set), agentModel,
+                                                                           consuming.ToArray(), producing.ToArray());
                 if (agentModel is InterceptorAgentModel interceptorAgent)
                 {
-                    List<MessageModel> intercepting = new List<MessageModel>();
+                    List<MessageModel> intercepting = new();
                     FindMessageModels(interceptorAgent.InterceptingMessages, agentModel, "intercepting", intercepting,
                                       set.Message2.Model.Messages, errors);
-                    message = new InterceptorAgentModelSelectedForGeneration(intercepting.ToArray(), set, message);
+                    message = InterceptorAgentModelSelectedForGeneration.Decorate((AgentModelSelectedForGeneration) message, intercepting.ToArray());
                 }
                 messages.Add(message);
             }
@@ -59,9 +58,9 @@ namespace Agents.Net.Designer.CodeGenerator.Agents
                     continue;
                 }
 
-                Message message = new MessageModelSelectedForGeneration(modelMessage, set,
-                                                                        new ModelSelectedForGeneration(
-                                                                            set.Message1.Path, set));
+                Message message =
+                    MessageModelSelectedForGeneration.Decorate(new ModelSelectedForGeneration(set.Message1.Path, set),
+                                                               modelMessage);
                 if (modelMessage is MessageDecoratorModel decoratorModel &&
                     decoratorModel.DecoratedMessage != default)
                 {
@@ -69,7 +68,7 @@ namespace Agents.Net.Designer.CodeGenerator.Agents
                                                                     set.Message2.Model.Messages,
                                                                     ()=> errors.Add($"No message definition found for message decorator definition {modelMessage.FullName()} with " +
                                                                                     $"defined message decorator {decoratorModel.DecoratedMessage}"));
-                    message = new MessageDecoratorSelectedForGeneration(decoratedMessage, set, message);
+                    message = MessageDecoratorSelectedForGeneration.Decorate((MessageModelSelectedForGeneration) message, decoratedMessage);
                 }
                 messages.Add(message);
             }

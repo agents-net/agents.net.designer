@@ -3,15 +3,15 @@ using System.Collections.Generic;
 namespace Agents.Net.Designer.Model.Messages
 {
     public class GenerateFilesRequested : Message
-    {        public GenerateFilesRequested(string path, Message predecessorMessage, params Message[] childMessages)
-            : base(predecessorMessage, childMessages:childMessages)
+    {
+        public GenerateFilesRequested(string path, Message predecessorMessage)
+            : base(predecessorMessage)
         {
             Path = path;
         }
 
-        public GenerateFilesRequested(string path, IEnumerable<Message> predecessorMessages,
-                                      params Message[] childMessages)
-            : base(predecessorMessages, childMessages:childMessages)
+        public GenerateFilesRequested(string path, IEnumerable<Message> predecessorMessages)
+            : base(predecessorMessages)
         {
             Path = path;
         }

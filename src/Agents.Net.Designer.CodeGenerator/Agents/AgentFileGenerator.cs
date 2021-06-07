@@ -25,11 +25,14 @@ namespace Agents.Net.Designer.CodeGenerator.Agents
             set.MarkAsConsumed(set.Message2);
 
             GeneratingAgent agent = set.Message2.Get<GeneratingAgent>();
+            bool interceptor = agent.Is<GeneratingInterceptorAgent>();
             GenerateAgent(set.Message2,
-                          agent.Is<GeneratingInterceptorAgent>()
+                          interceptor
                               ? set.Message1.Templates["InterceptorAgentTemplate"]
                               : set.Message1.Templates["AgentTemplate"], agent);
-            OnMessage(new FileGenerated(set.Message2.Path, set));
+            OnMessage(new FileGenerated(
+                          new FileGenerationResult(interceptor ? FileType.InterceptorAgent : FileType.Agent,
+                                                   set.Message2.Name, set.Message2.Namespace, set.Message2.Path), set));
         }
 
         private void GenerateAgent(GeneratingFile file, string template, GeneratingAgent agent)
@@ -62,7 +65,7 @@ namespace Agents.Net.Designer.CodeGenerator.Agents
                     return string.Empty;
                 }
 
-                string space = new string(' ', emptySpace);
+                string space = new(' ', emptySpace);
                 
                 StringBuilder result = prefixNewline ? new StringBuilder(Environment.NewLine): new StringBuilder();
                 result.Append(string.Join(Environment.NewLine, messages.Select(m => $"{space}[{attributeName}(typeof({m}))]")));

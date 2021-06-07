@@ -32,8 +32,8 @@ namespace Agents.Net.Designer.ViewModel
         public static IEnumerable<T> FindItemsByType<T>(this CommunityViewModel community)
             where T : TreeViewItem
         {
-            List<T> items = new List<T>();
-            Stack<TreeViewItem> unvisited = new Stack<TreeViewItem>(new []{community});
+            List<T> items = new();
+            Stack<TreeViewItem> unvisited = new(new []{community});
             while (unvisited.Any())
             {
                 TreeViewItem item = unvisited.Pop();
@@ -53,7 +53,7 @@ namespace Agents.Net.Designer.ViewModel
 
         public static TreeViewItem FindViewItemById(this CommunityViewModel community, Guid id)
         {
-            Stack<TreeViewItem> unvisited = new Stack<TreeViewItem>(new []{community});
+            Stack<TreeViewItem> unvisited = new(new []{community});
             while (unvisited.Any())
             {
                 TreeViewItem item = unvisited.Pop();
@@ -101,7 +101,7 @@ namespace Agents.Net.Designer.ViewModel
 
             List<TreeViewItem> FindViewItem()
             {
-                Stack<List<TreeViewItem>> unvisitedPaths = new Stack<List<TreeViewItem>>(new []{new List<TreeViewItem>(new []{viewModel}), });
+                Stack<List<TreeViewItem>> unvisitedPaths = new(new []{new List<TreeViewItem>(new []{viewModel}), });
                 while (unvisitedPaths.Any())
                 {
                     List<TreeViewItem> currentPath = unvisitedPaths.Pop();
@@ -158,7 +158,7 @@ namespace Agents.Net.Designer.ViewModel
 
         public static MessageViewModel CreateViewModel(this MessageModel message, AvailableItemsViewModel availableViewModel)
         {
-            MessageViewModel viewModel = new MessageViewModel
+            MessageViewModel viewModel = new()
             {
                 Name = message.Name,
                 FullName = message.FullName(),
@@ -202,7 +202,7 @@ namespace Agents.Net.Designer.ViewModel
 
         public static AgentViewModel CreateViewModel(this AgentModel agent, AvailableItemsViewModel availableViewModel)
         {
-            AgentViewModel viewModel = new AgentViewModel
+            AgentViewModel viewModel = new()
             {
                 Name = agent.Name,
                 FullName = agent.FullName(),
@@ -228,7 +228,7 @@ namespace Agents.Net.Designer.ViewModel
             
             IEnumerable<MessageViewModel> CollectMessages(Guid[] agentMessages)
             {
-                List<MessageViewModel> viewModels = new List<MessageViewModel>();
+                List<MessageViewModel> viewModels = new();
                 foreach (Guid messageDefinition in agentMessages)
                 {
                     viewModels.Add(availableViewModel.AvailableMessages.First(m => m.ModelId == messageDefinition));

@@ -18,10 +18,10 @@ namespace Agents.Net.Designer.Model
         public virtual MessageModel Clone(string name = null, string @namespace = null,
                                           Guid? id = null, bool? buildIn = null)
         {
-            return new MessageModel(name ?? Name,
-                                    @namespace ?? Namespace,
-                                    id ?? Id,
-                                    buildIn ?? BuildIn);
+            return new(name ?? Name,
+                       @namespace ?? Namespace,
+                       id ?? Id,
+                       buildIn ?? BuildIn);
         }
 
         public CommunityModel ContainingPackage { get; set; }
@@ -33,5 +33,10 @@ namespace Agents.Net.Designer.Model
         public string Namespace { get; }
 
         public bool BuildIn { get; }
+
+        public override string ToString()
+        {
+            return $"{nameof(Id)}: {Id}, {nameof(Name)}: {Name}, {nameof(Namespace)}: {Namespace}";
+        }
     }
 }

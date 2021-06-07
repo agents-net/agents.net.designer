@@ -5,19 +5,16 @@ namespace Agents.Net.Designer.CodeGenerator.Messages
 {
     public class MessageDecoratorSelectedForGeneration : Message
     {
-        public MessageDecoratorSelectedForGeneration(MessageModel decoratedMessage, Message predecessorMessage,
-                                                     params Message[] childMessages)
-            : base(predecessorMessage, childMessages:childMessages)
+        private MessageDecoratorSelectedForGeneration(MessageModel decoratedMessage, Message predecessorMessage)
+            : base(predecessorMessage)
         {
             DecoratedMessage = decoratedMessage;
         }
 
-        public MessageDecoratorSelectedForGeneration(MessageModel decoratedMessage,
-                                                     IEnumerable<Message> predecessorMessages,
-                                                     params Message[] childMessages)
-            : base(predecessorMessages, childMessages:childMessages)
+        public static MessageDecoratorSelectedForGeneration Decorate(MessageModelSelectedForGeneration message,
+                                                                     MessageModel model)
         {
-            DecoratedMessage = decoratedMessage;
+            return new(model, message);
         }
 
         public MessageModel DecoratedMessage { get; }

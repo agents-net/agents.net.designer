@@ -8,13 +8,14 @@ namespace Agents.Net.Designer.CodeGenerator.Templates.Agents
     [Produces(typeof(TemplateFileFound))]
     public class TemplatesFinder : Agent
     {
-        private const string TemplatesLocation = ".\\Templates";        public TemplatesFinder(IMessageBoard messageBoard) : base(messageBoard)
+        private const string TemplatesLocation = ".\\Templates";
+        public TemplatesFinder(IMessageBoard messageBoard) : base(messageBoard)
         {
         }
 
         protected override void ExecuteCore(Message messageData)
         {
-            List<Message> messages = new List<Message>();
+            List<Message> messages = new();
             foreach (string templateFile in Directory.EnumerateFiles(TemplatesLocation,"*.cs", SearchOption.AllDirectories))
             {
                 messages.Add(new TemplateFileFound(templateFile, messageData));

@@ -7,18 +7,18 @@ using Agents.Net.Designer.ViewModel.Messages;
 namespace Agents.Net.Designer.ViewModel.Agents
 {
     [Consumes(typeof(SelectedTreeViewItemChanged))]
-    [Consumes(typeof(ModelUpdated))]
+    [Consumes(typeof(ModelVersionCreated))]
     [Produces(typeof(SelectedModelObjectChanged))]
     public class SelectedTreeItemTranslator : Agent
     {
-        private readonly MessageCollector<ModelUpdated, SelectedTreeViewItemChanged> collector;
+        private readonly MessageCollector<ModelVersionCreated, SelectedTreeViewItemChanged> collector;
 
         public SelectedTreeItemTranslator(IMessageBoard messageBoard) : base(messageBoard)
         {
-            collector = new MessageCollector<ModelUpdated, SelectedTreeViewItemChanged>(OnMessagesCollected);
+            collector = new MessageCollector<ModelVersionCreated, SelectedTreeViewItemChanged>(OnMessagesCollected);
         }
 
-        private void OnMessagesCollected(MessageCollection<ModelUpdated, SelectedTreeViewItemChanged> set)
+        private void OnMessagesCollected(MessageCollection<ModelVersionCreated, SelectedTreeViewItemChanged> set)
         {
             set.MarkAsConsumed(set.Message2);
 
@@ -32,7 +32,7 @@ namespace Agents.Net.Designer.ViewModel.Agents
                 modelObject = set.Message1.Model.Messages.First(a => a.Id == message.ModelId);
             }
             
-            OnMessage(new SelectedModelObjectChanged(modelObject, set));
+            OnMessage(new SelectedModelObjectChanged(modelObject, set, SelectionSource.Tree));
         }
 
         protected override void ExecuteCore(Message messageData)

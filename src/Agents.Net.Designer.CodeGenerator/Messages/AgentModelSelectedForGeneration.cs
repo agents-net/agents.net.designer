@@ -4,24 +4,22 @@ using Agents.Net.Designer.Model;
 namespace Agents.Net.Designer.CodeGenerator.Messages
 {
     public class AgentModelSelectedForGeneration : Message
-    {        public AgentModelSelectedForGeneration(AgentModel agent, MessageModel[] consumingMessages,
-                                               MessageModel[] producingMessages, Message predecessorMessage,
-                                               params Message[] childMessages)
-            : base(predecessorMessage, childMessages:childMessages)
+    {
+        private AgentModelSelectedForGeneration(AgentModel agent, MessageModel[] consumingMessages,
+                                               MessageModel[] producingMessages, Message decoratedMessage)
+            : base(decoratedMessage)
         {
             Agent = agent;
             ConsumingMessages = consumingMessages;
             ProducingMessages = producingMessages;
         }
 
-        public AgentModelSelectedForGeneration(AgentModel agent, MessageModel[] consumingMessages,
-                                               MessageModel[] producingMessages,
-                                               IEnumerable<Message> predecessorMessages, params Message[] childMessages)
-            : base(predecessorMessages, childMessages:childMessages)
+        public static AgentModelSelectedForGeneration Decorate(ModelSelectedForGeneration message, AgentModel agent,
+                                                               MessageModel[] consumingMessages,
+                                                               MessageModel[] producingMessages)
         {
-            Agent = agent;
-            ConsumingMessages = consumingMessages;
-            ProducingMessages = producingMessages;
+            return new(agent, consumingMessages, producingMessages,
+                       message);
         }
 
         public AgentModel Agent { get; }

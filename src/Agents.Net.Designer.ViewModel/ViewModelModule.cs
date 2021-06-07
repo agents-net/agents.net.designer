@@ -21,6 +21,7 @@ namespace Agents.Net.Designer.ViewModel
             builder.RegisterType<GraphViewModelUpdater>().As<Agent>().InstancePerLifetimeScope();
             builder.RegisterType<MessageViewModelUpdater>().As<Agent>().InstancePerLifetimeScope();
             builder.RegisterType<MessageViewModelWatcher>().As<Agent>().InstancePerLifetimeScope();
+            builder.RegisterType<ModelModificationCompleter>().As<Agent>().InstancePerLifetimeScope();
             builder.RegisterType<ModelIdUpdater>().As<Agent>().InstancePerLifetimeScope();
             builder.RegisterType<NewItemsSelector>().As<Agent>().InstancePerLifetimeScope();
             builder.RegisterType<SelectedGraphObjectTranslator>().As<Agent>().InstancePerLifetimeScope();

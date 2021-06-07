@@ -5,13 +5,13 @@ namespace Agents.Net.Designer.ViewModel.Messages
 {
     public class GraphViewModelUpdated : Message
     {
-        public GraphViewModelUpdated(Message predecessorMessage, params Message[] childMessages)
-            : base(predecessorMessage, childMessages:childMessages)
+        public GraphViewModelUpdated(Message predecessorMessage)
+            : base(predecessorMessage)
         {
         }
 
-        public GraphViewModelUpdated(IEnumerable<Message> predecessorMessages, params Message[] childMessages)
-            : base(predecessorMessages, childMessages:childMessages)
+        public GraphViewModelUpdated(IEnumerable<Message> predecessorMessages)
+            : base(predecessorMessages)
         {
         }
 

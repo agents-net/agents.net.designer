@@ -4,18 +4,15 @@ namespace Agents.Net.Designer.CodeGenerator.Messages
 {
     public class GeneratingInterceptorAgent : Message
     {
-        public GeneratingInterceptorAgent(string[] interceptingMessages, Message predecessorMessage,
-                                          params Message[] childMessages)
-            : base(predecessorMessage, childMessages:childMessages)
+        private GeneratingInterceptorAgent(string[] interceptingMessages, Message decoratedMessage)
+            : base(decoratedMessage)
         {
             InterceptingMessages = interceptingMessages;
         }
 
-        public GeneratingInterceptorAgent(string[] interceptingMessages, IEnumerable<Message> predecessorMessages,
-                                          params Message[] childMessages)
-            : base(predecessorMessages, childMessages:childMessages)
+        public static GeneratingInterceptorAgent Decorate(GeneratingAgent agent, string[] interceptingMessages)
         {
-            InterceptingMessages = interceptingMessages;
+            return new(interceptingMessages, agent);
         }
 
         public string[] InterceptingMessages { get; }

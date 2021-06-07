@@ -5,17 +5,14 @@ namespace Agents.Net.Designer.ViewModel.Messages
 {
     public class ViewModelChangeApplying : Message
     {
-        public ViewModelChangeApplying(Action changeAction, Message predecessorMessage, string name = null,
-                                       params Message[] childMessages)
-            : base(predecessorMessage, name, childMessages)
+        public ViewModelChangeApplying(Action changeAction, Message predecessorMessage)
+            : base(predecessorMessage)
         {
             ChangeAction = changeAction;
         }
 
-        public ViewModelChangeApplying(Action changeAction, IEnumerable<Message> predecessorMessages,
-                                       string name = null,
-                                       params Message[] childMessages)
-            : base(predecessorMessages, name, childMessages)
+        public ViewModelChangeApplying(Action changeAction, IEnumerable<Message> predecessorMessages)
+            : base(predecessorMessages)
         {
             ChangeAction = changeAction;
         }

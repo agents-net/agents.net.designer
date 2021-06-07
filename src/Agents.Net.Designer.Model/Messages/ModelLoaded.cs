@@ -5,15 +5,14 @@ namespace Agents.Net.Designer.Model.Messages
 {
     public class ModelLoaded : Message
     {
-        public ModelLoaded(CommunityModel model, Message predecessorMessage, params Message[] childMessages)
-            : base(predecessorMessage, childMessages:childMessages)
+        public ModelLoaded(CommunityModel model, Message predecessor)
+            : base(predecessor)
         {
             Model = model;
         }
-
-        public ModelLoaded(CommunityModel model, IEnumerable<Message> predecessorMessages,
-                           params Message[] childMessages)
-            : base(predecessorMessages, childMessages:childMessages)
+        
+        public ModelLoaded(CommunityModel model, IEnumerable<Message> predecessors)
+            : base(predecessors)
         {
             Model = model;
         }

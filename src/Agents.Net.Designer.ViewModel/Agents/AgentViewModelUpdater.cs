@@ -25,7 +25,7 @@ namespace Agents.Net.Designer.ViewModel.Agents
         private void OnMessagesCollected(MessageCollection<TreeViewModelCreated, ModifyModel> set)
         {
             set.MarkAsConsumed(set.Message2);
-            if (!(set.Message2.Target is AgentModel oldModel))
+            if (set.Message2.Target is not AgentModel oldModel)
             {
                 return;
             }

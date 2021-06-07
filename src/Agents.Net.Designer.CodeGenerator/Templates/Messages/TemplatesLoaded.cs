@@ -3,16 +3,15 @@
 namespace Agents.Net.Designer.CodeGenerator.Templates.Messages
 {
     public class TemplatesLoaded : Message
-    {        public TemplatesLoaded(Dictionary<string, string> templates, Message predecessorMessage,
-                               params Message[] childMessages)
-            : base(predecessorMessage, childMessages:childMessages)
+    {
+        public TemplatesLoaded(Dictionary<string, string> templates, Message predecessorMessage)
+            : base(predecessorMessage)
         {
             Templates = templates;
         }
 
-        public TemplatesLoaded(Dictionary<string, string> templates, IEnumerable<Message> predecessorMessages,
-                               params Message[] childMessages)
-            : base(predecessorMessages, childMessages:childMessages)
+        public TemplatesLoaded(Dictionary<string, string> templates, IEnumerable<Message> predecessorMessages)
+            : base(predecessorMessages)
         {
             Templates = templates;
         }

@@ -8,7 +8,8 @@ using Microsoft.Msagl.Drawing;
 
 namespace Agents.Net.Designer.ViewModel.MicrosoftGraph.Agents
 {
-    [Consumes(typeof(ModelUpdated))]
+    [Consumes(typeof(ModificationResult))]
+    [Consumes(typeof(ModelLoaded))]
     [Produces(typeof(GraphCreated))]
     public class GraphCreator : Agent
     {
@@ -19,11 +20,13 @@ namespace Agents.Net.Designer.ViewModel.MicrosoftGraph.Agents
         protected override void ExecuteCore(Message messageData)
         {
             //Check uniqueness of nodes
-            ModelUpdated updated = messageData.Get<ModelUpdated>();
-            Graph graph = new Graph();
-            List<Node> messages = AddMessages(updated, graph);
+            CommunityModel model = messageData.TryGet(out ModificationResult modificationResult)
+                                       ? modificationResult.Model
+                                       : messageData.Get<ModelLoaded>().Model;
+            Graph graph = new();
+            List<Node> messages = AddMessages(model, graph);
 
-            foreach (AgentModel agentModel in updated.Model.Agents)
+            foreach (AgentModel agentModel in model.Agents)
             {
                 AddAgentNode(agentModel, graph);
                 AddMessageEdges(agentModel.ConsumingMessages, messages, true,
@@ -89,7 +92,7 @@ namespace Agents.Net.Designer.ViewModel.MicrosoftGraph.Agents
                 }
                 else
                 {
-                    throw new InvalidOperationException("Cannot happen.");
+                    throw new InvalidOperationException($"Could not find message {message} in graph although it was expected.");
                 }
 
                 edge.Attr.Color = addMessageAsSource ? Color.Green : Color.Blue;
@@ -103,7 +106,7 @@ namespace Agents.Net.Designer.ViewModel.MicrosoftGraph.Agents
 
         private static void AddAgentNode(AgentModel agentModel, Graph graph)
         {
-            Node agentNode = new Node(agentModel.Id.ToString("D"))
+            Node agentNode = new(agentModel.Id.ToString("D"))
             {
                 Attr =
                 {
@@ -116,12 +119,12 @@ namespace Agents.Net.Designer.ViewModel.MicrosoftGraph.Agents
             graph.AddNode(agentNode);
         }
 
-        private static List<Node> AddMessages(ModelUpdated updated, Graph graph)
+        private static List<Node> AddMessages(CommunityModel model, Graph graph)
         {
-            List<Node> messages = new List<Node>();
-            foreach (MessageModel messageModel in updated.Model.Messages)
+            List<Node> messages = new();
+            foreach (MessageModel messageModel in model.Messages)
             {
-                Node messageNode = new Node(messageModel.Id.ToString("D"))
+                Node messageNode = new(messageModel.Id.ToString("D"))
                 {
                     Attr =
                     {
@@ -136,7 +139,7 @@ namespace Agents.Net.Designer.ViewModel.MicrosoftGraph.Agents
                 graph.AddNode(messageNode);
             }
 
-            foreach (MessageDecoratorModel decoratorModel in updated.Model.Messages.OfType<MessageDecoratorModel>())
+            foreach (MessageDecoratorModel decoratorModel in model.Messages.OfType<MessageDecoratorModel>())
             {
                 Node messageNode = messages.First(n => n.Id == decoratorModel.Id.ToString("D"));
                 messageNode.Attr.FillColor = Color.LightGoldenrodYellow;

@@ -22,11 +22,14 @@ namespace Agents.Net.Designer.CodeGenerator.Agents
         {
             set.MarkAsConsumed(set.Message2);
 
+            bool decorator = set.Message2.Is<GeneratingMessageDecorator>();
             GenerateMessage(set.Message2,
-                            set.Message2.Is<GeneratingMessageDecorator>()
+                            decorator
                               ? set.Message1.Templates["MessageDecoratorTemplate"]
                               : set.Message1.Templates["MessageTemplate"]);
-            OnMessage(new FileGenerated(set.Message2.Path, set));
+            OnMessage(new FileGenerated(
+                          new FileGenerationResult(decorator ? FileType.MessageDecorator : FileType.Message,
+                                                   set.Message2.Name, set.Message2.Namespace, set.Message2.Path), set));
         }
 
         private void GenerateMessage(GeneratingFile file, string template)

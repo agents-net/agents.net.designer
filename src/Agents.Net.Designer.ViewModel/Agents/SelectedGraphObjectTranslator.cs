@@ -9,7 +9,8 @@ namespace Agents.Net.Designer.ViewModel.Agents
     [Consumes(typeof(SelectedGraphObjectChanged))]
     [Produces(typeof(SelectedModelObjectChanged))]
     public class SelectedGraphObjectTranslator : Agent
-    {        public SelectedGraphObjectTranslator(IMessageBoard messageBoard) : base(messageBoard)
+    {
+        public SelectedGraphObjectTranslator(IMessageBoard messageBoard) : base(messageBoard)
         {
         }
 
@@ -18,7 +19,7 @@ namespace Agents.Net.Designer.ViewModel.Agents
             SelectedGraphObjectChanged selectedGraphObjectChanged = messageData.Get<SelectedGraphObjectChanged>();
             if (selectedGraphObjectChanged.SelectedObject is Node node)
             {
-                OnMessage(new SelectedModelObjectChanged(node.UserData, messageData));
+                OnMessage(new SelectedModelObjectChanged(node.UserData, messageData, SelectionSource.Graph));
             }
         }
     }

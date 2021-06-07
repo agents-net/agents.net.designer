@@ -3,16 +3,16 @@ using System.Collections.Generic;
 namespace Agents.Net.Designer.CodeGenerator.Messages
 {
     public class ModelSelectedForGeneration : Message
-    {        public ModelSelectedForGeneration(string generationPath, Message predecessorMessage,
-                                          params Message[] childMessages)
-            : base(predecessorMessage, childMessages:childMessages)
+    {
+        public ModelSelectedForGeneration(string generationPath, Message predecessorMessage)
+            : base(predecessorMessage)
         {
             GenerationPath = generationPath;
         }
 
         public ModelSelectedForGeneration(string generationPath,
-                                          IEnumerable<Message> predecessorMessages, params Message[] childMessages)
-            : base(predecessorMessages, childMessages:childMessages)
+                                          IEnumerable<Message> predecessorMessages)
+            : base(predecessorMessages)
         {
             GenerationPath = generationPath;
         }

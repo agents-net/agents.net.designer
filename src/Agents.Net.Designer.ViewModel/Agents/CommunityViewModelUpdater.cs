@@ -8,23 +8,25 @@ using Agents.Net.Designer.ViewModel.Messages;
 namespace Agents.Net.Designer.ViewModel.Agents
 {
     [Consumes(typeof(ModifyModel))]
+    [Consumes(typeof(ModificationResult))]
     [Consumes(typeof(TreeViewModelCreated))]
     [Produces(typeof(ViewModelChangeApplying))]
     [Produces(typeof(TreeViewModelUpdated))]
     public class CommunityViewModelUpdater : Agent
     {
-        private readonly MessageCollector<TreeViewModelCreated, ModifyModel> collector;
+        private readonly MessageCollector<TreeViewModelCreated, ModifyModel, ModificationResult> collector;
 
         public CommunityViewModelUpdater(IMessageBoard messageBoard) : base(messageBoard)
         {
-            collector = new MessageCollector<TreeViewModelCreated, ModifyModel>(OnMessagesCollected);
+            collector = new MessageCollector<TreeViewModelCreated, ModifyModel, ModificationResult>(OnMessagesCollected);
         }
 
-        private void OnMessagesCollected(MessageCollection<TreeViewModelCreated, ModifyModel> set)
+        private void OnMessagesCollected(MessageCollection<TreeViewModelCreated, ModifyModel, ModificationResult> set)
         {
             set.MarkAsConsumed(set.Message2);
-            if (!(set.Message2.Target is CommunityModel) &&
-                !(set.Message2.Target is GeneratorSettings))
+            set.MarkAsConsumed(set.Message3);
+            if (set.Message2.Target is not CommunityModel &&
+                set.Message2.Target is not GeneratorSettings)
             {
                 return;
             }
@@ -123,7 +125,7 @@ namespace Agents.Net.Designer.ViewModel.Agents
             }
             else if (!string.IsNullOrEmpty(newNamespace))
             {
-                FolderViewModel rootFolder = new FolderViewModel
+                FolderViewModel rootFolder = new()
                 {
                     Name = newNamespace,
                     IsRelativeRoot = true

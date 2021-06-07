@@ -4,17 +4,16 @@ using Agents.Net;
 namespace Agents.Net.Designer.Model.Messages
 {
     public class FileConnected : Message
-    {        public FileConnected(string fileName, bool wasCreated, Message predecessorMessage,
-                             params Message[] childMessages)
-            : base(predecessorMessage, childMessages:childMessages)
+    {
+        public FileConnected(string fileName, bool wasCreated, Message predecessorMessage)
+            : base(predecessorMessage)
         {
             FileName = fileName;
             WasCreated = wasCreated;
         }
 
-        public FileConnected(string fileName, bool wasCreated, IEnumerable<Message> predecessorMessages,
-                             params Message[] childMessages)
-            : base(predecessorMessages, childMessages:childMessages)
+        public FileConnected(string fileName, bool wasCreated, IEnumerable<Message> predecessorMessages)
+            : base(predecessorMessages)
         {
             FileName = fileName;
             WasCreated = wasCreated;

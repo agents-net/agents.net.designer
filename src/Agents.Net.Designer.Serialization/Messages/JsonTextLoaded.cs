@@ -4,14 +4,14 @@ namespace Agents.Net.Designer.Serialization.Messages
 {
     public class JsonTextLoaded : Message
     {
-        public JsonTextLoaded(string text, Message predecessorMessage, params Message[] childMessages)
-            : base(predecessorMessage, childMessages:childMessages)
+        public JsonTextLoaded(string text, Message predecessorMessage)
+            : base(predecessorMessage)
         {
             Text = text;
         }
 
-        public JsonTextLoaded(string text, IEnumerable<Message> predecessorMessages, params Message[] childMessages)
-            : base(predecessorMessages, childMessages:childMessages)
+        public JsonTextLoaded(string text, IEnumerable<Message> predecessorMessages)
+            : base(predecessorMessages)
         {
             Text = text;
         }

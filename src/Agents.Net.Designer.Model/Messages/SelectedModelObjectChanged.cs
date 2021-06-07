@@ -4,25 +4,35 @@ using Agents.Net;
 namespace Agents.Net.Designer.Model.Messages
 {
     public class SelectedModelObjectChanged : Message
-    {        public SelectedModelObjectChanged(object selectedObject, Message predecessorMessage,
-                                          params Message[] childMessages)
-            : base(predecessorMessage, childMessages:childMessages)
+    {
+        public SelectedModelObjectChanged(object selectedObject, Message predecessorMessage, SelectionSource selectionSource)
+            : base(predecessorMessage)
         {
             SelectedObject = selectedObject;
+            SelectionSource = selectionSource;
         }
 
-        public SelectedModelObjectChanged(object selectedObject, IEnumerable<Message> predecessorMessages,
-                                          params Message[] childMessages)
-            : base(predecessorMessages, childMessages:childMessages)
+        public SelectedModelObjectChanged(object selectedObject, IEnumerable<Message> predecessorMessages, SelectionSource selectionSource)
+            : base(predecessorMessages)
         {
             SelectedObject = selectedObject;
+            SelectionSource = selectionSource;
         }
 
         public object SelectedObject { get; }
+        
+        public SelectionSource SelectionSource { get; }
 
         protected override string DataToString()
         {
-            return $"{nameof(SelectedObject)}: {SelectedObject}";
+            return $"{nameof(SelectedObject)}: {SelectedObject}; {nameof(SelectionSource)}: {SelectionSource}";
         }
+    }
+
+    public enum SelectionSource
+    {
+        Internal,
+        Graph,
+        Tree
     }
 }

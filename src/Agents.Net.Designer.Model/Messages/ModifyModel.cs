@@ -5,8 +5,8 @@ namespace Agents.Net.Designer.Model.Messages
     public class ModifyModel : Message
     {
         public ModifyModel(ModelModification modificationType, object oldValue, object newValue, object target,
-            PropertySpecifier property, Message predecessorMessage, params Message[] childMessages) 
-            : base(predecessorMessage, childMessages:childMessages)
+            PropertySpecifier property, Message predecessorMessage) 
+            : base(predecessorMessage)
         {
             ModificationType = modificationType;
             OldValue = oldValue;
@@ -16,9 +16,8 @@ namespace Agents.Net.Designer.Model.Messages
         }
 
         public ModifyModel(ModelModification modificationType, object oldValue, object newValue, object target,
-            PropertySpecifier property, IEnumerable<Message> predecessorMessages,
-            params Message[] childMessages) 
-            : base(predecessorMessages, childMessages:childMessages)
+            PropertySpecifier property, IEnumerable<Message> predecessorMessages) 
+            : base(predecessorMessages)
         {
             ModificationType = modificationType;
             OldValue = oldValue;

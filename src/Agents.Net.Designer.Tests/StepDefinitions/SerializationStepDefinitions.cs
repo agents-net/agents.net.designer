@@ -39,7 +39,7 @@ namespace Agents.Net.Designer.Tests.StepDefinitions
         private string StripIds(string json)
         {
             JObject root = JObject.Parse(json);
-            Stack<JToken> unvisited = new Stack<JToken>(root.Children());
+            Stack<JToken> unvisited = new(root.Children());
             while (unvisited.Any())
             {
                 JToken current = unvisited.Pop();

@@ -11,24 +11,24 @@ namespace Agents.Net.Designer.Model.Agents
     [Consumes(typeof(AddMessageRequested))]
     [Consumes(typeof(AddInterceptorAgentRequested))]
     [Consumes(typeof(AddMessageDecoratorRequested))]
-    [Consumes(typeof(ModelUpdated))]
+    [Consumes(typeof(ModelVersionCreated))]
     [Produces(typeof(ModifyModel))]
     public class ModelCommandExecuter : Agent
     {
-        private readonly MessageCollector<AddAgentRequested, ModelUpdated> addAgentCollector;
-        private readonly MessageCollector<AddMessageRequested, ModelUpdated> addMessageCollector;
-        private readonly MessageCollector<AddInterceptorAgentRequested, ModelUpdated> addInterceptorCollector;
-        private readonly MessageCollector<AddMessageDecoratorRequested, ModelUpdated> addDecoratorCollector;
+        private readonly MessageCollector<AddAgentRequested, ModelVersionCreated> addAgentCollector;
+        private readonly MessageCollector<AddMessageRequested, ModelVersionCreated> addMessageCollector;
+        private readonly MessageCollector<AddInterceptorAgentRequested, ModelVersionCreated> addInterceptorCollector;
+        private readonly MessageCollector<AddMessageDecoratorRequested, ModelVersionCreated> addDecoratorCollector;
 
         public ModelCommandExecuter(IMessageBoard messageBoard) : base(messageBoard)
         {
-            addAgentCollector = new MessageCollector<AddAgentRequested, ModelUpdated>(OnMessagesCollected);
-            addMessageCollector = new MessageCollector<AddMessageRequested, ModelUpdated>(OnMessagesCollected);
-            addInterceptorCollector = new MessageCollector<AddInterceptorAgentRequested, ModelUpdated>(OnMessagesCollected);
-            addDecoratorCollector = new MessageCollector<AddMessageDecoratorRequested, ModelUpdated>(OnMessagesCollected);
+            addAgentCollector = new MessageCollector<AddAgentRequested, ModelVersionCreated>(OnMessagesCollected);
+            addMessageCollector = new MessageCollector<AddMessageRequested, ModelVersionCreated>(OnMessagesCollected);
+            addInterceptorCollector = new MessageCollector<AddInterceptorAgentRequested, ModelVersionCreated>(OnMessagesCollected);
+            addDecoratorCollector = new MessageCollector<AddMessageDecoratorRequested, ModelVersionCreated>(OnMessagesCollected);
         }
 
-        private void OnMessagesCollected(MessageCollection<AddMessageDecoratorRequested, ModelUpdated> set)
+        private void OnMessagesCollected(MessageCollection<AddMessageDecoratorRequested, ModelVersionCreated> set)
         {
             set.MarkAsConsumed(set.Message1);
 
@@ -37,7 +37,7 @@ namespace Agents.Net.Designer.Model.Agents
                                       new PackageMessagesProperty(), set));
         }
 
-        private void OnMessagesCollected(MessageCollection<AddInterceptorAgentRequested, ModelUpdated> set)
+        private void OnMessagesCollected(MessageCollection<AddInterceptorAgentRequested, ModelVersionCreated> set)
         {
             set.MarkAsConsumed(set.Message1);
 
@@ -46,7 +46,7 @@ namespace Agents.Net.Designer.Model.Agents
                                       new PackageAgentsProperty(), set));
         }
 
-        private void OnMessagesCollected(MessageCollection<AddMessageRequested, ModelUpdated> set)
+        private void OnMessagesCollected(MessageCollection<AddMessageRequested, ModelVersionCreated> set)
         {
             set.MarkAsConsumed(set.Message1);
 
@@ -55,7 +55,7 @@ namespace Agents.Net.Designer.Model.Agents
                                       new PackageMessagesProperty(), set));
         }
 
-        private void OnMessagesCollected(MessageCollection<AddAgentRequested, ModelUpdated> set)
+        private void OnMessagesCollected(MessageCollection<AddAgentRequested, ModelVersionCreated> set)
         {
             set.MarkAsConsumed(set.Message1);
 

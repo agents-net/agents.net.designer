@@ -4,18 +4,16 @@ using Agents.Net.Designer.Model;
 namespace Agents.Net.Designer.CodeGenerator.Messages
 {
     public class MessageModelSelectedForGeneration : Message
-    {        public MessageModelSelectedForGeneration(MessageModel message, Message predecessorMessage,
-                                                 params Message[] childMessages)
-            : base(predecessorMessage, childMessages:childMessages)
+    {
+        private MessageModelSelectedForGeneration(MessageModel message, Message predecessorMessage)
+            : base(predecessorMessage)
         {
             Message = message;
         }
 
-        public MessageModelSelectedForGeneration(MessageModel message, IEnumerable<Message> predecessorMessages,
-                                                 params Message[] childMessages)
-            : base(predecessorMessages, childMessages:childMessages)
+        public static MessageModelSelectedForGeneration Decorate(ModelSelectedForGeneration message, MessageModel model)
         {
-            Message = message;
+            return new(model, message);
         }
 
         public MessageModel Message { get; }

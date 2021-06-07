@@ -8,11 +8,12 @@ namespace Agents.Net.Designer.CodeGenerator.Agents
     [Intercepts(typeof(GeneratingFile))]
     [Intercepts(typeof(GenerateFilesRequested))]
     public class DirectoryCreator : InterceptorAgent
-    {        public DirectoryCreator(IMessageBoard messageBoard) : base(messageBoard)
+    {
+        public DirectoryCreator(IMessageBoard messageBoard) : base(messageBoard)
         {
         }
 
-        private readonly HashSet<string> createdDirectories = new HashSet<string>();
+        private readonly HashSet<string> createdDirectories = new();
 
         protected override InterceptionAction InterceptCore(Message messageData)
         {

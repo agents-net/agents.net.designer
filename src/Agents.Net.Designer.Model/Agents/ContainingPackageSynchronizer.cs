@@ -4,7 +4,8 @@ using Agents.Net.Designer.Model.Messages;
 
 namespace Agents.Net.Designer.Model.Agents
 {
-    [Intercepts(typeof(ModelUpdated))]
+    [Intercepts(typeof(ModificationResult))]
+    [Intercepts(typeof(ModelLoaded))]
     public class ContainingPackageSynchronizer : InterceptorAgent
     {
         public ContainingPackageSynchronizer(IMessageBoard messageBoard) : base(messageBoard)
@@ -13,15 +14,17 @@ namespace Agents.Net.Designer.Model.Agents
 
         protected override InterceptionAction InterceptCore(Message messageData)
         {
-            ModelUpdated updated = messageData.Get<ModelUpdated>();
-            foreach (AgentModel agent in updated.Model.Agents)
+            CommunityModel model = messageData.TryGet(out ModificationResult result)
+                                       ? result.Model
+                                       : messageData.Get<ModelLoaded>().Model;
+            foreach (AgentModel agent in model.Agents)
             {
-                agent.ContainingPackage = updated.Model;
+                agent.ContainingPackage = model;
             }
 
-            foreach (MessageModel message in updated.Model.Messages)
+            foreach (MessageModel message in model.Messages)
             {
-                message.ContainingPackage = updated.Model;
+                message.ContainingPackage = model;
             }
 
             return InterceptionAction.Continue;

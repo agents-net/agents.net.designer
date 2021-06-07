@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Windows.Input;
 using Agents.Net.Designer.Model.Messages;
+using Agents.Net.Designer.ViewModel;
 using Agents.Net.Designer.ViewModel.Messages;
 using Agents.Net.Designer.WpfView.Messages;
 using Microsoft.Msagl.Drawing;
@@ -22,7 +23,7 @@ namespace Agents.Net.Designer.WpfView.Agents
     [Produces(typeof(DeleteItemRequested))]
     public class MainWindowObserver : Agent, IDisposable
     {
-        private List<IViewerObject> subscribedObjects = new List<IViewerObject>();
+        private List<IViewerObject> subscribedObjects = new();
         private MainWindowCreated mainWindowCreated;
 
         public MainWindowObserver(IMessageBoard messageBoard) : base(messageBoard)
@@ -32,7 +33,14 @@ namespace Agents.Net.Designer.WpfView.Agents
         private void GraphViewerOnGraphChanged(object? sender, EventArgs e)
         {
             UpdateSelectionChangedEvents();
-            OnMessage(new GraphViewModelUpdated(mainWindowCreated));
+            if (mainWindowCreated.Window.DataContext is GraphViewModel graphViewModel)
+            {
+                OnMessage(new GraphViewModelUpdated(graphViewModel.LastGraphCreatedMessage));
+            }
+            else
+            {
+                throw new InvalidOperationException("window data context has the wrong type.");
+            }
         }
 
         private void UpdateSelectionChangedEvents()

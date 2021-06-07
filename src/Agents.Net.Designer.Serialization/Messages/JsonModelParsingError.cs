@@ -4,16 +4,15 @@ using System.Linq;
 namespace Agents.Net.Designer.Serialization.Messages
 {
     public class JsonModelParsingError : Message
-    {        public JsonModelParsingError(IEnumerable<string> messages, Message predecessorMessage,
-                                     params Message[] childMessages)
-            : base(predecessorMessage, childMessages:childMessages)
+    {
+        public JsonModelParsingError(IEnumerable<string> messages, Message predecessorMessage)
+            : base(predecessorMessage)
         {
             Messages = messages;
         }
 
-        public JsonModelParsingError(IEnumerable<string> messages, IEnumerable<Message> predecessorMessages,
-                                     params Message[] childMessages)
-            : base(predecessorMessages, childMessages:childMessages)
+        public JsonModelParsingError(IEnumerable<string> messages, IEnumerable<Message> predecessorMessages)
+            : base(predecessorMessages)
         {
             Messages = messages;
         }

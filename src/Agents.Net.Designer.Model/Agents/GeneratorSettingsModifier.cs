@@ -5,21 +5,21 @@ using Agents.Net.Designer.Model.Messages;
 namespace Agents.Net.Designer.Model.Agents
 {
     [Consumes(typeof(ModifyModel))]
-    [Consumes(typeof(ModelUpdated))]
-    [Produces(typeof(ModelUpdated))]
+    [Consumes(typeof(ModelVersionCreated))]
+    [Produces(typeof(ModificationResult))]
     public class GeneratorSettingsModifier : Agent
     {
-        private readonly MessageCollector<ModifyModel, ModelUpdated> collector;
+        private readonly MessageCollector<ModifyModel, ModelVersionCreated> collector;
 
         public GeneratorSettingsModifier(IMessageBoard messageBoard) : base(messageBoard)
         {
-            collector = new MessageCollector<ModifyModel, ModelUpdated>(OnMessagesCollected);
+            collector = new MessageCollector<ModifyModel, ModelVersionCreated>(OnMessagesCollected);
         }
 
-        private void OnMessagesCollected(MessageCollection<ModifyModel, ModelUpdated> set)
+        private void OnMessagesCollected(MessageCollection<ModifyModel, ModelVersionCreated> set)
         {
             set.MarkAsConsumed(set.Message1);
-            if (!(set.Message1.Target is GeneratorSettings generatorSettings))
+            if (set.Message1.Target is not GeneratorSettings generatorSettings)
             {
                 return;
             }
@@ -39,10 +39,10 @@ namespace Agents.Net.Designer.Model.Agents
                     throw new InvalidOperationException($"Property {set.Message1.Property} unknown for agent model.");
             }
 
-            CommunityModel updatedCommunity = new CommunityModel(updatedModel,
-                                                                 set.Message2.Model.Agents,
-                                                                 set.Message2.Model.Messages);
-            OnMessage(new ModelUpdated(updatedCommunity, set));
+            CommunityModel updatedCommunity = new(updatedModel,
+                                                  set.Message2.Model.Agents,
+                                                  set.Message2.Model.Messages);
+            OnMessage(new ModificationResult(updatedCommunity, set));
         }
 
         protected override void ExecuteCore(Message messageData)

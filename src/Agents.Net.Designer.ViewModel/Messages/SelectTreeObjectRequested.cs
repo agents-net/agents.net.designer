@@ -15,7 +15,7 @@ namespace Agents.Net.Designer.ViewModel.Messages
         public static SelectTreeObjectRequested Decorate(SelectedModelObjectChanged decoratedMessage,
                                                          IEnumerable<Message> additionalPredecessors = null)
         {
-            return new SelectTreeObjectRequested(decoratedMessage, additionalPredecessors);
+            return new(decoratedMessage, additionalPredecessors);
         }
 
         protected override string DataToString()

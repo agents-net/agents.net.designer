@@ -32,14 +32,14 @@ namespace Agents.Net.Designer.ViewModel.Agents
             {
                 CommunityModel model = set.Message1.Model;
                 string rootNamespace = model.GeneratorSettings.PackageNamespace;
-                CommunityViewModel root = new CommunityViewModel
+                CommunityViewModel root = new()
                 {
                     Name = string.IsNullOrEmpty(rootNamespace)?"<Root>":rootNamespace,
                     GenerateAutofacModule = model.GeneratorSettings.GenerateAutofacModule
                 };
                 if (!string.IsNullOrEmpty(rootNamespace))
                 {
-                    FolderViewModel folder = new FolderViewModel
+                    FolderViewModel folder = new()
                     {
                         Name = rootNamespace,
                         IsRelativeRoot = true
@@ -47,7 +47,7 @@ namespace Agents.Net.Designer.ViewModel.Agents
                     root.Items.Add(folder);
                 }
                 
-                AvailableItemsViewModel availableViewModel = new AvailableItemsViewModel
+                AvailableItemsViewModel availableViewModel = new()
                 {
                     AvailableMessages = new ObservableCollection<MessageViewModel>()
                 };

@@ -9,20 +9,20 @@ using Agents.Net.Designer.ViewModel.Messages;
 
 namespace Agents.Net.Designer.ViewModel.Agents
 {
-    [Consumes(typeof(ModelUpdated))]
+    [Consumes(typeof(ModificationResult))]
     [Consumes(typeof(TreeViewModelCreated))]
     public class ModelIdUpdater : Agent
     {
-        private readonly MessageCollector<TreeViewModelCreated, ModelUpdated> collector;
+        private readonly MessageCollector<TreeViewModelCreated, ModificationResult> collector;
 
         public ModelIdUpdater(IMessageBoard messageBoard) : base(messageBoard)
         {
-            collector = new MessageCollector<TreeViewModelCreated, ModelUpdated>(OnMessagesCollected);
+            collector = new MessageCollector<TreeViewModelCreated, ModificationResult>(OnMessagesCollected);
         }
 
         private CommunityModel lastModel;
 
-        private void OnMessagesCollected(MessageCollection<TreeViewModelCreated, ModelUpdated> set)
+        private void OnMessagesCollected(MessageCollection<TreeViewModelCreated, ModificationResult> set)
         {
             set.MarkAsConsumed(set.Message2);
             CommunityModel oldModel = Interlocked.Exchange(ref lastModel, set.Message2.Model);

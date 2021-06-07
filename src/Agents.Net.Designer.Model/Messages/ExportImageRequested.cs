@@ -4,15 +4,15 @@ using Agents.Net;
 namespace Agents.Net.Designer.Model.Messages
 {
     public class ExportImageRequested : Message
-    {        public ExportImageRequested(string path, Message predecessorMessage, params Message[] childMessages)
-            : base(predecessorMessage, childMessages:childMessages)
+    {
+        public ExportImageRequested(string path, Message predecessorMessage)
+            : base(predecessorMessage)
         {
             Path = path;
         }
 
-        public ExportImageRequested(string path, IEnumerable<Message> predecessorMessages,
-                                    params Message[] childMessages)
-            : base(predecessorMessages, childMessages:childMessages)
+        public ExportImageRequested(string path, IEnumerable<Message> predecessorMessages)
+            : base(predecessorMessages)
         {
             Path = path;
         }

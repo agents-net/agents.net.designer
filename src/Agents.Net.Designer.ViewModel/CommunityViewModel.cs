@@ -22,6 +22,6 @@ namespace Agents.Net.Designer.ViewModel
             }
         }
 
-        public ObservableCollection<TreeViewItem> BuildInTypes { get; } = new ObservableCollection<TreeViewItem>();
+        public ObservableCollection<TreeViewItem> BuildInTypes { get; } = new();
     }
 }

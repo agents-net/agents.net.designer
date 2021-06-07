@@ -1,55 +1,63 @@
 using System;
+using System.Collections.Generic;
 using Agents.Net;
 using Agents.Net.Designer.Model.Messages;
 
 namespace Agents.Net.Designer.Model.Agents
 {
+    [Consumes(typeof(ModelVersionCreated))]
     [Consumes(typeof(ModifyModel))]
-    [Consumes(typeof(ModelUpdated))]
-    [Produces(typeof(ModelUpdated))]
+    [Produces(typeof(ModificationResult))]
     public class MessageModelModifier : Agent
     {
-        private readonly MessageCollector<ModifyModel, ModelUpdated> collector;
+        private readonly MessageCollector<ModifyModel, ModelVersionCreated> collector;
 
         public MessageModelModifier(IMessageBoard messageBoard) : base(messageBoard)
         {
-            collector = new MessageCollector<ModifyModel, ModelUpdated>(OnMessagesCollected);
+            collector = new MessageCollector<ModifyModel, ModelVersionCreated>(OnMessagesCollected);
         }
 
-        private void OnMessagesCollected(MessageCollection<ModifyModel, ModelUpdated> set)
+        private void OnMessagesCollected(MessageCollection<ModifyModel, ModelVersionCreated> set)
         {
             set.MarkAsConsumed(set.Message1);
-            if (!(set.Message1.Target is MessageModel messageModel))
+            set.MarkAsConsumed(set.Message2);
+            
+            ExecuteCollectedMessages(set.Message1, set.Message2.Model, set);
+        }
+
+        private void ExecuteCollectedMessages(ModifyModel modifyModel, CommunityModel model, IEnumerable<Message> set)
+        {
+            if (modifyModel.Target is not MessageModel messageModel)
             {
                 return;
             }
             
             MessageModel updatedModel;
-            switch (set.Message1.Property)
+            switch (modifyModel.Property)
             {
                 case MessageNameProperty _:
-                    updatedModel = messageModel.Clone(name:set.Message1.NewValue.AssertTypeOf<string>());
+                    updatedModel = messageModel.Clone(name:modifyModel.NewValue.AssertTypeOf<string>());
                     break;
                 case MessageNamespaceProperty _:
-                    updatedModel = messageModel.Clone(@namespace:set.Message1.NewValue.AssertTypeOf<string>());
+                    updatedModel = messageModel.Clone(@namespace:modifyModel.NewValue.AssertTypeOf<string>());
                     break;
                 case MessageDecoratorDecoratedMessageProperty _:
                     MessageDecoratorModel decoratorModel = (MessageDecoratorModel) messageModel;
-                    updatedModel = decoratorModel.Clone(set.Message1.NewValue.AssertTypeOf<Guid>());
+                    updatedModel = decoratorModel.Clone(modifyModel.NewValue.AssertTypeOf<Guid>());
                     break;
                 default:
-                    throw new InvalidOperationException($"Property {set.Message1.Property} unknown for agent model.");
+                    throw new InvalidOperationException($"Property {modifyModel.Property} unknown for agent model.");
             }
 
-            CommunityModel updatedCommunity = new CommunityModel(set.Message2.Model.GeneratorSettings,
-                                                                 set.Message2.Model.Agents,
-                                                                 ReplaceMessage());
-            OnMessage(new ModelUpdated(updatedCommunity, set));
+            CommunityModel updatedCommunity = new(model.GeneratorSettings,
+                                                  model.Agents,
+                                                  ReplaceMessage());
+            OnMessage(new ModificationResult(updatedCommunity, set));
             
             MessageModel[] ReplaceMessage()
             {
-                MessageModel[] messages = new MessageModel[set.Message2.Model.Messages.Length];
-                Array.Copy(set.Message2.Model.Messages, messages, messages.Length);
+                MessageModel[] messages = new MessageModel[model.Messages.Length];
+                Array.Copy(model.Messages, messages, messages.Length);
                 int messageIndex = Array.IndexOf(messages, messageModel);
                 if (messageIndex < 0)
                 {

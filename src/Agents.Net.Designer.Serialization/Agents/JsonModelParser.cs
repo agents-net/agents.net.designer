@@ -10,7 +10,6 @@ using Newtonsoft.Json.Serialization;
 namespace Agents.Net.Designer.Serialization.Agents
 {
     [Consumes(typeof(JsonTextLoaded))]
-    [Produces(typeof(ModelUpdated))]
     [Produces(typeof(ModelLoaded))]
     [Produces(typeof(JsonModelParsingError))]
     public class JsonModelParser : Agent
@@ -25,16 +24,16 @@ namespace Agents.Net.Designer.Serialization.Agents
 
             try
             {
-                JsonSerializer serializer = new JsonSerializer
+                JsonSerializer serializer = new()
                 {
                     TypeNameHandling = TypeNameHandling.Auto,
                     SerializationBinder = new AgentsNetSerializationBinder()
                 };
-                using StringReader reader = new StringReader(loaded.Text);
-                using JsonTextReader jsonReader = new JsonTextReader(reader);
+                using StringReader reader = new(loaded.Text);
+                using JsonTextReader jsonReader = new(reader);
                 CommunityModel model = serializer.Deserialize<CommunityModel>(jsonReader);
                 
-                OnMessage(new ModelLoaded(model, messageData, new ModelUpdated(model, messageData)));
+                OnMessage(new ModelLoaded(model, messageData));
             }
             catch (JsonReaderException e)
             {

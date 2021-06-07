@@ -7,7 +7,7 @@ namespace Agents.Net.Designer.ViewModel
 {
     public class TreeViewItem : INotifyPropertyChanged
     {
-        private ObservableCollection<TreeViewItem> items = new ObservableCollection<TreeViewItem>();
+        private ObservableCollection<TreeViewItem> items = new();
         private string name;
         private bool isSelected;
 

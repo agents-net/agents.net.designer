@@ -23,10 +23,10 @@ namespace Agents.Net.Designer.CodeGenerator.Agents
             string name = agentModel.Agent.Name;
             string agentNamespace = agentModel.Agent.FullNamespace();
             string path = agentModel.Get<ModelSelectedForGeneration>().GenerationPath;
-            List<string> consumingMessages = new List<string>();
-            List<string> producingMessages = new List<string>();
-            List<string> interceptingMessages = new List<string>();
-            HashSet<string> dependencies = new HashSet<string>();
+            List<string> consumingMessages = new();
+            List<string> producingMessages = new();
+            List<string> interceptingMessages = new();
+            HashSet<string> dependencies = new();
             AddMessages(agentModel.ProducingMessages, producingMessages);
             AddMessages(agentModel.ConsumingMessages, consumingMessages);
             if (agentModel.TryGet(out InterceptorAgentModelSelectedForGeneration interceptorAgent))
@@ -34,15 +34,14 @@ namespace Agents.Net.Designer.CodeGenerator.Agents
                 AddMessages(interceptorAgent.InterceptingMessages, interceptingMessages);
             }
 
-            Message message = new GeneratingAgent(consumingMessages.ToArray(),
-                                                  producingMessages.ToArray(),
-                                                  dependencies.ToArray(),
-                                                  agentModel,
-                                                  new GeneratingFile(name, agentNamespace, path,
-                                                                     agentModel));
+            Message message = GeneratingAgent.Decorate(new GeneratingFile(name, agentNamespace, path,
+                                                                          agentModel),
+                                                       consumingMessages.ToArray(),
+                                                       producingMessages.ToArray(),
+                                                       dependencies.ToArray());
             if (agentModel.Is<InterceptorAgentModelSelectedForGeneration>())
             {
-                message = new GeneratingInterceptorAgent(interceptingMessages.ToArray(), agentModel, message);
+                message = GeneratingInterceptorAgent.Decorate((GeneratingAgent) message, interceptingMessages.ToArray());
             }
             OnMessage(message);
 

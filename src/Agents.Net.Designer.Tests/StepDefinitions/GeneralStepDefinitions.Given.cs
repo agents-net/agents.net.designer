@@ -11,7 +11,6 @@ using Agents.Net.Designer.Tests.Tools;
 using Agents.Net.Designer.Tests.Tools.Modules;
 using Autofac;
 using FluentAssertions;
-using NLog;
 using TechTalk.SpecFlow;
 
 namespace Agents.Net.Designer.Tests.StepDefinitions
@@ -48,9 +47,9 @@ namespace Agents.Net.Designer.Tests.StepDefinitions
             where T : TestBaseModule, new ()
         {
             //Create container
-            using ManualResetEventSlim initializedTrigger = new ManualResetEventSlim(false);
+            using ManualResetEventSlim initializedTrigger = new(false);
             scenarioContext.Set(initializedTrigger, StringConstants.InitializedMessageReceived);
-            ContainerBuilder builder = new ContainerBuilder();
+            ContainerBuilder builder = new();
             builder.RegisterModule<T>();
             builder.RegisterInstance(scenarioContext);
             IContainer container = builder.Build();

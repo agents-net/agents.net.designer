@@ -5,16 +5,14 @@ namespace Agents.Net.Designer.ViewModel.Messages
 {
     public class SelectedTreeViewItemChanged : Message
     {
-        public SelectedTreeViewItemChanged(TreeViewItem selectedItem, Message predecessorMessage,
-                                           params Message[] childMessages)
-            : base(predecessorMessage, childMessages:childMessages)
+        public SelectedTreeViewItemChanged(TreeViewItem selectedItem, Message predecessorMessage)
+            : base(predecessorMessage)
         {
             SelectedItem = selectedItem;
         }
 
-        public SelectedTreeViewItemChanged(TreeViewItem selectedItem, IEnumerable<Message> predecessorMessages,
-                                           params Message[] childMessages)
-            : base(predecessorMessages, childMessages:childMessages)
+        public SelectedTreeViewItemChanged(TreeViewItem selectedItem, IEnumerable<Message> predecessorMessages)
+            : base(predecessorMessages)
         {
             SelectedItem = selectedItem;
         }
