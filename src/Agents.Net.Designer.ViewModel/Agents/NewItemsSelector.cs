@@ -5,47 +5,38 @@ using Agents.Net.Designer.ViewModel.Messages;
 
 namespace Agents.Net.Designer.ViewModel.Agents
 {
-    [Intercepts(typeof(ModifyModel))]
+    [Consumes(typeof(ModifyModel))]
     [Consumes(typeof(GraphViewModelUpdated))]
     [Consumes(typeof(TreeViewModelUpdated))]
     [Produces(typeof(SelectedModelObjectChanged))]
-    public class NewItemsSelector : InterceptorAgent
+    public class NewItemsSelector : Agent
     {
-        private readonly MessageCollector<GraphViewModelUpdated, TreeViewModelUpdated> collector;
+        private readonly MessageCollector<ModifyModel, GraphViewModelUpdated, TreeViewModelUpdated> collector;
 
         public NewItemsSelector(IMessageBoard messageBoard) : base(messageBoard)
         {
-            collector = new MessageCollector<GraphViewModelUpdated, TreeViewModelUpdated>(OnMessagesCollected);
+            collector = new MessageCollector<ModifyModel, GraphViewModelUpdated, TreeViewModelUpdated>(OnMessagesCollected);
         }
 
-        private void OnMessagesCollected(MessageCollection<GraphViewModelUpdated, TreeViewModelUpdated> set)
+        private void OnMessagesCollected(MessageCollection<ModifyModel, GraphViewModelUpdated, TreeViewModelUpdated> set)
         {
             set.MarkAsConsumed(set.Message1);
             set.MarkAsConsumed(set.Message2);
+            set.MarkAsConsumed(set.Message3);
 
-            object selectable = objectToSelect;
-            if (selectable != null)
+            if (set.Message1.ModificationType != ModelModification.Add ||
+                set.Message1.Target is not CommunityModel ||
+                set.Message2.MessageDomain.Root != set.Message1)
             {
-                OnMessage(new SelectedModelObjectChanged(selectable, set));
+                return;
             }
+            object selectable = set.Message1.NewValue;
+            OnMessage(new SelectedModelObjectChanged(selectable, set, SelectionSource.Internal));
         }
-
-        private object objectToSelect;
 
         protected override void ExecuteCore(Message messageData)
         {
             collector.Push(messageData);
-        }
-
-        protected override InterceptionAction InterceptCore(Message messageData)
-        {
-            ModifyModel modifyModel = messageData.Get<ModifyModel>();
-            objectToSelect = modifyModel.ModificationType != ModelModification.Add ||
-                             !(modifyModel.Target is CommunityModel)
-                                 ? null
-                                 : modifyModel.NewValue;
-
-            return InterceptionAction.Continue;
         }
     }
 }

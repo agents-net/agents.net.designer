@@ -11,7 +11,6 @@ namespace Agents.Net.Designer.CodeGenerator.Agents
     [Intercepts(typeof(FilesGenerated))]
     [Consumes(typeof(GeneratorSettingsDefined))]
     [Consumes(typeof(TemplatesLoaded))]
-    [Consumes(typeof(GeneratingFile), Implicitly = true)]
     public class AutofacModuleGenerator : InterceptorAgent
     {
         private readonly MessageCollector<GeneratorSettingsDefined, FilesGenerated, TemplatesLoaded> messageCollector;
@@ -28,17 +27,17 @@ namespace Agents.Net.Designer.CodeGenerator.Agents
 
         protected override InterceptionAction InterceptCore(Message messageData)
         {
-            messageCollector.Push(messageData);
-            MessageCollection<GeneratorSettingsDefined, FilesGenerated, TemplatesLoaded> set =
-                messageCollector.FindSetsForDomain(messageData.MessageDomain).FirstOrDefault();
-            if (set == null ||
-                !set.Message1.Settings.GenerateAutofacModule)
+            messageCollector.PushAndExecute(messageData, set =>
             {
-                return InterceptionAction.Continue;
-            }
+                set.MarkAsConsumed(set.Message2);
+                
+                if (set.Message1.Settings.GenerateAutofacModule)
+                {
+                    string contents = GenerateModule(set, out string name);
+                    File.WriteAllText(Path.Combine(set.Message1.Path, $"{name}.cs"), contents, Encoding.UTF8);
+                }
+            });
 
-            string contents = GenerateModule(set, out string name);
-            File.WriteAllText(Path.Combine(set.Message1.Path, $"{name}.cs"), contents, Encoding.UTF8);
             return InterceptionAction.Continue;
         }
 
@@ -46,34 +45,30 @@ namespace Agents.Net.Designer.CodeGenerator.Agents
         {
             string template = set.Message3.Templates["AutofacModuleTemplate"];
 
-            List<GeneratingAgent> agents = new List<GeneratingAgent>();
-            List<GeneratingFile> files = new List<GeneratingFile>();
-            foreach (FileGenerated fileGenerated in set.Message2.Predecessors.OfType<FileGenerated>())
+            List<FileGenerationResult> agents = new();
+            List<FileGenerationResult> files = new();
+            foreach (FileGenerationResult generationResult in set.Message2.FileResults)
             {
-                if (fileGenerated.TryGetPredecessor(out GeneratingAgent agent))
+                if (generationResult.FileType.HasFlag(FileType.Agent))
                 {
-                    agents.Add(agent);
+                    agents.Add(generationResult);
                 }
 
-                if (fileGenerated.TryGetPredecessor(out GeneratingFile file))
-                {
-                    files.Add(file);
-                }
+                files.Add(generationResult);
             }
 
             string rootNamespace = FindRootNamespace(set.Message1, files);
 
             name = GetName(rootNamespace);
 
-            List<string> agentDefinitions = new List<string>();
+            List<string> agentDefinitions = new();
             int templatePosition = template.IndexOf("$registeragents$", StringComparison.Ordinal);
             int previousLineBreak = template.LastIndexOf('\n', templatePosition);
             int tabSpace = templatePosition - previousLineBreak - 1;
-            string tab = new string(' ', tabSpace);
-            foreach (GeneratingAgent agent in agents)
+            string tab = new(' ', tabSpace);
+            foreach (FileGenerationResult generationResult in agents)
             {
-                GeneratingFile file = agent.Get<GeneratingFile>();
-                string fullName = $"{file.Namespace}.{file.Name}";
+                string fullName = $"{generationResult.Namespace}.{generationResult.Name}";
                 if (fullName.StartsWith(rootNamespace))
                 {
                     fullName = fullName.Substring(rootNamespace.Length + 1);
@@ -101,7 +96,7 @@ namespace Agents.Net.Designer.CodeGenerator.Agents
             return name;
         }
 
-        private static string FindRootNamespace(GeneratorSettingsDefined settingsDefined, List<GeneratingFile> files)
+        private static string FindRootNamespace(GeneratorSettingsDefined settingsDefined, IEnumerable<FileGenerationResult> files)
         {
             string rootNamespace = settingsDefined.Settings.PackageNamespace;
             if (string.IsNullOrEmpty(rootNamespace))

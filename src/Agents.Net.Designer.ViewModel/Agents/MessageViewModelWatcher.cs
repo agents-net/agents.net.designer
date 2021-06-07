@@ -10,69 +10,66 @@ using Agents.Net.Designer.ViewModel.Messages;
 namespace Agents.Net.Designer.ViewModel.Agents
 {
     [Consumes(typeof(SelectedTreeViewItemChanged))]
-    [Consumes(typeof(ModelUpdated))]
+    [Consumes(typeof(ModelVersionCreated))]
     [Produces(typeof(ModifyModel))]
-    public class MessageViewModelWatcher : Agent, IDisposable
+    public class MessageViewModelWatcher : Agent
     {
-        private Message changedMessage;
-        private MessageViewModel viewModel;
-        private CommunityModel latestModel;
+        private Tuple<MessageViewModel, Message[], CommunityModel> latestData;
+        private readonly MessageCollector<ModelVersionCreated, SelectedTreeViewItemChanged> collector;
 
         public MessageViewModelWatcher(IMessageBoard messageBoard) : base(messageBoard)
         {
+            collector = new MessageCollector<ModelVersionCreated, SelectedTreeViewItemChanged>(OnMessagesCollected);
+        }
+
+        private void OnMessagesCollected(MessageCollection<ModelVersionCreated, SelectedTreeViewItemChanged> set)
+        {
+            if (set.Message2.SelectedItem is not MessageViewModel messageViewModel)
+            {
+                return;
+            }
+            Tuple<MessageViewModel, Message[], CommunityModel> oldData = Interlocked.Exchange(ref latestData, new Tuple<MessageViewModel, Message[], CommunityModel>(messageViewModel, set.ToArray(), set.Message1.Model));
+            if (oldData?.Item1 != null)
+            {
+                oldData.Item1.PropertyChanged -= ViewModelOnPropertyChanged;
+            }
+            messageViewModel.PropertyChanged += ViewModelOnPropertyChanged;
         }
 
         protected override void ExecuteCore(Message messageData)
         {
-            if (messageData.TryGet(out ModelUpdated modelUpdated))
-            {
-                latestModel = modelUpdated.Model;
-                return;
-            }
-            SelectedTreeViewItemChanged viewModelChanged = messageData.Get<SelectedTreeViewItemChanged>();
-            if (!(viewModelChanged.SelectedItem is MessageViewModel messageViewModel))
-            {
-                return;
-            }
-
-            MessageViewModel oldViewModel = Interlocked.Exchange(ref viewModel, messageViewModel);
-            if (oldViewModel != null)
-            {
-                oldViewModel.PropertyChanged -= ViewModelOnPropertyChanged;
-            }
-            changedMessage = messageData;
-            messageViewModel.PropertyChanged += ViewModelOnPropertyChanged;
+            collector.Push(messageData);
         }
 
         private void ViewModelOnPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            MessageModel oldModel = latestModel.Messages.First(a => a.Id == viewModel.ModelId);
+            MessageModel oldModel = latestData.Item3.Messages.First(a => a.Id == latestData.Item1.ModelId);
             switch (e.PropertyName)
             {
                 case nameof(MessageViewModel.Name):
                     OnMessage(new ModifyModel(ModelModification.Change,
                                               oldModel.Name,
-                                              viewModel.Name,
+                                              latestData.Item1.Name,
                                               oldModel,
                                               new MessageNameProperty(), 
-                                              changedMessage));
+                                              latestData.Item2));
                     break;
                 case nameof(MessageViewModel.RelativeNamespace):
                     OnMessage(new ModifyModel(ModelModification.Change,
                                               oldModel.Namespace,
-                                              viewModel.RelativeNamespace,
+                                              latestData.Item1.RelativeNamespace,
                                               oldModel,
                                               new MessageNamespaceProperty(), 
-                                              changedMessage));
+                                              latestData.Item2));
                     break;
                 case nameof(MessageViewModel.DecoratedMessage):
                     MessageDecoratorModel oldDecoratorModel = (MessageDecoratorModel) oldModel;
                     OnMessage(new ModifyModel(ModelModification.Change,
                                               oldDecoratorModel.DecoratedMessage,
-                                              viewModel.DecoratedMessage.ModelId,
+                                              latestData.Item1.DecoratedMessage.ModelId,
                                               oldModel,
                                               new MessageDecoratorDecoratedMessageProperty(), 
-                                              changedMessage));
+                                              latestData.Item2));
                     break;
                 case nameof(MessageViewModel.MessageType):
                     SwitchMessageType(oldModel);
@@ -83,7 +80,7 @@ namespace Agents.Net.Designer.ViewModel.Agents
         private void SwitchMessageType(MessageModel oldModel)
         {
             MessageModel newModel;
-            switch (viewModel.MessageType)
+            switch (latestData.Item1.MessageType)
             {
                 case MessageType.Message:
                     newModel = new MessageModel(oldModel.Name, oldModel.Namespace, oldModel.Id,
@@ -94,19 +91,20 @@ namespace Agents.Net.Designer.ViewModel.Agents
                                                          oldModel.BuildIn);
                     break;
                 default:
-                    throw new InvalidOperationException($"Message type {viewModel.MessageType} is not known.");
+                    throw new InvalidOperationException($"Message type {latestData.Item1.MessageType} is not known.");
             }
 
             OnMessage(new ModifyModel(ModelModification.Change, oldModel, newModel,
-                                      oldModel.ContainingPackage, new PackageMessagesProperty(), changedMessage));
+                                      oldModel.ContainingPackage, new PackageMessagesProperty(), latestData.Item2));
         }
 
-        public void Dispose()
+        protected override void Dispose(bool disposing)
         {
-            if (viewModel != null)
+            if (disposing && latestData != null)
             {
-                viewModel.PropertyChanged -= ViewModelOnPropertyChanged;
+                latestData.Item1.PropertyChanged -= ViewModelOnPropertyChanged;
             }
+            base.Dispose(disposing);
         }
     }
 }

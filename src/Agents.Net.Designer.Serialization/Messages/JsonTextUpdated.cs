@@ -3,14 +3,15 @@
 namespace Agents.Net.Designer.Serialization.Messages
 {
     public class JsonTextUpdated : Message
-    {        public JsonTextUpdated(string text, Message predecessorMessage, params Message[] childMessages)
-            : base(predecessorMessage, childMessages:childMessages)
+    {
+        public JsonTextUpdated(string text, Message predecessorMessage)
+            : base(predecessorMessage)
         {
             Text = text;
         }
 
-        public JsonTextUpdated(string text, IEnumerable<Message> predecessorMessages, params Message[] childMessages)
-            : base(predecessorMessages, childMessages:childMessages)
+        public JsonTextUpdated(string text, IEnumerable<Message> predecessorMessages)
+            : base(predecessorMessages)
         {
             Text = text;
         }

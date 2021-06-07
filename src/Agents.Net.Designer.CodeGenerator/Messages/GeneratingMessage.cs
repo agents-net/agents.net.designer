@@ -3,16 +3,15 @@
 namespace Agents.Net.Designer.CodeGenerator.Messages
 {
     public class GeneratingMessage : Message
-    {        public GeneratingMessage(Message predecessorMessage,
-                                 params Message[] childMessages)
-            : base(predecessorMessage, childMessages:childMessages)
+    {
+        private GeneratingMessage(Message decoratedMessage)
+            : base(decoratedMessage)
         {
         }
 
-        public GeneratingMessage(IEnumerable<Message> predecessorMessages,
-                                 params Message[] childMessages)
-            : base(predecessorMessages, childMessages:childMessages)
+        public static GeneratingMessage Decorate(GeneratingFile file)
         {
+            return new(file);
         }
 
         protected override string DataToString()

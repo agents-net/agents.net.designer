@@ -26,7 +26,7 @@ namespace Agents.Net.Designer.Tests.Tools
                 $"Agents.Net.Designer.Tests.Deployment.{string.Join('.', fileName.Split(new[] {'/', '\\'}, StringSplitOptions.RemoveEmptyEntries))}";
             using Stream resourceStream = Assembly.GetExecutingAssembly().GetManifestResourceStream(resourceKey);
             resourceStream.Should().NotBeNull($"resource {resourceKey} was expected to exist.");
-            using StreamReader reader = new StreamReader(resourceStream, Encoding.UTF8, true);
+            using StreamReader reader = new(resourceStream, Encoding.UTF8, true);
             string resourceContent = reader.ReadToEnd();
             return resourceContent;
         }

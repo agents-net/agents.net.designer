@@ -20,6 +20,9 @@ namespace Agents.Net.Designer.Model
             builder.RegisterType<MessageModelModifier>().As<Agent>().InstancePerLifetimeScope();
             builder.RegisterType<ModelCommandExecuter>().As<Agent>().InstancePerLifetimeScope();
             builder.RegisterType<ModelLoader>().As<Agent>().InstancePerLifetimeScope();
+            builder.RegisterType<ModificationBatchExecuter>().As<Agent>().InstancePerLifetimeScope();
+            builder.RegisterType<ModificationDomainCoordinator>().As<Agent>().InstancePerLifetimeScope();
+            builder.RegisterType<ModelVersionCreator>().As<Agent>().InstancePerLifetimeScope();
         }
     }
 }

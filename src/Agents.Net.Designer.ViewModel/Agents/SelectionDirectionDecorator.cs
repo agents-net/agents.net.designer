@@ -18,18 +18,20 @@ namespace Agents.Net.Designer.ViewModel.Agents
 
         protected override InterceptionAction InterceptCore(Message messageData)
         {
-            if (messageData.TryGetPredecessor(out SelectedGraphObjectChanged _))
+            SelectedModelObjectChanged modelObjectChanged = messageData.Get<SelectedModelObjectChanged>();
+            switch (modelObjectChanged.SelectionSource)
             {
-                SelectTreeObjectRequested.Decorate(messageData.Get<SelectedModelObjectChanged>());
-            }
-            else if (messageData.TryGetPredecessor(out SelectedTreeViewItemChanged _))
-            {
-                SelectGraphObjectRequested.Decorate(messageData.Get<SelectedModelObjectChanged>());
-            }
-            else
-            {
-                SelectTreeObjectRequested.Decorate(messageData.Get<SelectedModelObjectChanged>());
-                SelectGraphObjectRequested.Decorate(messageData.Get<SelectedModelObjectChanged>());
+                case SelectionSource.Graph:
+                    SelectTreeObjectRequested.Decorate(messageData.Get<SelectedModelObjectChanged>());
+                    break;
+                case SelectionSource.Tree:
+                    SelectGraphObjectRequested.Decorate(messageData.Get<SelectedModelObjectChanged>());
+                    break;
+                case SelectionSource.Internal:
+                default:
+                    SelectTreeObjectRequested.Decorate(messageData.Get<SelectedModelObjectChanged>());
+                    SelectGraphObjectRequested.Decorate(messageData.Get<SelectedModelObjectChanged>());
+                    break;
             }
             return InterceptionAction.Continue;
         }

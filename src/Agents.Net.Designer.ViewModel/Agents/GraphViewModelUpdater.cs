@@ -9,13 +9,15 @@ namespace Agents.Net.Designer.ViewModel.Agents
     [Consumes(typeof(GraphViewModelCreated))]
     [Produces(typeof(GraphViewModelUpdated))]
     public class GraphViewModelUpdater : Agent
-    {        public GraphViewModelUpdater(IMessageBoard messageBoard) : base(messageBoard)
+    {
+        public GraphViewModelUpdater(IMessageBoard messageBoard) : base(messageBoard)
         {
             collector = new MessageCollector<GraphCreated, GraphViewModelCreated>(OnMessagesCollected);
         }
 
         private void OnMessagesCollected(MessageCollection<GraphCreated, GraphViewModelCreated> set)
         {
+            set.Message2.ViewModel.LastGraphCreatedMessage = set.Message1; 
             set.Message2.ViewModel.Graph = set.Message1.Graph;
         }
 

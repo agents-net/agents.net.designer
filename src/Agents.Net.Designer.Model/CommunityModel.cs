@@ -18,5 +18,10 @@ namespace Agents.Net.Designer.Model
         public AgentModel[] Agents { get; }
 
         public MessageModel[] Messages { get; }
+
+        public override string ToString()
+        {
+            return $"{nameof(Agents)}: {Agents.Length}; {nameof(Messages)}: {Messages.Length}; {nameof(GeneratorSettings)}: {GeneratorSettings}";
+        }
     }
 }

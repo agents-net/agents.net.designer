@@ -10,71 +10,69 @@ using Agents.Net.Designer.ViewModel.Messages;
 namespace Agents.Net.Designer.ViewModel.Agents
 {
     [Consumes(typeof(SelectedTreeViewItemChanged))]
-    [Consumes(typeof(ModelUpdated))]
+    [Consumes(typeof(ModelVersionCreated))]
     [Produces(typeof(ModifyModel))]
-    public class CommunityViewModelWatcher : Agent, IDisposable
+    public class CommunityViewModelWatcher : Agent
     {
-        private Message changedMessage;
-        private CommunityViewModel viewModel;
-        private CommunityModel latestModel;
+        private Tuple<CommunityViewModel, Message[], CommunityModel> latestData;
+        private readonly MessageCollector<ModelVersionCreated, SelectedTreeViewItemChanged> collector;
 
         public CommunityViewModelWatcher(IMessageBoard messageBoard) : base(messageBoard)
         {
+            collector = new MessageCollector<ModelVersionCreated, SelectedTreeViewItemChanged>(OnMessagesCollected);
+        }
+
+        private void OnMessagesCollected(MessageCollection<ModelVersionCreated, SelectedTreeViewItemChanged> set)
+        {
+            if (set.Message2.SelectedItem is not CommunityViewModel communityViewModel)
+            {
+                return;
+            }
+            Tuple<CommunityViewModel, Message[], CommunityModel> oldData = Interlocked.Exchange(ref latestData, new Tuple<CommunityViewModel, Message[], CommunityModel>(communityViewModel, set.ToArray(), set.Message1.Model));
+            if (oldData?.Item1 != null)
+            {
+                oldData.Item1.PropertyChanged -= ViewModelOnPropertyChanged;
+            }
+            communityViewModel.PropertyChanged += ViewModelOnPropertyChanged;
         }
 
         protected override void ExecuteCore(Message messageData)
         {
-            if (messageData.TryGet(out ModelUpdated modelUpdated))
-            {
-                latestModel = modelUpdated.Model;
-                return;
-            }
-            SelectedTreeViewItemChanged viewModelChanged = messageData.Get<SelectedTreeViewItemChanged>();
-            if (!(viewModelChanged.SelectedItem is CommunityViewModel communityViewModel))
-            {
-                return;
-            }
-
-            CommunityViewModel oldViewModel = Interlocked.Exchange(ref viewModel, communityViewModel);
-            if (oldViewModel != null)
-            {
-                oldViewModel.PropertyChanged -= ViewModelOnPropertyChanged;
-            }
-            changedMessage = messageData;
-            communityViewModel.PropertyChanged += ViewModelOnPropertyChanged;
+            collector.Push(messageData);
         }
 
         private void ViewModelOnPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            CommunityModel oldModel = latestModel;
+            CommunityModel oldModel = latestData.Item3;
             switch (e.PropertyName)
             {
                 case nameof(CommunityViewModel.Name):
-                    string newNamespace = viewModel.Name == "<Root>" ? string.Empty : viewModel.Name;
+                    string newNamespace = latestData.Item1.Name == "<Root>" ? string.Empty : latestData.Item1.Name;
                     OnMessage(new ModifyModel(ModelModification.Change,
                                               oldModel.GeneratorSettings.PackageNamespace,
                                               newNamespace,
                                               oldModel.GeneratorSettings,
                                               new GeneratorSettingsPackageNamespaceProperty(), 
-                                              changedMessage));
+                                              latestData.Item2));
                     break;
                 case nameof(CommunityViewModel.GenerateAutofacModule):
                     OnMessage(new ModifyModel(ModelModification.Change,
                                               oldModel.GeneratorSettings.GenerateAutofacModule,
-                                              viewModel.GenerateAutofacModule,
+                                              latestData.Item1.GenerateAutofacModule,
                                               oldModel.GeneratorSettings,
                                               new GeneratorSettingsGenerateAutofacProperty(), 
-                                              changedMessage));
+                                              latestData.Item2));
                     break;
             }
         }
 
-        public void Dispose()
+        protected override void Dispose(bool disposing)
         {
-            if (viewModel != null)
+            if (disposing && latestData != null)
             {
-                viewModel.PropertyChanged -= ViewModelOnPropertyChanged;
+                latestData.Item1.PropertyChanged -= ViewModelOnPropertyChanged;
             }
+            base.Dispose(disposing);
         }
     }
 }

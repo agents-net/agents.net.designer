@@ -4,18 +4,8 @@ namespace Agents.Net.Designer.CodeGenerator.Messages
 {
     public class GeneratingMessageDecorator : Message
     {
-        public GeneratingMessageDecorator(string dependency, string decoratedMessageName, Message predecessorMessage,
-                                          params Message[] childMessages)
-            : base(predecessorMessage, childMessages:childMessages)
-        {
-            Dependency = dependency;
-            DecoratedMessageName = decoratedMessageName;
-        }
-
-        public GeneratingMessageDecorator(string dependency, string decoratedMessageName,
-                                          IEnumerable<Message> predecessorMessages,
-                                          params Message[] childMessages)
-            : base(predecessorMessages, childMessages:childMessages)
+        public GeneratingMessageDecorator(string dependency, string decoratedMessageName, Message decoratedMessage)
+            : base(decoratedMessage)
         {
             Dependency = dependency;
             DecoratedMessageName = decoratedMessageName;
@@ -24,6 +14,12 @@ namespace Agents.Net.Designer.CodeGenerator.Messages
         public string Dependency { get; }
 
         public string DecoratedMessageName { get; }
+
+        public static GeneratingMessageDecorator Decorate(GeneratingMessage message, string dependency,
+                                                          string decoratedMessageName)
+        {
+            return new(dependency, decoratedMessageName, message);
+        }
 
         protected override string DataToString()
         {

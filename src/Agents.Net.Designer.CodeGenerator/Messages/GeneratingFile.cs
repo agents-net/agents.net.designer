@@ -3,18 +3,17 @@
 namespace Agents.Net.Designer.CodeGenerator.Messages
 {
     public class GeneratingFile : Message
-    {        public GeneratingFile(string name, string ns, string path, Message predecessorMessage,
-                              params Message[] childMessages)
-            : base(predecessorMessage, childMessages:childMessages)
+    {
+        public GeneratingFile(string name, string ns, string path, Message predecessorMessage)
+            : base(predecessorMessage)
         {
             Name = name;
             Namespace = ns;
             Path = path;
         }
 
-        public GeneratingFile(string name, string ns, string path, IEnumerable<Message> predecessorMessages,
-                              params Message[] childMessages)
-            : base(predecessorMessages, childMessages:childMessages)
+        public GeneratingFile(string name, string ns, string path, IEnumerable<Message> predecessorMessages)
+            : base(predecessorMessages)
         {
             Name = name;
             Namespace = ns;

@@ -24,7 +24,7 @@ namespace Agents.Net.Designer.WpfView
 
         private static void OnUpdateTextOnDropDownClosedPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            if (!(d is ComboBox comboBox))
+            if (d is not ComboBox comboBox)
             {
                 return;
             }
@@ -39,7 +39,7 @@ namespace Agents.Net.Designer.WpfView
 
         private static void ComboBoxOnDropDownClosed(object sender, EventArgs e)
         {
-            if (!(sender is ComboBox comboBox) ||
+            if (sender is not ComboBox comboBox ||
                 comboBox.SelectedItem == null ||
                 string.IsNullOrEmpty(comboBox.Text))
             {
@@ -51,7 +51,7 @@ namespace Agents.Net.Designer.WpfView
 
         private static void ComboBoxOnUnloaded(object sender, RoutedEventArgs routedEventArgs)
         {
-            if (!(sender is ComboBox comboBox))
+            if (sender is not ComboBox comboBox)
             {
                 return;
             }

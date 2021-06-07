@@ -10,26 +10,25 @@ namespace Agents.Net.Designer.CodeGenerator.Agents
     [Produces(typeof(GeneratingMessage))]
     [Produces(typeof(GeneratingFile))]
     public class MessageModelObjectParser : Agent
-    {        public MessageModelObjectParser(IMessageBoard messageBoard) : base(messageBoard)
+    {
+        public MessageModelObjectParser(IMessageBoard messageBoard) : base(messageBoard)
         {
         }
 
         protected override void ExecuteCore(Message messageData)
         {
             MessageModelSelectedForGeneration messageModel = messageData.Get<MessageModelSelectedForGeneration>();
-            Message message = new GeneratingMessage(messageModel,
-                                                    new GeneratingFile(messageModel.Message.Name,
-                                                                       messageModel.Message.FullNamespace(),
-                                                                       messageModel.Get<ModelSelectedForGeneration>()
-                                                                                   .GenerationPath, messageModel));
+            Message message = GeneratingMessage.Decorate(new GeneratingFile(messageModel.Message.Name,
+                                                                            messageModel.Message.FullNamespace(),
+                                                                            messageModel.Get<ModelSelectedForGeneration>()
+                                                                                .GenerationPath, messageModel));
             if (messageModel.TryGet(out MessageDecoratorSelectedForGeneration messageDecorator))
             {
                 string messageNamespace = messageDecorator.DecoratedMessage.FullNamespace();
                 string dependency = messageNamespace != messageModel.Message.FullNamespace()
                                         ? messageNamespace
                                         : string.Empty;
-                message = new GeneratingMessageDecorator(dependency, messageDecorator.DecoratedMessage.Name,
-                                                         messageData, message);
+                message = GeneratingMessageDecorator.Decorate((GeneratingMessage) message, dependency, messageDecorator.DecoratedMessage.Name);
             }
             OnMessage(message);
         }

@@ -13,7 +13,7 @@ namespace Agents.Net.Designer.Serialization.Agents
         {
         }
 
-        private readonly object syncRoot = new object();
+        private readonly object syncRoot = new();
         private JsonTextUpdated updatingMessage;
         private bool fileSynchronizationEnabled;
 
@@ -23,13 +23,15 @@ namespace Agents.Net.Designer.Serialization.Agents
             {
                 fileSynchronizationEnabled = true;
             }
-            else if(messageData.TryGetPredecessor(out JsonTextUpdated processedMessage))
+            else if(messageData.MessageDomain.Root.TryGet(out FileSynchronizationProcessing processing))
             {
+                MessageDomain.TerminateDomainsOf(processing);
                 lock (syncRoot)
                 {
-                    if (updatingMessage != processedMessage &&
+                    if (updatingMessage != processing.Get<JsonTextUpdated>() &&
                         updatingMessage != null)
                     {
+                        MessageDomain.CreateNewDomainsFor(FileSynchronizationProcessing.Decorate(updatingMessage));
                         OnMessage(updatingMessage);
                     }
                     else
@@ -57,6 +59,7 @@ namespace Agents.Net.Designer.Serialization.Agents
                 }
                 
                 updatingMessage = textUpdated;
+                MessageDomain.CreateNewDomainsFor(FileSynchronizationProcessing.Decorate(updatingMessage));
                 return InterceptionAction.Continue;
             }
         }

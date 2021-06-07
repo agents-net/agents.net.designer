@@ -11,7 +11,6 @@ using Agents.Net.Designer.Tests.Tools;
 using Agents.Net.Designer.Tests.Tools.Modules;
 using Autofac;
 using FluentAssertions;
-using NLog;
 using TechTalk.SpecFlow;
 
 namespace Agents.Net.Designer.Tests.StepDefinitions

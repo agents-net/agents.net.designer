@@ -3,14 +3,15 @@
 namespace Agents.Net.Designer.CodeGenerator.Templates.Messages
 {
     public class TemplateFileFound : Message
-    {        public TemplateFileFound(string path, Message predecessorMessage, params Message[] childMessages)
-            : base(predecessorMessage, childMessages:childMessages)
+    {
+        public TemplateFileFound(string path, Message predecessorMessage)
+            : base(predecessorMessage)
         {
             Path = path;
         }
 
-        public TemplateFileFound(string path, IEnumerable<Message> predecessorMessages, params Message[] childMessages)
-            : base(predecessorMessages, childMessages:childMessages)
+        public TemplateFileFound(string path, IEnumerable<Message> predecessorMessages)
+            : base(predecessorMessages)
         {
             Path = path;
         }

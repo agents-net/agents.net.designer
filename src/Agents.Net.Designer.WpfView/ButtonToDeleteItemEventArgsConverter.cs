@@ -21,7 +21,7 @@ namespace Agents.Net.Designer.WpfView
                 return null;
             }
 
-            DeleteItemEventArgs eventArgs = new DeleteItemEventArgs(
+            DeleteItemEventArgs eventArgs = new(
                 binding.ResolvedSourcePropertyName,
                 button.DataContext);
             return eventArgs;

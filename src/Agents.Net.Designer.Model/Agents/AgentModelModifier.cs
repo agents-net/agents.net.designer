@@ -1,70 +1,70 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using Agents.Net.Designer.Model.Messages;
 
 namespace Agents.Net.Designer.Model.Agents
 {
+    [Consumes(typeof(ModelVersionCreated))]
     [Consumes(typeof(ModifyModel))]
-    [Consumes(typeof(ModelUpdated))]
-    [Produces(typeof(ModelUpdated))]
+    [Produces(typeof(ModificationResult))]
     public class AgentModelModifier : Agent
     {
-        private readonly MessageCollector<ModifyModel, ModelUpdated> collector;
+        private readonly MessageCollector<ModifyModel, ModelVersionCreated> collector;
         
         public AgentModelModifier(IMessageBoard messageBoard)
             : base(messageBoard)
         {
-            collector = new MessageCollector<ModifyModel, ModelUpdated>(OnMessagesCollected);
+            collector = new MessageCollector<ModifyModel, ModelVersionCreated>(OnMessagesCollected);
         }
 
-        private void OnMessagesCollected(MessageCollection<ModifyModel, ModelUpdated> set)
+        private void ExecuteCollectedMessages(ModifyModel modifyModel, CommunityModel model, IEnumerable<Message> set)
         {
-            set.MarkAsConsumed(set.Message1);
-            if (!(set.Message1.Target is AgentModel agentModel))
+            if (modifyModel.Target is not AgentModel agentModel)
             {
                 return;
             }
             
             AgentModel updatedModel;
-            switch (set.Message1.Property)
+            switch (modifyModel.Property)
             {
                 case AgentNameProperty _:
-                    updatedModel = agentModel.Clone(name:set.Message1.NewValue.AssertTypeOf<string>());
+                    updatedModel = agentModel.Clone(name:modifyModel.NewValue.AssertTypeOf<string>());
                     break;
                 case AgentNamespaceProperty _:
-                    updatedModel = agentModel.Clone(@namespace:set.Message1.NewValue.AssertTypeOf<string>());
+                    updatedModel = agentModel.Clone(@namespace:modifyModel.NewValue.AssertTypeOf<string>());
                     break;
                 case AgentConsumingMessagesProperty _:
-                    updatedModel = agentModel.Clone(consumingMessages:ModifyMessages(set.Message1, agentModel.ConsumingMessages));
+                    updatedModel = agentModel.Clone(consumingMessages:ModifyMessages(modifyModel, agentModel.ConsumingMessages));
                     break;
                 case AgentProducedMessagesProperty _:
-                    updatedModel = agentModel.Clone(producedMessages:ModifyMessages(set.Message1, agentModel.ProducedMessages));
+                    updatedModel = agentModel.Clone(producedMessages:ModifyMessages(modifyModel, agentModel.ProducedMessages));
                     break;
                 case InterceptorAgentInterceptingMessagesProperty _:
                     InterceptorAgentModel interceptorAgentModel = (InterceptorAgentModel) agentModel;
-                    updatedModel = interceptorAgentModel.Clone(ModifyMessages(set.Message1, interceptorAgentModel.InterceptingMessages));
+                    updatedModel = interceptorAgentModel.Clone(ModifyMessages(modifyModel, interceptorAgentModel.InterceptingMessages));
                     break;
                 case AgentIncomingEventsProperty _:
-                    updatedModel = agentModel.Clone(incomingEvents:ModifyEvents(set.Message1, agentModel.IncomingEvents));
+                    updatedModel = agentModel.Clone(incomingEvents:ModifyEvents(modifyModel, agentModel.IncomingEvents));
                     break;
                 case AgentProducedEventsProperty _:
-                    updatedModel = agentModel.Clone(producedEvents:ModifyEvents(set.Message1, agentModel.ProducedEvents));
+                    updatedModel = agentModel.Clone(producedEvents:ModifyEvents(modifyModel, agentModel.ProducedEvents));
                     break;
                 default:
-                    throw new InvalidOperationException($"Property {set.Message1.Property} unknown for agent model.");
+                    throw new InvalidOperationException($"Property {modifyModel.Property} unknown for agent model.");
             }
 
-            CommunityModel updatedCommunity = new CommunityModel(set.Message2.Model.GeneratorSettings,
-                                                                 ReplaceAgent(),
-                                                                 set.Message2.Model.Messages);
-            OnMessage(new ModelUpdated(updatedCommunity, set));
+            CommunityModel updatedCommunity = new(model.GeneratorSettings,
+                                                  ReplaceAgent(),
+                                                  model.Messages);
+            OnMessage(new ModificationResult(updatedCommunity, set));
             
             AgentModel[] ReplaceAgent()
             {
-                AgentModel[] agents = new AgentModel[set.Message2.Model.Agents.Length];
-                Array.Copy(set.Message2.Model.Agents, agents, agents.Length);
-                int agentIndex = Array.IndexOf(agents, agentModel);
-                if (agentIndex < 0)
+                AgentModel[] agents = new AgentModel[model.Agents.Length];
+                Array.Copy(model.Agents, agents, agents.Length);
+                int agentIndex = agents.TakeWhile(a => a.Id != agentModel.Id).Count();
+                if (agentIndex == agents.Length)
                 {
                     throw new InvalidOperationException("Could not find agent model in community.");
                 }
@@ -72,6 +72,14 @@ namespace Agents.Net.Designer.Model.Agents
                 agents[agentIndex] = updatedModel;
                 return agents;
             }
+        }
+
+        private void OnMessagesCollected(MessageCollection<ModifyModel, ModelVersionCreated> set)
+        {
+            set.MarkAsConsumed(set.Message1);
+            set.MarkAsConsumed(set.Message2);
+            
+            ExecuteCollectedMessages(set.Message1, set.Message2.Model, set);
         }
 
         private string[] ModifyEvents(ModifyModel modifyModel, string[] events)

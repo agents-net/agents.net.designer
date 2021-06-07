@@ -14,7 +14,7 @@ namespace Agents.Net.Designer.ViewModel.Messages
         public static SelectGraphObjectRequested Decorate(SelectedModelObjectChanged decoratedMessage,
                                                           IEnumerable<Message> additionalPredecessors = null)
         {
-            return new SelectGraphObjectRequested(decoratedMessage, additionalPredecessors);
+            return new(decoratedMessage, additionalPredecessors);
         }
 
         protected override string DataToString()

@@ -5,13 +5,13 @@ namespace Agents.Net.Designer.ViewModel.Messages
 {
     public class TreeViewModelUpdated : Message
     {
-        public TreeViewModelUpdated(Message predecessorMessage, params Message[] childMessages)
-            : base(predecessorMessage, childMessages:childMessages)
+        public TreeViewModelUpdated(Message predecessorMessage)
+            : base(predecessorMessage)
         {
         }
 
-        public TreeViewModelUpdated(IEnumerable<Message> predecessorMessages, params Message[] childMessages)
-            : base(predecessorMessages, childMessages:childMessages)
+        public TreeViewModelUpdated(IEnumerable<Message> predecessorMessages)
+            : base(predecessorMessages)
         {
         }
 

@@ -25,13 +25,13 @@ namespace Agents.Net.Designer.Model
                                         string[] producedEvents = null,
                                         Guid id = default)
         {
-            return new AgentModel(name ?? Name,
-                                  @namespace ?? Namespace,
-                                  consumingMessages ?? ConsumingMessages,
-                                  producedMessages ?? ProducedMessages,
-                                  incomingEvents ?? IncomingEvents,
-                                  producedEvents ?? ProducedEvents,
-                                  id == default ? Id : id);
+            return new(name ?? Name,
+                       @namespace ?? Namespace,
+                       consumingMessages ?? ConsumingMessages,
+                       producedMessages ?? ProducedMessages,
+                       incomingEvents ?? IncomingEvents,
+                       producedEvents ?? ProducedEvents,
+                       id == default ? Id : id);
         }
 
         public CommunityModel ContainingPackage { get; set; }
@@ -49,5 +49,10 @@ namespace Agents.Net.Designer.Model
         public string[] IncomingEvents { get; }
         
         public string[] ProducedEvents { get; }
+
+        public override string ToString()
+        {
+            return $"{nameof(Id)}: {Id}, {nameof(Name)}: {Name}, {nameof(Namespace)}: {Namespace}, {nameof(ConsumingMessages)}: {string.Join(", ", ConsumingMessages)}, {nameof(ProducedMessages)}: {string.Join(", ", ProducedMessages)}, {nameof(IncomingEvents)}: {string.Join(", ", IncomingEvents)}, {nameof(ProducedEvents)}: {string.Join(", ", ProducedEvents)}";
+        }
     }
 }

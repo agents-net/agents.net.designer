@@ -2,29 +2,26 @@
 
 namespace Agents.Net.Designer.CodeGenerator.Messages
 {
-    public class GeneratingAgent : Message
-    {        public GeneratingAgent(string[] consumingMessages,
-                               string[] producingMessages, string[] dependencies, Message predecessorMessage,
-                               params Message[] childMessages)
-            : base(predecessorMessage, childMessages:childMessages)
+    public class GeneratingAgent : MessageDecorator
+    {
+        private GeneratingAgent(string[] consumingMessages,
+                               string[] producingMessages, string[] dependencies, Message decoratedMessage)
+            : base(decoratedMessage)
         {
             ConsumingMessages = consumingMessages;
             ProducingMessages = producingMessages;
             Dependencies = dependencies;
         }
-
-        public GeneratingAgent(string[] consumingMessages,
-                               string[] producingMessages, string[] dependencies,
-                               IEnumerable<Message> predecessorMessages, params Message[] childMessages)
-            : base(predecessorMessages, childMessages:childMessages)
-        {
-            ConsumingMessages = consumingMessages;
-            ProducingMessages = producingMessages;
-            Dependencies = dependencies;
-        }
+        
         public string[] ConsumingMessages { get; }
         public string[] ProducingMessages { get; }
         public string[] Dependencies { get; }
+
+        public static GeneratingAgent Decorate(GeneratingFile file, string[] consumingMessages,
+                                               string[] producingMessages, string[] dependencies)
+        {
+            return new(consumingMessages, producingMessages, dependencies, file);
+        }
 
         protected override string DataToString()
         {

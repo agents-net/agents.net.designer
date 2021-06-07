@@ -5,7 +5,6 @@ namespace Agents.Net.Designer.Model.Agents
 {
     [Consumes(typeof(InitializeMessage))]
     [Produces(typeof(ModelLoaded))]
-    [Produces(typeof(ModelUpdated))]
     public class ModelLoader : Agent
     {
         public ModelLoader(IMessageBoard messageBoard)
@@ -15,8 +14,8 @@ namespace Agents.Net.Designer.Model.Agents
 
         protected override void ExecuteCore(Message messageData)
         {
-            CommunityModel model = new CommunityModel(messages:BuildInMessages());
-            OnMessage(new ModelLoaded(model, messageData, new ModelUpdated(model, messageData)));
+            CommunityModel model = new(messages:BuildInMessages());
+            OnMessage(new ModelLoaded(model, messageData));
         }
 
         private MessageModel[] BuildInMessages()

@@ -3,16 +3,15 @@
 namespace Agents.Net.Designer.ViewModel.Messages
 {
     public class GraphViewModelCreated : Message
-    {        public GraphViewModelCreated(GraphViewModel viewModel, Message predecessorMessage,
-                                     params Message[] childMessages)
-            : base(predecessorMessage, childMessages:childMessages)
+    {
+        public GraphViewModelCreated(GraphViewModel viewModel, Message predecessorMessage)
+            : base(predecessorMessage)
         {
             ViewModel = viewModel;
         }
 
-        public GraphViewModelCreated(GraphViewModel viewModel, IEnumerable<Message> predecessorMessages,
-                                     params Message[] childMessages)
-            : base(predecessorMessages, childMessages:childMessages)
+        public GraphViewModelCreated(GraphViewModel viewModel, IEnumerable<Message> predecessorMessages)
+            : base(predecessorMessages)
         {
             ViewModel = viewModel;
         }

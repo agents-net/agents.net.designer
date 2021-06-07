@@ -14,7 +14,7 @@ namespace Agents.Net.Designer.WpfView
 {
     public partial class MainWindow : IDisposable
     {
-        public GraphViewer GraphViewer { get; } = new GraphViewer();
+        public GraphViewer GraphViewer { get; } = new();
         private readonly FieldInfo text;
 
         public MainWindow()
@@ -34,6 +34,7 @@ namespace Agents.Net.Designer.WpfView
 
         private static void GraphChangedCallback(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
+            //TODO Try fix Graph loading here?
             ((MainWindow)d).GraphViewer.Graph = (Graph) e.NewValue;
             ((MainWindow) d).PatchNodeLabelSize();
         }
@@ -142,7 +143,7 @@ namespace Agents.Net.Designer.WpfView
 
         private void ConnectFile()
         {
-            OpenFileDialog openFileDialog = new OpenFileDialog
+            OpenFileDialog openFileDialog = new()
             {
                 Filter = "Agents Model File (*.amodel)|*.amodel",
                 RestoreDirectory = true,
@@ -161,7 +162,7 @@ namespace Agents.Net.Designer.WpfView
 
         private void ExportImage()
         {
-            OpenFileDialog openFileDialog = new OpenFileDialog
+            OpenFileDialog openFileDialog = new()
             {
                 Filter = "Image (*.svg)|*.svg",
                 RestoreDirectory = true,
@@ -180,7 +181,7 @@ namespace Agents.Net.Designer.WpfView
 
         private void GenerateClasses()
         {
-            VistaFolderBrowserDialog openFileDialog = new VistaFolderBrowserDialog
+            VistaFolderBrowserDialog openFileDialog = new()
             {
                 ShowNewFolderButton = true
             };

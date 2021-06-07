@@ -27,8 +27,8 @@ namespace Agents.Net.Designer.ViewModel.MicrosoftGraph.Agents
             Graph layoutGraph = set.Message2.Graph;
             using FileStream svgFile = File.Open(set.Message1.Path, FileMode.OpenOrCreate, FileAccess.ReadWrite);
             svgFile.SetLength(0);
-            HtmlSanitizer sanitizer = new HtmlSanitizer();
-            SvgGraphWriter graphWriter = new SvgGraphWriter(svgFile, layoutGraph)
+            HtmlSanitizer sanitizer = new();
+            SvgGraphWriter graphWriter = new(svgFile, layoutGraph)
             {
                 NodeSanitizer = s => sanitizer.Sanitize(s),
                 AttrSanitizer = s => sanitizer.Sanitize(s)
