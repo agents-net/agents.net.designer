@@ -9,7 +9,8 @@ namespace Agents.Net.Designer.CodeGenerator.Agents
     [Consumes(typeof(MessageModelSelectedForGeneration), Implicitly = true)]
     [Produces(typeof(ModelSelectedForGeneration))]
     public class PathCompiler : InterceptorAgent
-    {        public PathCompiler(IMessageBoard messageBoard) : base(messageBoard)
+    {
+        public PathCompiler(IMessageBoard messageBoard) : base(messageBoard)
         {
         }
 

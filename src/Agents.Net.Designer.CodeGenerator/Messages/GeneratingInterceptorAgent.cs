@@ -2,7 +2,7 @@ using System.Collections.Generic;
 
 namespace Agents.Net.Designer.CodeGenerator.Messages
 {
-    public class GeneratingInterceptorAgent : Message
+    public class GeneratingInterceptorAgent : MessageDecorator
     {
         private GeneratingInterceptorAgent(string[] interceptingMessages, Message decoratedMessage)
             : base(decoratedMessage)

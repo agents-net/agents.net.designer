@@ -9,3 +9,4 @@ TestResults.xml
 *.csproj.user
 *.sln.DotSettings
 *.bat
+nuget.config

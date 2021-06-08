@@ -2,7 +2,7 @@
 
 namespace Agents.Net.Designer.CodeGenerator.Messages
 {
-    public class GeneratingMessage : Message
+    public class GeneratingMessage : MessageDecorator
     {
         private GeneratingMessage(Message decoratedMessage)
             : base(decoratedMessage)

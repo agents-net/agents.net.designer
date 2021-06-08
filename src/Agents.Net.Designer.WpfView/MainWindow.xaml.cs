@@ -34,7 +34,6 @@ namespace Agents.Net.Designer.WpfView
 
         private static void GraphChangedCallback(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            //TODO Try fix Graph loading here?
             ((MainWindow)d).GraphViewer.Graph = (Graph) e.NewValue;
             ((MainWindow) d).PatchNodeLabelSize();
         }
@@ -114,6 +113,7 @@ namespace Agents.Net.Designer.WpfView
         private void OnLoaded(object sender, RoutedEventArgs e)
         {
             GraphViewer.BindToPanel(GraphViewerPanel);
+            GraphViewer.RunLayoutAsync = true;
         }
 
         private void AddAgentOnClick(object sender, RoutedEventArgs e)

@@ -3,7 +3,7 @@ using Agents.Net.Designer.Model;
 
 namespace Agents.Net.Designer.CodeGenerator.Messages
 {
-    public class AgentModelSelectedForGeneration : Message
+    public class AgentModelSelectedForGeneration : MessageDecorator
     {
         private AgentModelSelectedForGeneration(AgentModel agent, MessageModel[] consumingMessages,
                                                MessageModel[] producingMessages, Message decoratedMessage)

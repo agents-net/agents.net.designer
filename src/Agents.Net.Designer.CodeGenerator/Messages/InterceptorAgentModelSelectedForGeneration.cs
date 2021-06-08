@@ -3,7 +3,7 @@ using Agents.Net.Designer.Model;
 
 namespace Agents.Net.Designer.CodeGenerator.Messages
 {
-    public class InterceptorAgentModelSelectedForGeneration : Message
+    public class InterceptorAgentModelSelectedForGeneration : MessageDecorator
     {
         private InterceptorAgentModelSelectedForGeneration(MessageModel[] interceptingMessages, Message predecessorMessage)
             : base(predecessorMessage)

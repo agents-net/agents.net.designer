@@ -2,7 +2,7 @@ using System.Collections.Generic;
 
 namespace Agents.Net.Designer.CodeGenerator.Messages
 {
-    public class GeneratingMessageDecorator : Message
+    public class GeneratingMessageDecorator : MessageDecorator
     {
         public GeneratingMessageDecorator(string dependency, string decoratedMessageName, Message decoratedMessage)
             : base(decoratedMessage)
