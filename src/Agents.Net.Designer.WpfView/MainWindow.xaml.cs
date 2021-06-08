@@ -22,7 +22,13 @@ namespace Agents.Net.Designer.WpfView
             InitializeComponent();
             Loaded += OnLoaded;
             SetBinding(GraphProperty, "Graph");
+            GraphViewer.LayoutComplete += GraphViewerOnLayoutComplete;
             text = typeof(VNode).GetField("FrameworkElementOfNodeForLabel", BindingFlags.Instance | BindingFlags.NonPublic);
+        }
+
+        private void GraphViewerOnLayoutComplete(object? sender, EventArgs e)
+        {
+            PatchNodeLabelSize();
         }
 
         public static readonly DependencyProperty GraphProperty =
