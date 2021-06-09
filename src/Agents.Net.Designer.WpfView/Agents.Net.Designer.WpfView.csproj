@@ -9,7 +9,8 @@
   <ItemGroup>
     <PackageReference Include="Agents.Net" Version="2022.0.0-prerelease-20210607122155" />
     <PackageReference Include="Autofac" Version="5.2.0" />
-    <PackageReference Include="AutomaticGraphLayout.Drawing" Version="1.1.7" />
+    <PackageReference Include="AutomaticGraphLayout.Drawing" Version="1.1.11" />
+    <PackageReference Include="AutomaticGraphLayout.WpfGraphControl" Version="1.1.11" />
     <PackageReference Include="MaterialDesignThemes" Version="3.1.3" />
     <PackageReference Include="Metrolib" Version="0.3.0.162" />
     <PackageReference Include="Ookii.Dialogs.Wpf.NETCore" Version="2.1.0" />
@@ -17,12 +18,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Agents.Net.Designer.ViewModel\Agents.Net.Designer.ViewModel.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Reference Include="WpfGraphControl">
-      <HintPath>..\Dependencies\WpfGraphControl.dll</HintPath>
-    </Reference>
   </ItemGroup>
 
 </Project>

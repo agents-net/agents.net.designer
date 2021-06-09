@@ -200,6 +200,9 @@ namespace Agents.Net.Designer.WpfView
         private void TreeViewOnSelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
         {
             OnSelectedTreeViewItemChanged(new SelectedTreeViewItemChangedArgs(e.NewValue as TreeViewItem));
+            //GraphViewer.LayoutEditor.ScaleNodeAroundCenter(GraphViewer.LayoutEditor.SelectedEdge, GraphViewer.CurrentScale);
+            //GraphViewer.LayoutEditor.SelectObjectForDragging(obj)
+            //GraphViewer.LayoutEditor.UnselectEverything()
         }
 
         public event EventHandler<EventArgs> AddMessageClicked; 

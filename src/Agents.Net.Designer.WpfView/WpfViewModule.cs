@@ -13,6 +13,7 @@ namespace Agents.Net.Designer.WpfView
             builder.RegisterType<MainWindowDataContextProvider>().As<Agent>().InstancePerLifetimeScope();
             builder.RegisterType<MainWindowObserver>().As<Agent>().InstancePerLifetimeScope();
             builder.RegisterType<ViewModelChangeApplier>().As<Agent>().InstancePerLifetimeScope();
+            builder.RegisterType<GraphSelector>().As<Agent>().InstancePerLifetimeScope();
             builder.RegisterType<MainWindow>().AsSelf().InstancePerLifetimeScope();
         }
     }
