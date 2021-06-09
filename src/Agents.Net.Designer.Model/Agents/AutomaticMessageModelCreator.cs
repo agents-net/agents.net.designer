@@ -36,7 +36,7 @@ namespace Agents.Net.Designer.Model.Agents
                 messageDefinition.Contains('.')
                     ? messageDefinition.Substring(
                         0, messageDefinition.LastIndexOf('.'))
-                    : ".Messages");
+                    : GetAgentMessageNamespace(agentModel));
             ModifyModel addMessage = new(ModelModification.Add,
                                          null,
                                          newMessageModel,
@@ -50,6 +50,18 @@ namespace Agents.Net.Designer.Model.Agents
                                             messageData);
             OnMessage(ModelModificationBatch.Create(new []{addMessage, modifyMessage}));
             return InterceptionAction.DoNotPublish;
+        }
+
+        private string GetAgentMessageNamespace(AgentModel agentModel)
+        {
+            string agentNamespace = agentModel.Namespace;
+            if (agentNamespace.EndsWith(".Agents", StringComparison.Ordinal))
+            {
+                return agentNamespace.Substring(0, agentNamespace.Length - ".Agents".Length)
+                       + ".Messages";
+            }
+
+            return agentNamespace;
         }
     }
 }

@@ -8,6 +8,18 @@ namespace Agents.Net.Designer.ViewModel
 {
     public static class ViewModelExtensions
     {
+        public static void Select(this TreeViewItem selectable)
+        {
+            TreeViewItem expandable = selectable.Parent;
+            while (expandable != null)
+            {
+                expandable.IsExpanded = true;
+                expandable = expandable.Parent;
+            }
+            
+            selectable.IsSelected = true;
+        }
+        
         public static void AddItem(this CommunityViewModel viewModel, AgentViewModel agentViewModel)
         {
             viewModel.AddItem(agentViewModel,agentViewModel.RelativeNamespace);

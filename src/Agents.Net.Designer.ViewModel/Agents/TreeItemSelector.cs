@@ -24,12 +24,12 @@ namespace Agents.Net.Designer.ViewModel.Agents
             if (set.Message2.SelectedObject is AgentModel agentModel)
             {
                 TreeViewItem viewItem = set.Message1.ViewModel.Community.FindViewItemById(agentModel.Id);
-                OnMessage(new ViewModelChangeApplying(() => viewItem.IsSelected = true, set));
+                OnMessage(new ViewModelChangeApplying(() => viewItem.Select(), set));
             }
             else if (set.Message2.SelectedObject is MessageModel messageModel && !messageModel.BuildIn)
             {
                 TreeViewItem viewItem = set.Message1.ViewModel.Community.FindViewItemById(messageModel.Id);
-                OnMessage(new ViewModelChangeApplying(() => viewItem.IsSelected = true, set));
+                OnMessage(new ViewModelChangeApplying(() => viewItem.Select(), set));
             }
         }
 

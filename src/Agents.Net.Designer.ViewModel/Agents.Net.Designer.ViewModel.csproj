@@ -10,6 +10,7 @@
     <PackageReference Include="Autofac" Version="5.2.0" />
     <PackageReference Include="AutomaticGraphLayout.Drawing" Version="1.1.7" />
     <PackageReference Include="HtmlSanitizer" Version="5.0.404" />
+    <PackageReference Include="Metrolib" Version="0.3.0.162" />
   </ItemGroup>
 
   <ItemGroup>

@@ -9,6 +9,7 @@
         xmlns:viewModel="clr-namespace:Agents.Net.Designer.ViewModel;assembly=Agents.Net.Designer.ViewModel"
         xmlns:System="clr-namespace:System;assembly=System.Runtime"
         xmlns:wpfView="clr-namespace:Agents.Net.Designer.WpfView"
+        xmlns:controls="clr-namespace:Metrolib.Controls;assembly=Metrolib"
         mc:Ignorable="d"
         TextElement.Foreground="{DynamicResource MaterialDesignBody}"
         TextElement.FontWeight="Regular"
@@ -136,20 +137,11 @@
                         </HierarchicalDataTemplate.Triggers>
                     </HierarchicalDataTemplate>
                 </materialDesign:Card.Resources>
-                <TreeView ItemsSource="{Binding Items}"
-                          d:DataContext="{d:DesignInstance viewModel:TreeViewModel, IsDesignTimeCreatable=True}"
-                          VirtualizingStackPanel.IsVirtualizing="True"
-                          VirtualizingStackPanel.VirtualizationMode="Recycling"
-                          x:Name="TreeView"
-                          SelectedItemChanged="TreeViewOnSelectedItemChanged">
-                    <TreeView.ItemContainerStyle>
-                        <Style TargetType="TreeViewItem">
-                            <Setter Property="IsExpanded" Value="True"/>
-                            <Setter Property="wpfView:AttachedBehaviors.IsBringSelectedIntoView" Value="True"/>
-                            <Setter Property="IsSelected" Value="{Binding IsSelected, Mode=TwoWay}" />
-                        </Style>
-                    </TreeView.ItemContainerStyle>
-                </TreeView>
+                <controls:FlatTreeView ItemsSource="{Binding Items}"
+                                       d:DataContext="{d:DesignInstance viewModel:TreeViewModel, IsDesignTimeCreatable=True}"
+                                       x:Name="TreeView"
+                                       wpfView:AttachedBehaviors.IsBringSelectedIntoView="True"
+                                       SelectedItemChanged="TreeViewOnSelectedItemChanged" />
             </materialDesign:Card>
             <GridSplitter Grid.Column="0" Grid.Row="1" ResizeDirection="Rows"
                           ResizeBehavior="PreviousAndNext"

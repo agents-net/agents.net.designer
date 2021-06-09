@@ -3,6 +3,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
+using Metrolib.Controls;
 using TreeViewItem = System.Windows.Controls.TreeViewItem;
 
 namespace Agents.Net.Designer.WpfView
@@ -75,8 +76,7 @@ namespace Agents.Net.Designer.WpfView
 
         private static void PropertyChangedCallback(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs dependencyPropertyChangedEventArgs)
         {
-            var treeViewItem = dependencyObject as TreeViewItem;
-            if (treeViewItem == null)
+            if (dependencyObject is not FlatTreeView treeView)
             {
                 return;
             }
@@ -84,27 +84,31 @@ namespace Agents.Net.Designer.WpfView
             if (!((bool) dependencyPropertyChangedEventArgs.OldValue) &&
                 ((bool) dependencyPropertyChangedEventArgs.NewValue))
             {
-                treeViewItem.Unloaded += TreeViewItemOnUnloaded;
-                treeViewItem.Selected += TreeViewItemOnSelected;
+                treeView.Unloaded += TreeViewOnUnloaded;
+                treeView.SelectedItemChanged += TreeViewOnSelectedItemChanged;
             }
         }
 
-        private static void TreeViewItemOnUnloaded(object sender, RoutedEventArgs routedEventArgs)
+        private static void TreeViewOnUnloaded(object sender, RoutedEventArgs routedEventArgs)
         {
-            var treeViewItem = sender as TreeViewItem;
-            if (treeViewItem == null)
+            if (sender is not FlatTreeView treeView)
             {
                 return;
             }
 
-            treeViewItem.Unloaded -= TreeViewItemOnUnloaded;
-            treeViewItem.Selected -= TreeViewItemOnSelected;
+            treeView.Unloaded -= TreeViewOnUnloaded;
+            treeView.SelectedItemChanged -= TreeViewOnSelectedItemChanged;
         }
 
-        private static void TreeViewItemOnSelected(object sender, RoutedEventArgs routedEventArgs)
+        private static void TreeViewOnSelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
         {
-            var treeViewItem = sender as TreeViewItem;
-            treeViewItem?.BringIntoView();
+            if (sender is not FlatTreeView treeView)
+            {
+                return;
+            }
+            
+            FlatTreeViewItem container = (FlatTreeViewItem) treeView.ItemContainerGenerator.ContainerFromItem((ViewModel.TreeViewItem) e.NewValue,item => item.Parent);
+            container.BringIntoView();
         }
         
         public static readonly DependencyProperty UpdatePropertySourceWhenEnterPressedProperty = DependencyProperty.RegisterAttached(

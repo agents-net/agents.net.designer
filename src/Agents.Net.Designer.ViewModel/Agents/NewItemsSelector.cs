@@ -1,4 +1,5 @@
 using System;
+using System.Threading;
 using Agents.Net.Designer.Model;
 using Agents.Net.Designer.Model.Messages;
 using Agents.Net.Designer.ViewModel.Messages;
@@ -6,37 +7,37 @@ using Agents.Net.Designer.ViewModel.Messages;
 namespace Agents.Net.Designer.ViewModel.Agents
 {
     [Consumes(typeof(ModifyModel))]
-    [Consumes(typeof(GraphViewModelUpdated))]
-    [Consumes(typeof(TreeViewModelUpdated))]
+    [Consumes(typeof(ModelVersionCreated))]
     [Produces(typeof(SelectedModelObjectChanged))]
     public class NewItemsSelector : Agent
     {
-        private readonly MessageCollector<ModifyModel, GraphViewModelUpdated, TreeViewModelUpdated> collector;
-
+        private object selectable;
         public NewItemsSelector(IMessageBoard messageBoard) : base(messageBoard)
         {
-            collector = new MessageCollector<ModifyModel, GraphViewModelUpdated, TreeViewModelUpdated>(OnMessagesCollected);
-        }
-
-        private void OnMessagesCollected(MessageCollection<ModifyModel, GraphViewModelUpdated, TreeViewModelUpdated> set)
-        {
-            set.MarkAsConsumed(set.Message1);
-            set.MarkAsConsumed(set.Message2);
-            set.MarkAsConsumed(set.Message3);
-
-            if (set.Message1.ModificationType != ModelModification.Add ||
-                set.Message1.Target is not CommunityModel ||
-                set.Message2.MessageDomain.Root != set.Message1)
-            {
-                return;
-            }
-            object selectable = set.Message1.NewValue;
-            OnMessage(new SelectedModelObjectChanged(selectable, set, SelectionSource.Internal));
         }
 
         protected override void ExecuteCore(Message messageData)
         {
-            collector.Push(messageData);
+            if (messageData.TryGet(out ModifyModel modifyModel))
+            {
+                if (modifyModel.ModificationType != ModelModification.Add ||
+                    modifyModel.Target is not CommunityModel ||
+                    (modifyModel.TryGet(out ModelModificationBatch batch) &&
+                     batch.Index != batch.Modifications.Length-1))
+                {
+                    return;
+                }
+
+                selectable = modifyModel.NewValue;
+                return;
+            }
+
+            object lastSelectable = Interlocked.Exchange(ref selectable, null);
+            if (lastSelectable == null)
+            {
+                return;
+            }
+            OnMessage(new SelectedModelObjectChanged(lastSelectable, messageData, SelectionSource.Internal));
         }
     }
 }

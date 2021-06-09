@@ -1,15 +1,39 @@
 using System;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.ComponentModel;
+using System.Linq;
 using System.Runtime.CompilerServices;
+using Metrolib.Controls;
 
 namespace Agents.Net.Designer.ViewModel
 {
-    public class TreeViewItem : INotifyPropertyChanged
+    public abstract class TreeViewItem : ITreeViewItemViewModel
     {
-        private ObservableCollection<TreeViewItem> items = new();
         private string name;
         private bool isSelected;
+        private bool isExpanded;
+
+        protected TreeViewItem()
+        {
+            Items.CollectionChanged += ItemsOnCollectionChanged;
+        }
+
+        private void ItemsOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            if (e.Action != NotifyCollectionChangedAction.Add &&
+                e.Action != NotifyCollectionChangedAction.Replace)
+            {
+                return;
+            }
+
+            foreach (TreeViewItem added in e.NewItems.Cast<TreeViewItem>())
+            {
+                added.Parent = this;
+            }
+        }
+
+        public TreeViewItem Parent { get; private set; }
 
         public string Name
         {
@@ -33,16 +57,18 @@ namespace Agents.Net.Designer.ViewModel
             }
         }
 
-        public ObservableCollection<TreeViewItem> Items
+        public bool IsExpanded
         {
-            get => items;
+            get => isExpanded;
             set
             {
-                if (Equals(value, items)) return;
-                items = value;
+                if (value == isExpanded) return;
+                isExpanded = value;
                 OnPropertyChanged();
             }
         }
+
+        public ObservableCollection<TreeViewItem> Items { get; } = new();
 
         public event PropertyChangedEventHandler PropertyChanged;
 

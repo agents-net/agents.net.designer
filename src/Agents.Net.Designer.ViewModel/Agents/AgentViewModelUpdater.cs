@@ -121,7 +121,7 @@ namespace Agents.Net.Designer.ViewModel.Agents
         {
             viewModel.Community.RemoveItem(changingViewModel);
             viewModel.Community.AddItem(changingViewModel);
-            changingViewModel.IsSelected = true;
+            changingViewModel.Select();
         }
 
         protected override void ExecuteCore(Message messageData)
