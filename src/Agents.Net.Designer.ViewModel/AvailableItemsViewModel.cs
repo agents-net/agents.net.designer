@@ -7,27 +7,22 @@ using System.Text;
 
 namespace Agents.Net.Designer.ViewModel
 {
-    public class AvailableItemsViewModel : INotifyPropertyChanged
+    public class AvailableItemsViewModel
     {
-        private ObservableCollection<MessageViewModel> availableMessages;
-
-        public ObservableCollection<MessageViewModel> AvailableMessages
+        public AvailableItemsViewModel(IEnumerable<MessageViewModel> messages, IEnumerable<AgentViewModel> agents)
         {
-            get => availableMessages;
-            set
-            {
-                if (Equals(value, availableMessages)) return;
-                availableMessages = value;
-                OnPropertyChanged();
-            }
+            AvailableMessages = new ObservableCollection<MessageViewModel>(messages);
+            AvailableAgents = new ObservableCollection<AgentViewModel>(agents);
         }
 
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        [NotifyPropertyChangedInvocator]
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        public AvailableItemsViewModel()
         {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            AvailableMessages = new ObservableCollection<MessageViewModel>();
+            AvailableAgents = new ObservableCollection<AgentViewModel>();
         }
+
+        public ObservableCollection<MessageViewModel> AvailableMessages { get; }
+        
+        public ObservableCollection<AgentViewModel> AvailableAgents { get; }
     }
 }

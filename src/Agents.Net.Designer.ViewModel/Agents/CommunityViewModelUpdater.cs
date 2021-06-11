@@ -155,6 +155,9 @@ namespace Agents.Net.Designer.ViewModel.Agents
                 AgentModel agentModel = modifyModel.NewValue.AssertTypeOf<AgentModel>();
                 AgentViewModel viewModel = agentModel.CreateViewModel(changingViewModel);
                 changingViewModel.AddItem(viewModel);
+                
+                (changingViewModel.FindItemByType<AgentViewModel>()?.AvailableItems
+                 ??changingViewModel.FindItemByType<MessageViewModel>()?.AvailableItems)?.AvailableAgents.Add(viewModel);
             }
 
             void RemoveAgent()
@@ -162,6 +165,9 @@ namespace Agents.Net.Designer.ViewModel.Agents
                 AgentModel agentModel = modifyModel.OldValue.AssertTypeOf<AgentModel>();
                 AgentViewModel viewModel = (AgentViewModel) changingViewModel.FindViewItemById(agentModel.Id);
                 changingViewModel.RemoveItem(viewModel);
+                
+                (changingViewModel.FindItemByType<AgentViewModel>()?.AvailableItems
+                 ??changingViewModel.FindItemByType<MessageViewModel>()?.AvailableItems)?.AvailableAgents.Remove(viewModel);
             }
         }
 

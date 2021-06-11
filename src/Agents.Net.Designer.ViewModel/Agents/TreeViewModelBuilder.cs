@@ -47,10 +47,7 @@ namespace Agents.Net.Designer.ViewModel.Agents
                     root.Items.Add(folder);
                 }
                 
-                AvailableItemsViewModel availableViewModel = new()
-                {
-                    AvailableMessages = new ObservableCollection<MessageViewModel>()
-                };
+                AvailableItemsViewModel availableViewModel = new();
                 foreach (MessageModel message in model.Messages)
                 {
                     MessageViewModel messageViewModel = message.CreateViewModel(availableViewModel);
@@ -60,7 +57,9 @@ namespace Agents.Net.Designer.ViewModel.Agents
 
                 foreach (AgentModel agent in model.Agents)
                 {
-                    root.AddItem(agent.CreateViewModel(availableViewModel));
+                    AgentViewModel agentViewModel = agent.CreateViewModel(availableViewModel);
+                    root.AddItem(agentViewModel);
+                    availableViewModel.AvailableAgents.Add(agentViewModel);
                 }
 
                 return root;

@@ -3,6 +3,8 @@ using System.Linq;
 using System.Reflection;
 using System.Windows;
 using System.Windows.Input;
+using Agents.Net.Designer.ViewModel;
+using MaterialDesignThemes.Wpf;
 using Microsoft.Msagl.Drawing;
 using Microsoft.Msagl.WpfGraphControl;
 using Microsoft.Win32;
@@ -84,6 +86,12 @@ namespace Agents.Net.Designer.WpfView
                     if (Keyboard.Modifiers == ModifierKeys.Control)
                     {
                         GenerateClasses();
+                    }
+                    break;
+                case Key.F:
+                    if (Keyboard.Modifiers == ModifierKeys.Control)
+                    {
+                        Keyboard.Focus(SearchBox);
                     }
                     break;
                 case Key.A:

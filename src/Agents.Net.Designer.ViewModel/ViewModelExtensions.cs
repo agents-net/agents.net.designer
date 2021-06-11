@@ -196,13 +196,13 @@ namespace Agents.Net.Designer.ViewModel
             AvailableItemsViewModel availableItems = community.FindItemByType<AgentViewModel>()?.AvailableItems
                                                      ?? community.FindItemByType<MessageViewModel>()?.AvailableItems
                                                      ?? new AvailableItemsViewModel
-                                                     {
-                                                         AvailableMessages =
-                                                             new ObservableCollection<MessageViewModel>(
-                                                                 community.FindItemsByType<MessageViewModel>()
-                                                                          .Concat(community.BuildInTypes
-                                                                                           .OfType<MessageViewModel>()))
-                                                     };
+                                                     (
+                                                         community.FindItemsByType<MessageViewModel>()
+                                                                  .Concat(community.BuildInTypes
+                                                                              .OfType<MessageViewModel>()),
+                                                         community.FindItemsByType<AgentViewModel>()
+                                                                  .Concat(community.BuildInTypes.OfType<AgentViewModel>())
+                                                     );
             return availableItems;
         }
 

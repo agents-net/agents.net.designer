@@ -32,6 +32,9 @@ namespace Agents.Net.Designer.ViewModel
             builder.RegisterType<TreeViewModelCreator>().As<Agent>().InstancePerLifetimeScope();
             builder.RegisterType<GraphCreator>().As<Agent>().InstancePerLifetimeScope();
             builder.RegisterType<GraphToSvgConverter>().As<Agent>().InstancePerLifetimeScope();
+            builder.RegisterType<SearchViewModelCreator>().As<Agent>().InstancePerLifetimeScope();
+            builder.RegisterType<SearchSourceUpdater>().As<Agent>().InstancePerLifetimeScope();
+            builder.RegisterType<SearchViewModelObserver>().As<Agent>().InstancePerLifetimeScope();
         }
     }
 }
