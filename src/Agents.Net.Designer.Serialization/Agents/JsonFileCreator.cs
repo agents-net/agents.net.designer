@@ -17,11 +17,11 @@ namespace Agents.Net.Designer.Serialization.Agents
 
         protected override void ExecuteCore(Message messageData)
         {
-            if (gate.Check(messageData))
+            if(!messageData.TryGet(out FileConnectionVerified fileVerified))
             {
+                gate.Check(messageData);
                 return;
             }
-            FileConnectionVerified fileVerified = messageData.Get<FileConnectionVerified>();
             if (fileVerified.FileExist)
             {
                 return;

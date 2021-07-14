@@ -5,15 +5,13 @@ namespace Agents.Net.Designer.FileSystem.Messages
 {
     public class FileRenaming : FileSystemMessage
     {
-        public FileRenaming(string path, string newName, Message predecessorMessage,
-                            params Message[] childMessages)
+        public FileRenaming(string path, string newName, Message predecessorMessage)
 			: base(path, predecessorMessage)
         {
             NewName = newName;
         }
 
-        public FileRenaming(string path, string newName, IEnumerable<Message> predecessorMessages,
-                            params Message[] childMessages)
+        public FileRenaming(string path, string newName, IEnumerable<Message> predecessorMessages)
 			: base(path, predecessorMessages)
         {
             NewName = newName;

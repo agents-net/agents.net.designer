@@ -14,6 +14,7 @@ namespace Agents.Net.Designer.Tests.Tools.Modules
             builder.RegisterType<MessageBoard>().As<IMessageBoard>().InstancePerLifetimeScope();
             builder.RegisterType<InitializeMessageCatcher>().As<Agent>().InstancePerLifetimeScope();
             builder.RegisterType<MessagePulseAgent>().As<Agent>().InstancePerLifetimeScope();
+            builder.RegisterType<FileSystemSimulator>().AsSelf().As<Agent>().InstancePerLifetimeScope();
         }
     }
 }

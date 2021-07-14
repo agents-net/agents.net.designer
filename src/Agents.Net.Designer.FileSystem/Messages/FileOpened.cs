@@ -6,15 +6,13 @@ namespace Agents.Net.Designer.FileSystem.Messages
 {
     public class FileOpened : FileSystemMessage
     {
-        public FileOpened(string path, Stream data, Message predecessorMessage,
-                          params Message[] childMessages)
+        public FileOpened(string path, Stream data, Message predecessorMessage)
 			: base(path, predecessorMessage)
         {
             Data = data;
         }
 
-        public FileOpened(string path, Stream data, IEnumerable<Message> predecessorMessages,
-                          params Message[] childMessages)
+        public FileOpened(string path, Stream data, IEnumerable<Message> predecessorMessages)
 			: base(path, predecessorMessages)
         {
             Data = data;
