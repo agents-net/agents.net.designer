@@ -21,7 +21,6 @@ namespace Agents.Net.Designer.Tests.Tools.Modules
             builder.RegisterModule<ModelModule>();
             builder.RegisterModule<Serialization.SerializationModule>();
             builder.RegisterModule<ViewModelModule>();
-            builder.RegisterModule<FileSystemModule>();
             SerializationModule.RegisterAgents(builder);
         }
     }

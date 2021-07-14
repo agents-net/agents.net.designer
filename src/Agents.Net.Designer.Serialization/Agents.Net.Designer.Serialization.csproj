@@ -6,7 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Agents.Net" Version="2022.0.0-prerelease-20210714110800" />
+    <PackageReference Include="Agents.Net" Version="2022.0.0-prerelease-20210714141511" />
     <PackageReference Include="Autofac" Version="6.2.0" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
     <PackageReference Include="Newtonsoft.Json.Schema" Version="3.0.13" />

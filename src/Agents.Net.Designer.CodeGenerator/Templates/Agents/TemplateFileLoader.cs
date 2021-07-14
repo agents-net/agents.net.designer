@@ -22,15 +22,18 @@ namespace Agents.Net.Designer.CodeGenerator.Templates.Agents
             if (messageData.TryGet(out TemplateFileFound fileFound))
             {
                 string name = Path.GetFileNameWithoutExtension(fileFound.Path);
-                MessageGateResult<FileOpened> result = fileGate.SendAndAwait(new FileOpening(fileFound.Path, messageData), OnMessage);
-                if (result.Result != MessageGateResultKind.Success)
-                {
-                    return;
-                }
+                fileGate.SendAndContinue(new FileOpening(fileFound.Path, messageData), OnMessage,
+                                         result =>
+                                         {
+                                             if (result.Result != MessageGateResultKind.Success)
+                                             {
+                                                 return;
+                                             }
 
-                using StreamReader reader = new(result.EndMessage.Data);
-                string content = reader.ReadToEnd();
-                OnMessage(new TemplateLoaded(name, content, messageData));
+                                             using StreamReader reader = new(result.EndMessage.Data);
+                                             string content = reader.ReadToEnd();
+                                             OnMessage(new TemplateLoaded(name, content, result.EndMessage));
+                                         });
             }
             else
             {

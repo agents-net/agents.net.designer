@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using Agents.Net.Designer.FileSystem.Agents;
 using Agents.Net.Designer.Model.Agents;
 using Autofac;
 
@@ -16,7 +15,6 @@ namespace Agents.Net.Designer.Model
             builder.RegisterType<CommunityModelModifier>().As<Agent>().InstancePerLifetimeScope();
             builder.RegisterType<ContainingPackageSynchronizer>().As<Agent>().InstancePerLifetimeScope();
             builder.RegisterType<DeleteSelectedModelObject>().As<Agent>().InstancePerLifetimeScope();
-            builder.RegisterType<FileVerifier>().As<Agent>().InstancePerLifetimeScope();
             builder.RegisterType<GeneratorSettingsModifier>().As<Agent>().InstancePerLifetimeScope();
             builder.RegisterType<MessageModelModifier>().As<Agent>().InstancePerLifetimeScope();
             builder.RegisterType<ModelCommandExecuter>().As<Agent>().InstancePerLifetimeScope();
