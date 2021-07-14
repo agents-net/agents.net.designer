@@ -1,26 +1,40 @@
 ﻿using System.IO;
+using Agents.Net.Designer.FileSystem.Messages;
 using Agents.Net.Designer.Model.Messages;
 
 namespace Agents.Net.Designer.Serialization.Agents
 {
     [Consumes(typeof(FileConnectionVerified))]
+    [Consumes(typeof(FileCreated))]
+    [Consumes(typeof(FileSystemException))]
     [Produces(typeof(FileConnected))]
     public class JsonFileCreator : Agent
-    {        public JsonFileCreator(IMessageBoard messageBoard) : base(messageBoard)
+    {
+        private readonly MessageGate<FileCreating, FileCreated> gate = new();
+        public JsonFileCreator(IMessageBoard messageBoard) : base(messageBoard)
         {
         }
 
         protected override void ExecuteCore(Message messageData)
         {
-            FileConnectionVerified fileVerified = messageData.Get<FileConnectionVerified>();
+            if(!messageData.TryGet(out FileConnectionVerified fileVerified))
+            {
+                gate.Check(messageData);
+                return;
+            }
             if (fileVerified.FileExist)
             {
                 return;
             }
 
-            Directory.CreateDirectory(Path.GetDirectoryName(fileVerified.FileName));
-            File.Create(fileVerified.FileName).Dispose();
-            OnMessage(new FileConnected(fileVerified.FileName, true, messageData));
+            gate.SendAndContinue(new FileCreating(fileVerified.FileName, fileVerified), OnMessage,
+                                 result =>
+                                 {
+                                     if (result.Result == MessageGateResultKind.Success)
+                                     {
+                                         OnMessage(new FileConnected(fileVerified.FileName, true, result.EndMessage));
+                                     }
+                                 });
         }
     }
 }

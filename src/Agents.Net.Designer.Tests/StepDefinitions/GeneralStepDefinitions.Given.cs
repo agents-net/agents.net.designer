@@ -5,9 +5,11 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading;
+using Agents.Net.Designer.FileSystem.Messages;
 using Agents.Net.Designer.Model.Messages;
 using Agents.Net.Designer.Serialization.Messages;
 using Agents.Net.Designer.Tests.Tools;
+using Agents.Net.Designer.Tests.Tools.Agents;
 using Agents.Net.Designer.Tests.Tools.Modules;
 using Autofac;
 using FluentAssertions;
@@ -37,8 +39,9 @@ namespace Agents.Net.Designer.Tests.StepDefinitions
         public void GivenIConnectedTheFile(string fileName)
         {
             string resourceContent = fileName.GetResourceContent();
-            scenarioContext.Get<IMessageBoard>().Publish(new JsonTextLoaded(resourceContent,scenarioContext.Get<InitializeMessage>()));
-            scenarioContext.Get<IMessageBoard>().Publish(new FileConnected(fileName,false,scenarioContext.Get<InitializeMessage>()));
+            scenarioContext.Get<FileSystemSimulator>().SetFileContent(fileName,
+                                                                      resourceContent);
+            scenarioContext.Get<IMessageBoard>().Publish(new FileConnectionVerified(fileName, true,scenarioContext.Get<InitializeMessage>()));
             //Wait for model loaded
             scenarioContext.WaitForSilentPulse();
         }
@@ -64,6 +67,7 @@ namespace Agents.Net.Designer.Tests.StepDefinitions
 
                 scenarioContext.Set(container);
                 scenarioContext.Set(messageBoard);
+                scenarioContext.Set(container.Resolve<FileSystemSimulator>());
             };
             startAction.Should().NotThrow<Exception>("agent community was not created.");
             initializedTrigger.Wait();

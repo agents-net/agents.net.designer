@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Agents.Net.Designer.Tests.Tools;
+using Agents.Net.Designer.Tests.Tools.Agents;
 using FluentAssertions;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -26,12 +27,7 @@ namespace Agents.Net.Designer.Tests.StepDefinitions
         public void ThenTheModelFileLooksLikeTheFile(string fileName, string resourceContent)
         {
             scenarioContext.WaitForSilentPulse();
-            scenarioContext.TryGetValue(StringConstants.UpdatedFileContents,
-                                        out Dictionary<string, string> fileContents)
-                           .Should().BeTrue("otherwise no file was updated.");
-            fileContents.TryGetValue(fileName, out string content).Should().BeTrue(
-                $"otherwise the file {fileName} was not updated." +
-                $"Updated files are {string.Join(", ", fileContents.Keys)}");
+            string content = scenarioContext.Get<FileSystemSimulator>().GetFileContent(fileName);
             string expectedContent = resourceContent.GetResourceContent();
             StripIds(content).Should().Be(StripIds(expectedContent));
         }

@@ -30,9 +30,10 @@ namespace Agents.Net.Designer.Model
                                              InterceptingMessages);
         }
 
-        public virtual AgentModel Clone(Guid[] interceptingMessages, string name = null, string @namespace = null, Guid[] consumingMessages = null,
+        public virtual AgentModel Clone(Guid[] interceptingMessages, string @namespace = null, Guid[] consumingMessages = null,
                                          Guid[] producedMessages = null, string[] incomingEvents = null, string[] producedEvents = null,
-                                         Guid id = default)
+                                         Guid id = default,
+                                         string name = null)
         {
             return new InterceptorAgentModel(name ?? Name,
                                              @namespace ?? Namespace,

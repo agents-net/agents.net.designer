@@ -1,4 +1,6 @@
 using System.IO;
+using System.Text;
+using Agents.Net.Designer.FileSystem.Messages;
 using Agents.Net.Designer.Model.Messages;
 using Agents.Net.Designer.Serialization.Messages;
 
@@ -6,10 +8,13 @@ namespace Agents.Net.Designer.Serialization.Agents
 {
     [Consumes(typeof(FileConnected))]
     [Consumes(typeof(JsonTextUpdated))]
+    [Consumes(typeof(FileOpened))]
+    [Consumes(typeof(FileSystemException))]
     [Produces(typeof(FileSynchronized))]
     public class JsonFileSynchronizer : Agent
     {
         private MessageCollector<FileConnected, JsonTextUpdated> collector;
+        private readonly MessageGate<FileOpening, FileOpened> gate = new();
 
         public JsonFileSynchronizer(IMessageBoard messageBoard) : base(messageBoard)
         {
@@ -18,8 +23,16 @@ namespace Agents.Net.Designer.Serialization.Agents
 
         private void OnMessagesCollected(MessageCollection<FileConnected, JsonTextUpdated> set)
         {
-            File.WriteAllText(set.Message1.FileName, set.Message2.Text);
-            OnMessage(new FileSynchronized(set.Message1.FileName, set));
+            gate.SendAndContinue(new FileOpening(set.Message1.FileName, set), OnMessage, 
+                                 result =>
+            {
+                if (result.Result == MessageGateResultKind.Success)
+                {
+                    using StreamWriter writer = new(result.EndMessage.Data, Encoding.UTF8);
+                    writer.Write(set.Message2.Text);
+                    OnMessage(new FileSynchronized(set.Message1.FileName, result.EndMessage));
+                }
+            });
         }
 
         protected override void ExecuteCore(Message messageData)
@@ -29,7 +42,9 @@ namespace Agents.Net.Designer.Serialization.Agents
             {
                 collector = new MessageCollector<FileConnected, JsonTextUpdated>(OnMessagesCollected);
             }
-            collector.Push(messageData);
+
+            gate.Check(messageData);
+            collector.TryPush(messageData);
         }
     }
 }

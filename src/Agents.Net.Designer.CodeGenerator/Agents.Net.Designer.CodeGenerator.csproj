@@ -32,11 +32,12 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Agents.Net" Version="2022.0.0-prerelease-20210607122155" />
-    <PackageReference Include="Autofac" Version="5.2.0" />
+    <PackageReference Include="Agents.Net" Version="2022.0.0-prerelease-20210714141511" />
+    <PackageReference Include="Autofac" Version="6.2.0" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Agents.Net.Designer.FileSystem\Agents.Net.Designer.FileSystem.csproj" />
     <ProjectReference Include="..\Agents.Net.Designer.Model\Agents.Net.Designer.Model.csproj" />
   </ItemGroup>
 
