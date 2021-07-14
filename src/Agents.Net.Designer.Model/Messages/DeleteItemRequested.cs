@@ -5,12 +5,12 @@ namespace Agents.Net.Designer.Model.Messages
 {
     public class DeleteItemRequested : Message
     {
-        public DeleteItemRequested(Message predecessorMessage, params Message[] childMessages)
+        public DeleteItemRequested(Message predecessorMessage)
             : base(predecessorMessage)
         {
         }
 
-        public DeleteItemRequested(IEnumerable<Message> predecessorMessages, params Message[] childMessages)
+        public DeleteItemRequested(IEnumerable<Message> predecessorMessages)
             : base(predecessorMessages)
         {
         }

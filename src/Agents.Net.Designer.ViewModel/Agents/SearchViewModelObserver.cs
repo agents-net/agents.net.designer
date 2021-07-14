@@ -12,8 +12,8 @@ namespace Agents.Net.Designer.ViewModel.Agents
     {
         private SearchViewModel viewModel;
         private ModelVersionCreated latestVersion;
-        public SearchViewModelObserver(IMessageBoard messageBoard, string name = null)
-            : base(messageBoard, name)
+        public SearchViewModelObserver(IMessageBoard messageBoard)
+            : base(messageBoard)
         {
         }
 

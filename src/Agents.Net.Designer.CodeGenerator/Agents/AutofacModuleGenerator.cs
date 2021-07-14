@@ -5,15 +5,21 @@ using System.Linq;
 using System.Text;
 using Agents.Net.Designer.CodeGenerator.Messages;
 using Agents.Net.Designer.CodeGenerator.Templates.Messages;
+using Agents.Net.Designer.FileSystem.Messages;
+using Serilog;
 
 namespace Agents.Net.Designer.CodeGenerator.Agents
 {
     [Intercepts(typeof(FilesGenerated))]
     [Consumes(typeof(GeneratorSettingsDefined))]
     [Consumes(typeof(TemplatesLoaded))]
+    [Consumes(typeof(FileOpened))]
+    [Consumes(typeof(FileSystemException))]
+    [Produces(typeof(FileOpening))]
     public class AutofacModuleGenerator : InterceptorAgent
     {
         private readonly MessageCollector<GeneratorSettingsDefined, FilesGenerated, TemplatesLoaded> messageCollector;
+        private readonly MessageGate<FileOpening, FileOpened> fileGate = new();
 
         public AutofacModuleGenerator(IMessageBoard messageBoard) : base(messageBoard)
         {
@@ -22,23 +28,44 @@ namespace Agents.Net.Designer.CodeGenerator.Agents
 
         protected override void ExecuteCore(Message messageData)
         {
-            messageCollector.Push(messageData);
+            if (!messageCollector.TryPush(messageData))
+            {
+                fileGate.Check(messageData);
+            }
         }
 
         protected override InterceptionAction InterceptCore(Message messageData)
         {
-            messageCollector.PushAndExecute(messageData, set =>
+            InterceptionAction delay = InterceptionAction.Delay(out InterceptionDelayToken releaseToken);
+            messageCollector.PushAndContinue(messageData, set =>
             {
                 set.MarkAsConsumed(set.Message2);
-                
-                if (set.Message1.Settings.GenerateAutofacModule)
+
+                if (!set.Message1.Settings.GenerateAutofacModule)
                 {
-                    string contents = GenerateModule(set, out string name);
-                    File.WriteAllText(Path.Combine(set.Message1.Path, $"{name}.cs"), contents, Encoding.UTF8);
+                    return;
                 }
+
+                string contents = GenerateModule(set, out string name);
+                string path = Path.Combine(set.Message1.Path, $"{name}.cs");
+                Log.Verbose($"Wait for continue with {name} opening");
+                fileGate.SendAndContinue(new FileOpening(path, set), OnMessage,
+                                         result =>
+                                         {
+                                             Log.Verbose($"File {name} opened");
+                                             if (result.Result != MessageGateResultKind.Success)
+                                             {
+                                                 releaseToken.Release(DelayTokenReleaseIntention.DoNotPublish);
+                                                 return;
+                                             }
+
+                                             using StreamWriter writer = new(result.EndMessage.Data, Encoding.UTF8);
+                                             writer.Write(contents);
+                                             releaseToken.Release();
+                                         });
             });
 
-            return InterceptionAction.Continue;
+            return delay;
         }
 
         private static string GenerateModule(MessageCollection<GeneratorSettingsDefined, FilesGenerated, TemplatesLoaded> set, out string name)

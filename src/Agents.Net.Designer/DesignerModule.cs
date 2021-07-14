@@ -1,6 +1,7 @@
 using Agents.Net.Designer.CodeGenerator;
 using Agents.Net.Designer.CodeGenerator.Agents;
 using Agents.Net.Designer.CodeGenerator.Templates.Agents;
+using Agents.Net.Designer.FileSystem;
 using Agents.Net.Designer.Model;
 using Agents.Net.Designer.Model.Agents;
 using Agents.Net.Designer.Serialization;
@@ -30,6 +31,7 @@ namespace Agents.Net.Designer
             builder.RegisterModule<SerializationModule>();
             builder.RegisterModule<ViewModelModule>();
             builder.RegisterModule<WpfViewModule>();
+            builder.RegisterModule<FileSystemModule>();
         }
     }
 }

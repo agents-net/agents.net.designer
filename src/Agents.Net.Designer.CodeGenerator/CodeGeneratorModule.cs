@@ -14,7 +14,6 @@ namespace Agents.Net.Designer.CodeGenerator
             builder.RegisterType<AgentFileGenerator>().As<Agent>().InstancePerLifetimeScope();
             builder.RegisterType<AgentModelObjectParser>().As<Agent>().InstancePerLifetimeScope();
             builder.RegisterType<AutofacModuleGenerator>().As<Agent>().InstancePerLifetimeScope();
-            builder.RegisterType<DirectoryCreator>().As<Agent>().InstancePerLifetimeScope();
             builder.RegisterType<FilesGeneratedAggregator>().As<Agent>().InstancePerLifetimeScope();
             builder.RegisterType<MessageFileGenerator>().As<Agent>().InstancePerLifetimeScope();
             builder.RegisterType<MessageModelObjectParser>().As<Agent>().InstancePerLifetimeScope();

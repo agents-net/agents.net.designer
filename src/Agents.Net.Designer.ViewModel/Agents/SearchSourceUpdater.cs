@@ -11,8 +11,8 @@ namespace Agents.Net.Designer.ViewModel.Agents
     {
         private readonly MessageCollector<SearchViewModelCreated, TreeViewModelCreated, TreeViewModelUpdated> collector;
         
-        public SearchSourceUpdater(IMessageBoard messageBoard, string name = null)
-            : base(messageBoard, name)
+        public SearchSourceUpdater(IMessageBoard messageBoard)
+            : base(messageBoard)
         {
             collector = new MessageCollector<SearchViewModelCreated, TreeViewModelCreated, TreeViewModelUpdated>(OnMessagesCollected);
         }

@@ -8,8 +8,8 @@ namespace Agents.Net.Designer.Model.Agents
     [Produces(typeof(ModelVersionCreated))]
     public class ModelVersionCreator : Agent
     {
-        public ModelVersionCreator(IMessageBoard messageBoard, string name = null)
-            : base(messageBoard, name)
+        public ModelVersionCreator(IMessageBoard messageBoard)
+            : base(messageBoard)
         {
         }
 

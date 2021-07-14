@@ -1,0 +1,167 @@
+{
+  "GeneratorSettings": {
+    "PackageNamespace": "Agents.Net.Designer.FileSystem",
+    "GenerateAutofacModule": false
+  },
+  "Agents": [
+    {
+      "Id": "3727997d-3a83-4334-b382-5cbf2155c1f7",
+      "Name": "FileManipulator",
+      "Namespace": ".Agents",
+      "ConsumingMessages": [
+        "8a5cca5a-6c0b-4744-b3d4-8fa699c14e4c",
+        "9ed45bd1-c138-44a3-ad5d-7fc5ee4ab79d",
+        "2c9cfa71-7881-43b9-9915-abd205967017",
+        "9b45f819-d22a-465b-81ef-932bb142fb87"
+      ],
+      "ProducedMessages": [
+        "91ea2e67-adb0-477e-9312-36259f2ec060",
+        "7a1fcef3-1ee6-494c-9d71-c483a0c2abb7",
+        "75cd91b7-1964-4d96-b4dc-09a338c0e7fb",
+        "9f5dc808-bb9d-491a-8cac-29e9a62b0131",
+        "b87f8da4-9d78-4e49-842c-1c5bc30f4aad"
+      ],
+      "IncomingEvents": [],
+      "ProducedEvents": []
+    },
+    {
+      "Id": "03947312-6b26-40cc-859e-e127c2ef8132",
+      "Name": "DirectoryManipulator",
+      "Namespace": ".Agents",
+      "ConsumingMessages": [
+        "9b3c2e44-e734-4f23-b0d8-8d3d72f21e04",
+        "f402f077-ecd2-40c0-8553-7ed747d39220",
+        "332211fa-b496-43ec-b4d7-6204d41cf754"
+      ],
+      "ProducedMessages": [
+        "57889111-09da-42eb-b63f-5b35c2f56d44",
+        "963def6f-c8fb-4876-a1cc-fccc4aa86434",
+        "eca5806a-bdb8-4634-94b4-5d88f4f1ddaf",
+        "b87f8da4-9d78-4e49-842c-1c5bc30f4aad"
+      ],
+      "IncomingEvents": [],
+      "ProducedEvents": []
+    },
+    {
+      "$type": "Agents.Net.Designer.Model.InterceptorAgentModel, Agents.Net.Designer.Model",
+      "InterceptingMessages": [
+        "8a5cca5a-6c0b-4744-b3d4-8fa699c14e4c",
+        "9b45f819-d22a-465b-81ef-932bb142fb87",
+        "2c9cfa71-7881-43b9-9915-abd205967017"
+      ],
+      "Id": "d8403169-c798-4038-9e63-9764ec5d27fd",
+      "Name": "FilePathCreator",
+      "Namespace": ".Agents",
+      "ConsumingMessages": [],
+      "ProducedMessages": [
+        "9b3c2e44-e734-4f23-b0d8-8d3d72f21e04"
+      ],
+      "IncomingEvents": [],
+      "ProducedEvents": []
+    }
+  ],
+  "Messages": [
+    {
+      "Id": "47f0dedd-bf37-41e8-baed-444b8bdb10ed",
+      "Name": "InitializeMessage",
+      "Namespace": "Agents.Net",
+      "BuildIn": true
+    },
+    {
+      "Id": "9471cbcf-bad5-4305-b181-8ce2c5e2f1cb",
+      "Name": "ExceptionMessage",
+      "Namespace": "Agents.Net",
+      "BuildIn": true
+    },
+    {
+      "Id": "8a5cca5a-6c0b-4744-b3d4-8fa699c14e4c",
+      "Name": "FileCreating",
+      "Namespace": ".Messages",
+      "BuildIn": false
+    },
+    {
+      "Id": "91ea2e67-adb0-477e-9312-36259f2ec060",
+      "Name": "FileCreated",
+      "Namespace": ".Messages",
+      "BuildIn": false
+    },
+    {
+      "Id": "9ed45bd1-c138-44a3-ad5d-7fc5ee4ab79d",
+      "Name": "FileDeleting",
+      "Namespace": ".Messages",
+      "BuildIn": false
+    },
+    {
+      "Id": "7a1fcef3-1ee6-494c-9d71-c483a0c2abb7",
+      "Name": "FileDeleted",
+      "Namespace": ".Messages",
+      "BuildIn": false
+    },
+    {
+      "Id": "2c9cfa71-7881-43b9-9915-abd205967017",
+      "Name": "FileRenaming",
+      "Namespace": ".Messages",
+      "BuildIn": false
+    },
+    {
+      "Id": "75cd91b7-1964-4d96-b4dc-09a338c0e7fb",
+      "Name": "FileRenamed",
+      "Namespace": ".Messages",
+      "BuildIn": false
+    },
+    {
+      "Id": "9b45f819-d22a-465b-81ef-932bb142fb87",
+      "Name": "FileOpening",
+      "Namespace": ".Messages",
+      "BuildIn": false
+    },
+    {
+      "Id": "b87f8da4-9d78-4e49-842c-1c5bc30f4aad",
+      "Name": "FileSystemException",
+      "Namespace": ".Messages",
+      "BuildIn": false
+    },
+    {
+      "Id": "9f5dc808-bb9d-491a-8cac-29e9a62b0131",
+      "Name": "FileOpened",
+      "Namespace": ".Messages",
+      "BuildIn": false
+    },
+    {
+      "Id": "9b3c2e44-e734-4f23-b0d8-8d3d72f21e04",
+      "Name": "DirectoryCreating",
+      "Namespace": ".Messages",
+      "BuildIn": false
+    },
+    {
+      "Id": "57889111-09da-42eb-b63f-5b35c2f56d44",
+      "Name": "DirectoryCreated",
+      "Namespace": ".Messages",
+      "BuildIn": false
+    },
+    {
+      "Id": "f402f077-ecd2-40c0-8553-7ed747d39220",
+      "Name": "DirectoryDeleting",
+      "Namespace": ".Messages",
+      "BuildIn": false
+    },
+    {
+      "Id": "963def6f-c8fb-4876-a1cc-fccc4aa86434",
+      "Name": "DirectoryDeleted",
+      "Namespace": ".Messages",
+      "BuildIn": false
+    },
+    {
+      "Id": "332211fa-b496-43ec-b4d7-6204d41cf754",
+      "Name": "DirectoryRenaming",
+      "Namespace": ".Messages",
+      "BuildIn": false
+    },
+    {
+      "Id": "eca5806a-bdb8-4634-94b4-5d88f4f1ddaf",
+      "Name": "DirectoryRenamed",
+      "Namespace": ".Messages",
+      "BuildIn": false
+    }
+  ]
+}

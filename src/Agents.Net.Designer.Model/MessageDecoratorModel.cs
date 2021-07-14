@@ -24,8 +24,8 @@ namespace Agents.Net.Designer.Model
                                              DecoratedMessage);
         }
 
-        public virtual MessageModel Clone(Guid decoratedMessage, string name = null, string @namespace = null, Guid? id = null,
-                                           bool? buildIn = null)
+        public virtual MessageModel Clone(Guid decoratedMessage, string @namespace = null, Guid? id = null,
+                                           bool? buildIn = null, string name = null)
         {
             return new MessageDecoratorModel(name ?? Name,
                                              @namespace ?? Namespace,

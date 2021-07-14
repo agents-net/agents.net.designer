@@ -3,6 +3,7 @@ using System.Linq;
 using System.Text;
 using Agents.Net.Designer.CodeGenerator.Messages;
 using Agents.Net.Designer.CodeGenerator.Templates.Messages;
+using Agents.Net.Designer.FileSystem.Messages;
 
 namespace Agents.Net.Designer.CodeGenerator.Agents
 {
@@ -11,9 +12,13 @@ namespace Agents.Net.Designer.CodeGenerator.Agents
     [Consumes(typeof(GeneratingAgent))]
     [Consumes(typeof(GeneratingInterceptorAgent), Implicitly = true)]
     [Produces(typeof(FileGenerated))]
+    [Consumes(typeof(FileOpened))]
+    [Consumes(typeof(FileSystemException))]
+    [Produces(typeof(FileOpening))]
     public class AgentFileGenerator : Agent
     {
         private readonly MessageCollector<TemplatesLoaded, GeneratingFile> collector;
+        private readonly MessageGate<FileOpening, FileOpened> fileGate = new();
 
         public AgentFileGenerator(IMessageBoard messageBoard) : base(messageBoard)
         {
@@ -29,13 +34,13 @@ namespace Agents.Net.Designer.CodeGenerator.Agents
             GenerateAgent(set.Message2,
                           interceptor
                               ? set.Message1.Templates["InterceptorAgentTemplate"]
-                              : set.Message1.Templates["AgentTemplate"], agent);
-            OnMessage(new FileGenerated(
-                          new FileGenerationResult(interceptor ? FileType.InterceptorAgent : FileType.Agent,
-                                                   set.Message2.Name, set.Message2.Namespace, set.Message2.Path), set));
+                              : set.Message1.Templates["AgentTemplate"], agent,
+                () => OnMessage(new FileGenerated(
+                                    new FileGenerationResult(interceptor ? FileType.InterceptorAgent : FileType.Agent,
+                                                             set.Message2.Name, set.Message2.Namespace, set.Message2.Path), set)));
         }
 
-        private void GenerateAgent(GeneratingFile file, string template, GeneratingAgent agent)
+        private void GenerateAgent(GeneratingFile file, string template, GeneratingAgent agent, Action finalizeAction)
         {
             string dependencies = string.Join(Environment.NewLine, agent.Dependencies.Select(d => $"using {d};"));
             int templatePosition = template.IndexOf("$attributes$", StringComparison.Ordinal);
@@ -56,7 +61,8 @@ namespace Agents.Net.Designer.CodeGenerator.Agents
             }
             string content = template.Replace("$dependecies$", dependencies)
                                      .Replace("$attributes$", attributes);
-            file.GenerateFile(content);
+            file.GenerateFile(content, fileGate, OnMessage,
+                              new[] {file}, finalizeAction);
 
             string AggregateMessages(string[] messages, string attributeName, bool prefixNewline)
             {
@@ -75,7 +81,10 @@ namespace Agents.Net.Designer.CodeGenerator.Agents
 
         protected override void ExecuteCore(Message messageData)
         {
-            collector.Push(messageData);
+            if (!collector.TryPush(messageData))
+            {
+                fileGate.Check(messageData);
+            }
         }
     }
 }
