@@ -1,24 +1,25 @@
 ﻿using System;
 using System.IO;
-using Agents.Net;
-using Agents.Net.Designer.Model.Messages;
+using Agents.Net.Designer.FileSystem.Messages;
 
-namespace Agents.Net.Designer.Model.Agents
+namespace Agents.Net.Designer.FileSystem.Agents
 {
     [Consumes(typeof(ConnectFileRequested))]
     [Produces(typeof(FileConnectionVerified))]
-    public class FileVerifier : Agent
-    {        public FileVerifier(IMessageBoard messageBoard) : base(messageBoard)
+    public class FileVerifier : FileSystemAgent
+    {
+        public FileVerifier(IMessageBoard messageBoard) : base(messageBoard)
         {
         }
 
-        protected override void ExecuteCore(Message messageData)
+        protected override void SafeExecuteCore(Message messageData)
         {
             ConnectFileRequested fileRequested = messageData.Get<ConnectFileRequested>();
             if (!IsValidPath(fileRequested.FileName))
             {
                 return;
             }
+            
             OnMessage(new FileConnectionVerified(fileRequested.FileName, File.Exists(fileRequested.FileName), messageData));
         }
 

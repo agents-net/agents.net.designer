@@ -10,6 +10,7 @@ namespace Agents.Net.Designer.FileSystem
             builder.RegisterType<DirectoryManipulator>().As<Agent>().InstancePerLifetimeScope();
             builder.RegisterType<FileManipulator>().As<Agent>().InstancePerLifetimeScope();
             builder.RegisterType<FilePathCreator>().As<Agent>().InstancePerLifetimeScope();
+            builder.RegisterType<FileVerifier>().As<Agent>().InstancePerLifetimeScope();
         }
     }
 }

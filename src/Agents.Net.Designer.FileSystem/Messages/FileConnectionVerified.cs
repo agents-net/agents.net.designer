@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
-using Agents.Net;
 
-namespace Agents.Net.Designer.Model.Messages
+namespace Agents.Net.Designer.FileSystem.Messages
 {
     public class FileConnectionVerified : Message
     {

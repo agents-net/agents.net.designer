@@ -10,4 +10,8 @@
     <PackageReference Include="Autofac" Version="6.2.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Agents.Net.Designer.FileSystem\Agents.Net.Designer.FileSystem.csproj" />
+  </ItemGroup>
+
 </Project>

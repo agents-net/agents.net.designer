@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Windows.Input;
+using Agents.Net.Designer.FileSystem.Messages;
 using Agents.Net.Designer.Model.Messages;
 using Agents.Net.Designer.ViewModel;
 using Agents.Net.Designer.ViewModel.Messages;

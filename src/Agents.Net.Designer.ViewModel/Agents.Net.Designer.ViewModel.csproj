@@ -15,6 +15,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Agents.Net.Designer.FileSystem\Agents.Net.Designer.FileSystem.csproj" />
     <ProjectReference Include="..\Agents.Net.Designer.Model\Agents.Net.Designer.Model.csproj" />
   </ItemGroup>
 
