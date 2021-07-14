@@ -70,12 +70,15 @@ namespace Agents.Net.Designer.Tests.Tools.Agents
             {
                 this.closeAction = closeAction;
             }
+            
+            private bool IsDisposed { get; set; }
 
             protected override void Dispose(bool disposing)
             {
-                if (disposing)
+                if (disposing && !IsDisposed)
                 {
                     closeAction(this);
+                    IsDisposed = true;
                 }
                 base.Dispose(disposing);
             }
