@@ -17,6 +17,7 @@ namespace Agents.Net.Designer.Tests.Tools.Modules
             builder.RegisterType<FileSystemSimulator>().AsSelf().As<Agent>().InstancePerLifetimeScope();
             builder.RegisterType<InformationCollector>().AsSelf().As<Agent>().InstancePerLifetimeScope();
             builder.RegisterType<ViewModelChangeApplier>().AsSelf().As<Agent>().InstancePerLifetimeScope();
+            builder.RegisterType<GraphViewModelUpdater>().AsSelf().As<Agent>().InstancePerLifetimeScope();
         }
     }
 }

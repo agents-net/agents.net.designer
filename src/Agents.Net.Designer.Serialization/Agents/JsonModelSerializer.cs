@@ -6,7 +6,7 @@ using Newtonsoft.Json;
 
 namespace Agents.Net.Designer.Serialization.Agents
 {
-    [Consumes(typeof(ModificationResult))]
+    [Consumes(typeof(ModelVersionCreated))]
     [Produces(typeof(JsonTextUpdated))]
     public class JsonModelSerializer : Agent
     {
@@ -16,7 +16,7 @@ namespace Agents.Net.Designer.Serialization.Agents
 
         protected override void ExecuteCore(Message messageData)
         {
-            ModificationResult updated = messageData.Get<ModificationResult>();
+            ModelVersionCreated updated = messageData.Get<ModelVersionCreated>();
             JsonSerializer serializer = JsonSerializer.Create(new JsonSerializerSettings
             {
                 Formatting = Formatting.Indented,
