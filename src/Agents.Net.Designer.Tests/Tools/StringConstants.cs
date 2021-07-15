@@ -9,5 +9,6 @@ namespace Agents.Net.Designer.Tests.Tools
         public const string InitializedMessageReceived = "Initialized";
         public const string FileUpdated = "FileUpdated";
         public const string Pulse = "Pulse";
+        public const string TreeViewModelCreated = "TreeViewModel";
     }
 }

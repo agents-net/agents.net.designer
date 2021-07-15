@@ -22,5 +22,11 @@ namespace Agents.Net.Designer.Tests.StepDefinitions
         {
             scenarioContext.Get<IMessageBoard>().Publish(new AddAgentRequested(scenarioContext.Get<InitializeMessage>()));
         }
+
+        [When(@"I add a message to the model")]
+        public void WhenIAddAMessageToTheModel()
+        {
+            scenarioContext.Get<IMessageBoard>().Publish(new AddMessageRequested(scenarioContext.Get<InitializeMessage>()));
+        }
     }
 }

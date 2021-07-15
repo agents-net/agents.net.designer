@@ -1,9 +1,11 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading;
+using Agents.Net.Designer.ViewModel;
 using FluentAssertions;
 using TechTalk.SpecFlow;
 
@@ -17,6 +19,20 @@ namespace Agents.Net.Designer.Tests.Tools
             while (pulseEvent.WaitOne(timeout))
             {
                 //do nothing
+            }
+        }
+
+        public static IEnumerable<TreeViewItem> Flatten(this TreeViewModel viewModel)
+        {
+            Stack<TreeViewItem> items = new(viewModel.Items);
+            while (items.Any())
+            {
+                TreeViewItem current = items.Pop();
+                yield return current;
+                foreach (TreeViewItem item in current.Items)
+                {
+                    items.Push(item);
+                }
             }
         }
 
