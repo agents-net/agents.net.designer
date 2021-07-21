@@ -177,6 +177,9 @@ namespace Agents.Net.Designer.ViewModel
                 RelativeNamespace = message.Namespace,
                 ModelId = message.Id,
                 BuildIn = message.BuildIn,
+                IsGeneric = message.IsGeneric,
+                GenericParameterCount = message.GenericParameterCount,
+                IsGenericInstance = message.IsGenericInstance,
                 AvailableItems = availableViewModel
             };
             if (message is MessageDecoratorModel decoratorModel)

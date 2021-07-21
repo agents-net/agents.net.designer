@@ -1,11 +1,11 @@
-{
+﻿{
   "GeneratorSettings": {
     "PackageNamespace": "",
     "GenerateAutofacModule": false
   },
   "Agents": [
     {
-      "Id": "9346d67b-58d6-4ee5-84e7-c4f7af8daf94",
+      "Id": "0890be71-e3b0-4737-a642-61cd0b936024",
       "Name": "AgentX",
       "Namespace": ".Agents",
       "ConsumingMessages": [],
@@ -16,16 +16,31 @@
   ],
   "Messages": [
     {
-      "Id": "82260b60-b25c-4ec2-b663-a891bf1db637",
+      "Id": "4f63de36-f667-4efc-89c5-8fd60a023115",
       "Name": "InitializeMessage",
       "Namespace": "Agents.Net",
-      "BuildIn": true
+      "BuildIn": true,
+      "IsGeneric": false,
+      "GenericParameterCount": 0,
+      "IsGenericInstance": false
     },
     {
-      "Id": "26f36a9c-57f8-4a6e-bd25-afc099366c36",
+      "Id": "a25bdde3-6d6b-404d-89dc-a7d132ce5aba",
       "Name": "ExceptionMessage",
       "Namespace": "Agents.Net",
-      "BuildIn": true
+      "BuildIn": true,
+      "IsGeneric": false,
+      "GenericParameterCount": 0,
+      "IsGenericInstance": false
+    },
+    {
+      "Id": "a9185398-5e36-4423-9bb6-c8d3474a83cf",
+      "Name": "MessagesAggregated",
+      "Namespace": "Agents.Net",
+      "BuildIn": true,
+      "IsGeneric": true,
+      "GenericParameterCount": 1,
+      "IsGenericInstance": false
     }
   ]
 }

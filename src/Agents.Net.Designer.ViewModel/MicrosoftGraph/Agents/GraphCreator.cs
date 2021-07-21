@@ -14,20 +14,47 @@ using Node = Microsoft.Msagl.Drawing.Node;
 namespace Agents.Net.Designer.ViewModel.MicrosoftGraph.Agents
 {
     [Consumes(typeof(ModificationResult))]
+    [Consumes(typeof(ModifyModel))]
     [Consumes(typeof(ModelLoaded))]
     [Produces(typeof(GraphCreated))]
+    [Produces(typeof(GraphCreationSkipped))]
     public class GraphCreator : Agent
     {
+        private readonly MessageCollector<ModifyModel, ModificationResult> collector;
         public GraphCreator(IMessageBoard messageBoard) : base(messageBoard)
         {
+            collector = new MessageCollector<ModifyModel, ModificationResult>(OnMessagesCollected);
+        }
+
+        private void OnMessagesCollected(MessageCollection<ModifyModel, ModificationResult> set)
+        {
+            set.MarkAsConsumed(set.Message1);
+            set.MarkAsConsumed(set.Message2);
+
+            if (set.Message1.IsLast)
+            {
+                Graph graph = CreateGraph(set.Message2.Model);
+                OnMessage(new GraphCreated(graph, set.Message2));
+            }
+            else
+            {
+                OnMessage(new GraphCreationSkipped(set.Message2));
+            }
         }
 
         protected override void ExecuteCore(Message messageData)
         {
+            if (collector.TryPush(messageData))
+            {
+                return;
+            }
+            Graph graph = CreateGraph(messageData.Get<ModelLoaded>().Model);
+            OnMessage(new GraphCreated(graph, messageData));
+        }
+
+        private Graph CreateGraph(CommunityModel model)
+        {
             //Check uniqueness of nodes
-            CommunityModel model = messageData.TryGet(out ModificationResult modificationResult)
-                                       ? modificationResult.Model
-                                       : messageData.Get<ModelLoaded>().Model;
             Graph graph = new()
             {
                 LayoutAlgorithmSettings =
@@ -57,30 +84,31 @@ namespace Agents.Net.Designer.ViewModel.MicrosoftGraph.Agents
                                 agentModel.Id, graph);
                 if (agentModel is InterceptorAgentModel interceptor)
                 {
-                    AddMessageEdges(interceptor.InterceptingMessages, messages, true,
+                    AddMessageEdges(interceptor.InterceptingMessages, messages, false,
                                     agentModel.Id, graph, true);
                 }
+
                 AddEventEdges(agentModel.IncomingEvents ?? Enumerable.Empty<string>(),
-                              true, agentModel.Id, graph, CheckSubgraphForEvent);
+                              true, agentModel.Id, graph,
+                              CheckSubgraphForEvent);
                 AddEventEdges(agentModel.ProducedEvents ?? Enumerable.Empty<string>(),
-                              false, agentModel.Id, graph, CheckSubgraphForEvent);
+                              false, agentModel.Id, graph,
+                              CheckSubgraphForEvent);
             }
 
             CreateSubGraphs(graph, subgraphCollection);
-
-            OnMessage(new GraphCreated(graph, messageData));
-
-            void CheckSubgraphForEvent(Node eventToCheck, Guid connectedAgentId)
-            {
-                AgentModel agentModel = model.Agents.First(a => a.Id == connectedAgentId);
-                string ns = Regex.Replace(agentModel.Namespace, @"\.Agents$", string.Empty);
-                
-                if (!string.IsNullOrEmpty(ns))
-                {
-                    AddNodeToSubgraph(eventToCheck, ns);
-                }
-            }
+            return graph;
             
+            void AddNodeToSubgraph(Node node, string ns)
+            {
+                if (!subgraphCollection.ContainsKey(ns))
+                {
+                    subgraphCollection.Add(ns, new List<Node>());
+                }
+
+                subgraphCollection[ns].Add(node);
+            }
+
             void CheckSubgraph(Node nodeToCheck)
             {
                 string ns;
@@ -99,13 +127,15 @@ namespace Agents.Net.Designer.ViewModel.MicrosoftGraph.Agents
                 }
             }
 
-            void AddNodeToSubgraph(Node node, string ns)
+            void CheckSubgraphForEvent(Node eventToCheck, Guid connectedAgentId)
             {
-                if (!subgraphCollection.ContainsKey(ns))
+                AgentModel agentModel = model.Agents.First(a => a.Id == connectedAgentId);
+                string ns = Regex.Replace(agentModel.Namespace, @"\.Agents$", string.Empty);
+
+                if (!string.IsNullOrEmpty(ns))
                 {
-                    subgraphCollection.Add(ns, new List<Node>());
+                    AddNodeToSubgraph(eventToCheck, ns);
                 }
-                subgraphCollection[ns].Add(node);
             }
         }
 
@@ -116,7 +146,7 @@ namespace Agents.Net.Designer.ViewModel.MicrosoftGraph.Agents
             {
                 Subgraph current = new(ns)
                 {
-                    LayoutSettings = graph.LayoutAlgorithmSettings.Clone()
+                    LayoutSettings = graph.LayoutAlgorithmSettings.Clone(),
                 };
                 foreach (Node node in subgraphCollection[ns])
                 {
@@ -196,10 +226,10 @@ namespace Agents.Net.Designer.ViewModel.MicrosoftGraph.Agents
                 if (messageNode != null)
                 {
                     edge = addMessageAsSource
-                               ? isInterception
-                                     ? graph.AddEdge(messageNode.Id, "intercepted", agentModelId.ToString("D"))
-                                     : graph.AddEdge(messageNode.Id, agentModelId.ToString("D"))
-                               : graph.AddEdge(agentModelId.ToString("D"), messageNode.Id);
+                               ? graph.AddEdge(messageNode.Id, agentModelId.ToString("D"))
+                               : isInterception
+                                   ? graph.AddEdge(agentModelId.ToString("D"), "intercepts", messageNode.Id)
+                                   : graph.AddEdge(agentModelId.ToString("D"), messageNode.Id);
                 }
                 else
                 {

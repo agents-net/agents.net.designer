@@ -5,34 +5,82 @@ using Agents.Net.Designer.Model.Messages;
 
 namespace Agents.Net.Designer.Model.Agents
 {
-    [Consumes(typeof(ModelVersionCreated))]
     [Consumes(typeof(ModifyModel))]
     [Produces(typeof(ModificationResult))]
     public class AgentModelModifier : Agent
     {
-        private readonly MessageCollector<ModifyModel, ModelVersionCreated> collector;
-        
         public AgentModelModifier(IMessageBoard messageBoard)
             : base(messageBoard)
         {
-            collector = new MessageCollector<ModifyModel, ModelVersionCreated>(OnMessagesCollected);
         }
 
-        private void ExecuteCollectedMessages(ModifyModel modifyModel, CommunityModel model, IEnumerable<Message> set)
+        private string[] ModifyEvents(ModifyModel modifyModel, string[] events)
         {
-            if (modifyModel.Target is not AgentModel agentModel)
+            if (events == null)
+            {
+                events = new string[0];
+            }
+            switch (modifyModel.Modification.ModificationType)
+            {
+                case ModificationType.Add:
+                    return events.Concat(new[] {modifyModel.Modification.NewValue.AssertTypeOf<string>()})
+                                 .ToArray();
+                case ModificationType.Remove:
+                    return events.Except(new[] {modifyModel.Modification.OldValue.AssertTypeOf<string>()})
+                                 .ToArray();
+                case ModificationType.Change:
+                    return events.Except(new[] {modifyModel.Modification.OldValue.AssertTypeOf<string>()})
+                                 .Concat(new[] {modifyModel.Modification.NewValue.AssertTypeOf<string>()})
+                                 .ToArray();
+                default:
+                    throw new InvalidOperationException($"What? {modifyModel.Modification.ModificationType}");
+            }
+        }
+
+        private Guid[] ModifyMessages(ModifyModel modifyModel, Guid[] originalMessages)
+        {
+            switch (modifyModel.Modification.ModificationType)
+            {
+                case ModificationType.Add:
+                    return AddMessage(originalMessages, modifyModel.Modification.NewValue.AssertTypeOf<Guid>());
+                case ModificationType.Remove:
+                    return RemoveMessage(originalMessages, modifyModel.Modification.OldValue.AssertTypeOf<Guid>());
+                case ModificationType.Change:
+                    return RemoveMessage(AddMessage(originalMessages,
+                                                    modifyModel.Modification.NewValue.AssertTypeOf<Guid>()),
+                                         modifyModel.Modification.OldValue.AssertTypeOf<Guid>());
+                default:
+                    throw new InvalidOperationException($"What? {modifyModel.Modification.ModificationType}");
+            }
+
+            Guid[] AddMessage(Guid[] messages, Guid addedMessage)
+            {
+                return messages.Concat(new[] {addedMessage}).ToArray();
+            }
+
+            Guid[] RemoveMessage(Guid[] messages, Guid removedMessage)
+            {
+                return messages.Except(new[] {removedMessage}).ToArray();
+            }
+        }
+
+        protected override void ExecuteCore(Message messageData)
+        {
+            ModifyModel modifyModel = messageData.Get<ModifyModel>();
+            CommunityModel model = modifyModel.CurrentVersion;
+            if (modifyModel.Modification.Target is not AgentModel agentModel)
             {
                 return;
             }
             
             AgentModel updatedModel;
-            switch (modifyModel.Property)
+            switch (modifyModel.Modification.Property)
             {
                 case AgentNameProperty _:
-                    updatedModel = agentModel.Clone(name:modifyModel.NewValue.AssertTypeOf<string>());
+                    updatedModel = agentModel.Clone(name:modifyModel.Modification.NewValue.AssertTypeOf<string>());
                     break;
                 case AgentNamespaceProperty _:
-                    updatedModel = agentModel.Clone(@namespace:modifyModel.NewValue.AssertTypeOf<string>());
+                    updatedModel = agentModel.Clone(@namespace:modifyModel.Modification.NewValue.AssertTypeOf<string>());
                     break;
                 case AgentConsumingMessagesProperty _:
                     updatedModel = agentModel.Clone(consumingMessages:ModifyMessages(modifyModel, agentModel.ConsumingMessages));
@@ -51,13 +99,13 @@ namespace Agents.Net.Designer.Model.Agents
                     updatedModel = agentModel.Clone(producedEvents:ModifyEvents(modifyModel, agentModel.ProducedEvents));
                     break;
                 default:
-                    throw new InvalidOperationException($"Property {modifyModel.Property} unknown for agent model.");
+                    throw new InvalidOperationException($"Property {modifyModel.Modification.Property} unknown for agent model.");
             }
 
             CommunityModel updatedCommunity = new(model.GeneratorSettings,
                                                   ReplaceAgent(),
                                                   model.Messages);
-            OnMessage(new ModificationResult(updatedCommunity, set));
+            OnMessage(new ModificationResult(updatedCommunity, messageData));
             
             AgentModel[] ReplaceAgent()
             {
@@ -72,69 +120,6 @@ namespace Agents.Net.Designer.Model.Agents
                 agents[agentIndex] = updatedModel;
                 return agents;
             }
-        }
-
-        private void OnMessagesCollected(MessageCollection<ModifyModel, ModelVersionCreated> set)
-        {
-            set.MarkAsConsumed(set.Message1);
-            set.MarkAsConsumed(set.Message2);
-            
-            ExecuteCollectedMessages(set.Message1, set.Message2.Model, set);
-        }
-
-        private string[] ModifyEvents(ModifyModel modifyModel, string[] events)
-        {
-            if (events == null)
-            {
-                events = new string[0];
-            }
-            switch (modifyModel.ModificationType)
-            {
-                case ModelModification.Add:
-                    return events.Concat(new[] {modifyModel.NewValue.AssertTypeOf<string>()})
-                                 .ToArray();
-                case ModelModification.Remove:
-                    return events.Except(new[] {modifyModel.OldValue.AssertTypeOf<string>()})
-                                 .ToArray();
-                case ModelModification.Change:
-                    return events.Except(new[] {modifyModel.OldValue.AssertTypeOf<string>()})
-                                 .Concat(new[] {modifyModel.NewValue.AssertTypeOf<string>()})
-                                 .ToArray();
-                default:
-                    throw new InvalidOperationException($"What? {modifyModel.ModificationType}");
-            }
-        }
-
-        private Guid[] ModifyMessages(ModifyModel modifyModel, Guid[] originalMessages)
-        {
-            switch (modifyModel.ModificationType)
-            {
-                case ModelModification.Add:
-                    return AddMessage(originalMessages, modifyModel.NewValue.AssertTypeOf<Guid>());
-                case ModelModification.Remove:
-                    return RemoveMessage(originalMessages, modifyModel.OldValue.AssertTypeOf<Guid>());
-                case ModelModification.Change:
-                    return RemoveMessage(AddMessage(originalMessages,
-                                                    modifyModel.NewValue.AssertTypeOf<Guid>()),
-                                         modifyModel.OldValue.AssertTypeOf<Guid>());
-                default:
-                    throw new InvalidOperationException($"What? {modifyModel.ModificationType}");
-            }
-
-            Guid[] AddMessage(Guid[] messages, Guid addedMessage)
-            {
-                return messages.Concat(new[] {addedMessage}).ToArray();
-            }
-
-            Guid[] RemoveMessage(Guid[] messages, Guid removedMessage)
-            {
-                return messages.Except(new[] {removedMessage}).ToArray();
-            }
-        }
-
-        protected override void ExecuteCore(Message messageData)
-        {
-            collector.Push(messageData);
         }
     }
 }

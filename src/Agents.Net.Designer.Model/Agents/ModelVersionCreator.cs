@@ -3,7 +3,7 @@ using Agents.Net.Designer.Model.Messages;
 
 namespace Agents.Net.Designer.Model.Agents
 {
-    [Consumes(typeof(ModelModified))]
+    [Consumes(typeof(ModificationCompleted))]
     [Consumes(typeof(ModelLoaded))]
     [Produces(typeof(ModelVersionCreated))]
     public class ModelVersionCreator : Agent
@@ -15,9 +15,9 @@ namespace Agents.Net.Designer.Model.Agents
 
         protected override void ExecuteCore(Message messageData)
         {
-            if (messageData.TryGet(out ModelModified modified))
+            if (messageData.TryGet(out ModificationCompleted completed))
             {
-                OnMessage(new ModelVersionCreated(messageData, modified.Model));
+                OnMessage(new ModelVersionCreated(messageData, completed.Model));
             }
             else if(messageData.TryGet(out ModelLoaded loaded))
             {

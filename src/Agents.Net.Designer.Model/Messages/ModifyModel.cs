@@ -1,40 +1,35 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace Agents.Net.Designer.Model.Messages
 {
     public class ModifyModel : Message
     {
-        public ModifyModel(ModelModification modificationType, object oldValue, object newValue, object target,
-            PropertySpecifier property, Message predecessorMessage) 
+        public ModifyModel(Message predecessorMessage, Modification modification, bool isLast,
+                           CommunityModel currentVersion)
             : base(predecessorMessage)
         {
-            ModificationType = modificationType;
-            OldValue = oldValue;
-            NewValue = newValue;
-            Target = target;
-            Property = property;
+            Modification = modification;
+            IsLast = isLast;
+            CurrentVersion = currentVersion;
         }
 
-        public ModifyModel(ModelModification modificationType, object oldValue, object newValue, object target,
-            PropertySpecifier property, IEnumerable<Message> predecessorMessages) 
+        public ModifyModel(IEnumerable<Message> predecessorMessages, Modification modification, bool isLast,
+                           CommunityModel currentVersion)
             : base(predecessorMessages)
         {
-            ModificationType = modificationType;
-            OldValue = oldValue;
-            NewValue = newValue;
-            Target = target;
-            Property = property;
+            Modification = modification;
+            IsLast = isLast;
+            CurrentVersion = currentVersion;
         }
         
-        public ModelModification ModificationType { get; }
-        public object OldValue { get; }
-        public object NewValue { get; }
-        public object Target { get; }
-        public PropertySpecifier Property { get; }
-        
+        public Modification Modification { get; }
+        public bool IsLast { get; }
+        public CommunityModel CurrentVersion { get; }
+
         protected override string DataToString()
         {
-            return $"{nameof(ModificationType)}: {ModificationType}, {nameof(OldValue)}: {OldValue}, {nameof(NewValue)}: {NewValue}, {nameof(Target)}: {Target}, {nameof(Property)}: {Property}";
+            return $"{nameof(Modification)}: {Modification}; {nameof(IsLast)}: {IsLast}";
         }
     }
 }

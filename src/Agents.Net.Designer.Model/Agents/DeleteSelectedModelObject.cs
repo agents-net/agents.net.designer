@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Agents.Net;
 using Agents.Net.Designer.Model.Messages;
 
@@ -6,7 +7,7 @@ namespace Agents.Net.Designer.Model.Agents
 {
     [Consumes(typeof(SelectedModelObjectChanged))]
     [Consumes(typeof(DeleteItemRequested))]
-    [Produces(typeof(ModifyModel))]
+    [Produces(typeof(ModificationRequest))]
     public class DeleteSelectedModelObject : Agent
     {
         private readonly MessageCollector<SelectedModelObjectChanged, DeleteItemRequested> collector;
@@ -34,12 +35,11 @@ namespace Agents.Net.Designer.Model.Agents
 
             if (model != null)
             {
-                OnMessage(new ModifyModel(ModelModification.Remove, 
-                                          set.Message1.SelectedObject, 
-                                          null,
-                                          model, 
-                                          property, 
-                                          set));
+                OnMessage(new ModificationRequest(set, new Modification(ModificationType.Remove, 
+                                                                       set.Message1.SelectedObject, 
+                                                                       null,
+                                                                       model, 
+                                                                       property)));
             }
         }
 

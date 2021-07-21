@@ -20,15 +20,14 @@ namespace Agents.Net.Designer.ViewModel.Agents
         {
             if (messageData.TryGet(out ModifyModel modifyModel))
             {
-                if (modifyModel.ModificationType != ModelModification.Add ||
-                    modifyModel.Target is not CommunityModel ||
-                    (modifyModel.TryGet(out ModelModificationBatch batch) &&
-                     batch.Index != batch.Modifications.Length-1))
+                if (modifyModel.Modification.ModificationType != ModificationType.Add ||
+                    modifyModel.Modification.Target is not CommunityModel ||
+                    !modifyModel.IsLast)
                 {
                     return;
                 }
 
-                selectable = modifyModel.NewValue;
+                selectable = modifyModel.Modification.NewValue;
                 return;
             }
 

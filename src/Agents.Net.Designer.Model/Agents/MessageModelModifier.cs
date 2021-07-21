@@ -5,54 +5,44 @@ using Agents.Net.Designer.Model.Messages;
 
 namespace Agents.Net.Designer.Model.Agents
 {
-    [Consumes(typeof(ModelVersionCreated))]
     [Consumes(typeof(ModifyModel))]
     [Produces(typeof(ModificationResult))]
     public class MessageModelModifier : Agent
     {
-        private readonly MessageCollector<ModifyModel, ModelVersionCreated> collector;
-
         public MessageModelModifier(IMessageBoard messageBoard) : base(messageBoard)
         {
-            collector = new MessageCollector<ModifyModel, ModelVersionCreated>(OnMessagesCollected);
         }
 
-        private void OnMessagesCollected(MessageCollection<ModifyModel, ModelVersionCreated> set)
+        protected override void ExecuteCore(Message messageData)
         {
-            set.MarkAsConsumed(set.Message1);
-            set.MarkAsConsumed(set.Message2);
-            
-            ExecuteCollectedMessages(set.Message1, set.Message2.Model, set);
-        }
-
-        private void ExecuteCollectedMessages(ModifyModel modifyModel, CommunityModel model, IEnumerable<Message> set)
-        {
-            if (modifyModel.Target is not MessageModel messageModel)
+            ModifyModel modifyModel = messageData.Get<ModifyModel>();
+            CommunityModel model = modifyModel.CurrentVersion;
+            if (modifyModel.Modification.Target is not MessageModel messageModel)
             {
                 return;
             }
             
             MessageModel updatedModel;
-            switch (modifyModel.Property)
+            switch (modifyModel.Modification.Property)
             {
                 case MessageNameProperty _:
-                    updatedModel = messageModel.Clone(name:modifyModel.NewValue.AssertTypeOf<string>());
+                    updatedModel = messageModel.Clone(name:modifyModel.Modification.NewValue.AssertTypeOf<string>());
                     break;
                 case MessageNamespaceProperty _:
-                    updatedModel = messageModel.Clone(@namespace:modifyModel.NewValue.AssertTypeOf<string>());
+                    updatedModel = messageModel.Clone(@namespace:modifyModel.Modification.NewValue.AssertTypeOf<string>());
                     break;
                 case MessageDecoratorDecoratedMessageProperty _:
                     MessageDecoratorModel decoratorModel = (MessageDecoratorModel) messageModel;
-                    updatedModel = decoratorModel.Clone(modifyModel.NewValue.AssertTypeOf<Guid>());
+                    updatedModel = decoratorModel.Clone(modifyModel.Modification.NewValue.AssertTypeOf<Guid>());
                     break;
                 default:
-                    throw new InvalidOperationException($"Property {modifyModel.Property} unknown for agent model.");
+                    throw new InvalidOperationException($"Property {modifyModel.Modification.Property} unknown for agent model.");
             }
 
             CommunityModel updatedCommunity = new(model.GeneratorSettings,
                                                   model.Agents,
                                                   ReplaceMessage());
-            OnMessage(new ModificationResult(updatedCommunity, set));
+            OnMessage(new ModificationResult(updatedCommunity, messageData));
             
             MessageModel[] ReplaceMessage()
             {
@@ -67,11 +57,6 @@ namespace Agents.Net.Designer.Model.Agents
                 messages[messageIndex] = updatedModel;
                 return messages;
             }
-        }
-
-        protected override void ExecuteCore(Message messageData)
-        {
-            collector.Push(messageData);
         }
     }
 }

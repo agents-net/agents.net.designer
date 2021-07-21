@@ -25,8 +25,8 @@ namespace Agents.Net.Designer.ViewModel.Agents
         {
             set.MarkAsConsumed(set.Message2);
             set.MarkAsConsumed(set.Message3);
-            if (set.Message2.Target is not CommunityModel &&
-                set.Message2.Target is not GeneratorSettings)
+            if (set.Message2.Modification.Target is not CommunityModel &&
+                set.Message2.Modification.Target is not GeneratorSettings)
             {
                 return;
             }
@@ -34,17 +34,17 @@ namespace Agents.Net.Designer.ViewModel.Agents
             CommunityViewModel changingViewModel = set.Message1.ViewModel.Community;
             OnMessage(new ViewModelChangeApplying(() =>
             {
-                switch (set.Message2.Property)
+                switch (set.Message2.Modification.Property)
                 {
                     case GeneratorSettingsPackageNamespaceProperty _:
-                        string newName = string.IsNullOrEmpty(set.Message2.NewValue.AssertTypeOf<string>())
+                        string newName = string.IsNullOrEmpty(set.Message2.Modification.NewValue.AssertTypeOf<string>())
                                              ? "<Root>"
-                                             : set.Message2.NewValue.AssertTypeOf<string>();
+                                             : set.Message2.Modification.NewValue.AssertTypeOf<string>();
                         changingViewModel.Name = newName;
                         RestructureViewModels(set.Message2, changingViewModel);
                         break;
                     case GeneratorSettingsGenerateAutofacProperty _:
-                        changingViewModel.GenerateAutofacModule = set.Message2.NewValue.AssertTypeOf<bool>();
+                        changingViewModel.GenerateAutofacModule = set.Message2.Modification.NewValue.AssertTypeOf<bool>();
                         break;
                     case PackageMessagesProperty _:
                         ChangeMessages(set.Message2, changingViewModel);
@@ -72,8 +72,8 @@ namespace Agents.Net.Designer.ViewModel.Agents
                 changingViewModel.RemoveItem(message);
             }
 
-            string oldNamespace = modifyModel.OldValue.AssertTypeOf<string>() ?? string.Empty;
-            string newNamespace = modifyModel.NewValue.AssertTypeOf<string>() ?? string.Empty;
+            string oldNamespace = modifyModel.Modification.OldValue.AssertTypeOf<string>() ?? string.Empty;
+            string newNamespace = modifyModel.Modification.NewValue.AssertTypeOf<string>() ?? string.Empty;
 
             UpdateRelativeRootFolder(changingViewModel, oldNamespace, newNamespace);
 
@@ -136,15 +136,15 @@ namespace Agents.Net.Designer.ViewModel.Agents
 
         private void ChangeAgents(ModifyModel modifyModel, CommunityViewModel changingViewModel)
         {
-            switch (modifyModel.ModificationType)
+            switch (modifyModel.Modification.ModificationType)
             {
-                case ModelModification.Add:
+                case ModificationType.Add:
                     AddAgent();
                     break;
-                case ModelModification.Remove:
+                case ModificationType.Remove:
                     RemoveAgent();
                     break;
-                case ModelModification.Change:
+                case ModificationType.Change:
                     RemoveAgent();
                     AddAgent();
                     break;
@@ -152,7 +152,7 @@ namespace Agents.Net.Designer.ViewModel.Agents
 
             void AddAgent()
             {
-                AgentModel agentModel = modifyModel.NewValue.AssertTypeOf<AgentModel>();
+                AgentModel agentModel = modifyModel.Modification.NewValue.AssertTypeOf<AgentModel>();
                 AgentViewModel viewModel = agentModel.CreateViewModel(changingViewModel);
                 changingViewModel.AddItem(viewModel);
                 
@@ -162,7 +162,7 @@ namespace Agents.Net.Designer.ViewModel.Agents
 
             void RemoveAgent()
             {
-                AgentModel agentModel = modifyModel.OldValue.AssertTypeOf<AgentModel>();
+                AgentModel agentModel = modifyModel.Modification.OldValue.AssertTypeOf<AgentModel>();
                 AgentViewModel viewModel = (AgentViewModel) changingViewModel.FindViewItemById(agentModel.Id);
                 changingViewModel.RemoveItem(viewModel);
                 
@@ -173,15 +173,15 @@ namespace Agents.Net.Designer.ViewModel.Agents
 
         private void ChangeMessages(ModifyModel modifyModel, CommunityViewModel changingViewModel)
         {
-            switch (modifyModel.ModificationType)
+            switch (modifyModel.Modification.ModificationType)
             {
-                case ModelModification.Add:
+                case ModificationType.Add:
                     AddMessage();
                     break;
-                case ModelModification.Remove:
+                case ModificationType.Remove:
                     RemoveMessage();
                     break;
-                case ModelModification.Change:
+                case ModificationType.Change:
                     RemoveMessage();
                     AddMessage();
                     break;
@@ -189,7 +189,7 @@ namespace Agents.Net.Designer.ViewModel.Agents
 
             void AddMessage()
             {
-                MessageModel messageModel = modifyModel.NewValue.AssertTypeOf<MessageModel>();
+                MessageModel messageModel = modifyModel.Modification.NewValue.AssertTypeOf<MessageModel>();
                 MessageViewModel viewModel = messageModel.CreateViewModel(changingViewModel);
                 changingViewModel.AddItem(viewModel);
 
@@ -199,7 +199,7 @@ namespace Agents.Net.Designer.ViewModel.Agents
 
             void RemoveMessage()
             {
-                MessageModel messageModel = modifyModel.OldValue.AssertTypeOf<MessageModel>();
+                MessageModel messageModel = modifyModel.Modification.OldValue.AssertTypeOf<MessageModel>();
                 MessageViewModel viewModel = (MessageViewModel) changingViewModel.FindViewItemById(messageModel.Id);
                 changingViewModel.RemoveItem(viewModel);
 

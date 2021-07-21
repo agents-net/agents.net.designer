@@ -23,7 +23,7 @@ namespace Agents.Net.Designer.ViewModel.Agents
         private void OnMessagesCollected(MessageCollection<TreeViewModelCreated, ModifyModel> set)
         {
             set.MarkAsConsumed(set.Message2);
-            if (set.Message2.Target is not MessageModel oldModel)
+            if (set.Message2.Modification.Target is not MessageModel oldModel)
             {
                 return;
             }
@@ -31,23 +31,23 @@ namespace Agents.Net.Designer.ViewModel.Agents
             MessageViewModel changingViewModel = (MessageViewModel) set.Message1.ViewModel.Community.FindViewItemById(oldModel.Id);
             OnMessage(new ViewModelChangeApplying(() =>
             {
-                switch (set.Message2.Property)
+                switch (set.Message2.Modification.Property)
                 {
                     case MessageNameProperty _:
-                        changingViewModel.Name = set.Message2.NewValue.AssertTypeOf<string>();
-                        string fullNamespace = changingViewModel.FullName.Substring(0,changingViewModel.FullName.Length-set.Message2.OldValue.AssertTypeOf<string>().Length+1);
+                        changingViewModel.Name = set.Message2.Modification.NewValue.AssertTypeOf<string>();
+                        string fullNamespace = changingViewModel.FullName.Substring(0,changingViewModel.FullName.Length-set.Message2.Modification.OldValue.AssertTypeOf<string>().Length+1);
                         changingViewModel.FullName =  $"{fullNamespace}.{changingViewModel.Name}";
                         break;
                     case MessageNamespaceProperty _:
-                        changingViewModel.RelativeNamespace = set.Message2.NewValue.AssertTypeOf<string>();
-                        changingViewModel.FullName = $"{set.Message2.NewValue.AssertTypeOf<string>().ExtendNamespace(oldModel)}.{changingViewModel.Name}";
+                        changingViewModel.RelativeNamespace = set.Message2.Modification.NewValue.AssertTypeOf<string>();
+                        changingViewModel.FullName = $"{set.Message2.Modification.NewValue.AssertTypeOf<string>().ExtendNamespace(oldModel)}.{changingViewModel.Name}";
                         RestructureViewModel(changingViewModel, set.Message1.ViewModel);
                         break;
                     case MessageDecoratorDecoratedMessageProperty _:
                         changingViewModel.DecoratedMessage =  changingViewModel.AvailableItems
                                                                                .AvailableMessages
                                                                                .FirstOrDefault(m => m.ModelId == 
-                                                                                                    set.Message2.NewValue.AssertTypeOf<Guid>());
+                                                                                                    set.Message2.Modification.NewValue.AssertTypeOf<Guid>());
                         break;
                 }
                 OnMessage(new TreeViewModelUpdated(set));

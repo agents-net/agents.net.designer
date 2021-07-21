@@ -24,6 +24,7 @@ namespace Agents.Net.Designer.Model.Agents
             {
                 new MessageModel("InitializeMessage", "Agents.Net", buildIn: true),
                 new MessageModel("ExceptionMessage", "Agents.Net", buildIn: true),
+                new MessageModel("MessagesAggregated", "Agents.Net", buildIn: true, isGeneric:true, genericParameterCount:1),
             };
         }
     }

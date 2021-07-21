@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Threading;
@@ -47,29 +48,29 @@ namespace Agents.Net.Designer.ViewModel.Agents
             switch (e.PropertyName)
             {
                 case nameof(MessageViewModel.Name):
-                    OnMessage(new ModifyModel(ModelModification.Change,
+                    OnMessage(new ModificationRequest( 
+                                              latestData.Item2, new Modification(ModificationType.Change,
                                               oldModel.Name,
                                               latestData.Item1.Name,
                                               oldModel,
-                                              new MessageNameProperty(), 
-                                              latestData.Item2));
+                                              new MessageNameProperty())));
                     break;
                 case nameof(MessageViewModel.RelativeNamespace):
-                    OnMessage(new ModifyModel(ModelModification.Change,
+                    OnMessage(new ModificationRequest( 
+                                              latestData.Item2, new Modification(ModificationType.Change,
                                               oldModel.Namespace,
                                               latestData.Item1.RelativeNamespace,
                                               oldModel,
-                                              new MessageNamespaceProperty(), 
-                                              latestData.Item2));
+                                              new MessageNamespaceProperty())));
                     break;
                 case nameof(MessageViewModel.DecoratedMessage):
                     MessageDecoratorModel oldDecoratorModel = (MessageDecoratorModel) oldModel;
-                    OnMessage(new ModifyModel(ModelModification.Change,
+                    OnMessage(new ModificationRequest( 
+                                              latestData.Item2, new Modification(ModificationType.Change,
                                               oldDecoratorModel.DecoratedMessage,
                                               latestData.Item1.DecoratedMessage.ModelId,
                                               oldModel,
-                                              new MessageDecoratorDecoratedMessageProperty(), 
-                                              latestData.Item2));
+                                              new MessageDecoratorDecoratedMessageProperty())));
                     break;
                 case nameof(MessageViewModel.MessageType):
                     SwitchMessageType(oldModel);
@@ -94,8 +95,8 @@ namespace Agents.Net.Designer.ViewModel.Agents
                     throw new InvalidOperationException($"Message type {latestData.Item1.MessageType} is not known.");
             }
 
-            OnMessage(new ModifyModel(ModelModification.Change, oldModel, newModel,
-                                      oldModel.ContainingPackage, new PackageMessagesProperty(), latestData.Item2));
+            OnMessage(new ModificationRequest( latestData.Item2, new Modification(ModificationType.Change, oldModel, newModel,
+                                      oldModel.ContainingPackage, new PackageMessagesProperty())));
         }
 
         protected override void Dispose(bool disposing)

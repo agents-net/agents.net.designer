@@ -12,7 +12,7 @@ namespace Agents.Net.Designer.Model.Agents
     [Consumes(typeof(AddInterceptorAgentRequested))]
     [Consumes(typeof(AddMessageDecoratorRequested))]
     [Consumes(typeof(ModelVersionCreated))]
-    [Produces(typeof(ModifyModel))]
+    [Produces(typeof(ModificationRequest))]
     public class ModelCommandExecuter : Agent
     {
         private readonly MessageCollector<AddAgentRequested, ModelVersionCreated> addAgentCollector;
@@ -32,36 +32,36 @@ namespace Agents.Net.Designer.Model.Agents
         {
             set.MarkAsConsumed(set.Message1);
 
-            OnMessage(new ModifyModel(ModelModification.Add,
-                                      null, new MessageDecoratorModel("MessageDecoratorX"), set.Message2.Model,
-                                      new PackageMessagesProperty(), set));
+            OnMessage(new ModificationRequest(set, new Modification(ModificationType.Add,
+                                 null, new MessageDecoratorModel("MessageDecoratorX"), set.Message2.Model,
+                                 new PackageMessagesProperty())));
         }
 
         private void OnMessagesCollected(MessageCollection<AddInterceptorAgentRequested, ModelVersionCreated> set)
         {
             set.MarkAsConsumed(set.Message1);
 
-            OnMessage(new ModifyModel(ModelModification.Add,
-                                      null, new InterceptorAgentModel("InterceptorX"), set.Message2.Model,
-                                      new PackageAgentsProperty(), set));
+            OnMessage(new ModificationRequest(set, new Modification(ModificationType.Add,
+                                 null, new InterceptorAgentModel("InterceptorX"), set.Message2.Model,
+                                 new PackageAgentsProperty())));
         }
 
         private void OnMessagesCollected(MessageCollection<AddMessageRequested, ModelVersionCreated> set)
         {
             set.MarkAsConsumed(set.Message1);
 
-            OnMessage(new ModifyModel(ModelModification.Add,
-                                      null, new MessageModel("MessageX"), set.Message2.Model,
-                                      new PackageMessagesProperty(), set));
+            OnMessage(new ModificationRequest(set, new Modification(ModificationType.Add,
+                                 null, new MessageModel("MessageX"), set.Message2.Model,
+                                 new PackageMessagesProperty())));
         }
 
         private void OnMessagesCollected(MessageCollection<AddAgentRequested, ModelVersionCreated> set)
         {
             set.MarkAsConsumed(set.Message1);
 
-            OnMessage(new ModifyModel(ModelModification.Add,
-                                      null, new AgentModel("AgentX"), set.Message2.Model,
-                                      new PackageAgentsProperty(), set));
+            OnMessage(new ModificationRequest(set, new Modification(ModificationType.Add,
+                                 null, new AgentModel("AgentX"), set.Message2.Model,
+                                 new PackageAgentsProperty())));
         }
 
         protected override void ExecuteCore(Message messageData)

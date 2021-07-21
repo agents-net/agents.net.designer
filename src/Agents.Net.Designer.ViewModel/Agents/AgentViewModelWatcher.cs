@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
@@ -11,7 +12,7 @@ namespace Agents.Net.Designer.ViewModel.Agents
 {
     [Consumes(typeof(SelectedTreeViewItemChanged))]
     [Consumes(typeof(ModelVersionCreated))]
-    [Produces(typeof(ModifyModel))]
+    [Produces(typeof(ModificationRequest))]
     public class AgentViewModelWatcher : Agent
     {
         private Tuple<AgentViewModel, Message[], CommunityModel> latestData;
@@ -51,53 +52,53 @@ namespace Agents.Net.Designer.ViewModel.Agents
                 {
                     MessageViewModel message = e.DeletedItem.AssertTypeOf<MessageViewModel>();
                     object messageId = message.ModelId != default ? (object) message.ModelId : message.FullName;
-                    OnMessage(new ModifyModel(ModelModification.Remove,
-                                              messageId,
-                                              null,
-                                              oldModel,
-                                              new AgentConsumingMessagesProperty(),
-                                              latestData.Item2));
+                    OnMessage(new ModificationRequest(
+                                  latestData.Item2, new Modification(ModificationType.Remove,
+                                                       messageId,
+                                                       null,
+                                                       oldModel,
+                                                       new AgentConsumingMessagesProperty())));
                     break;
                 }
                 case nameof(AgentViewModel.ProducingMessages):
                 {
                     MessageViewModel message = e.DeletedItem.AssertTypeOf<MessageViewModel>();
                     object messageId = message.ModelId != default ? (object) message.ModelId : message.FullName;
-                    OnMessage(new ModifyModel(ModelModification.Remove,
+                    OnMessage(new ModificationRequest( 
+                                              latestData.Item2, new Modification(ModificationType.Remove,
                                               messageId,
                                               null,
                                               oldModel,
-                                              new AgentProducedMessagesProperty(), 
-                                              latestData.Item2));
+                                              new AgentProducedMessagesProperty())));
                     break;
                 }
                 case nameof(AgentViewModel.InterceptingMessages):
                 {
                     MessageViewModel message = e.DeletedItem.AssertTypeOf<MessageViewModel>();
                     object messageId = message.ModelId != default ? (object) message.ModelId : message.FullName;
-                    OnMessage(new ModifyModel(ModelModification.Remove,
+                    OnMessage(new ModificationRequest( 
+                                              latestData.Item2, new Modification(ModificationType.Remove,
                                               messageId,
                                               null,
                                               oldModel,
-                                              new InterceptorAgentInterceptingMessagesProperty(), 
-                                              latestData.Item2));
+                                              new InterceptorAgentInterceptingMessagesProperty())));
                     break;
                 }
                 case nameof(AgentViewModel.IncomingEvents):
-                    OnMessage(new ModifyModel(ModelModification.Remove,
+                    OnMessage(new ModificationRequest( 
+                                              latestData.Item2, new Modification(ModificationType.Remove,
                                               e.DeletedItem.AssertTypeOf<string>(),
                                               null,
                                               oldModel,
-                                              new AgentIncomingEventsProperty(), 
-                                              latestData.Item2));
+                                              new AgentIncomingEventsProperty())));
                     break;
                 case nameof(AgentViewModel.ProducedEvents):
-                    OnMessage(new ModifyModel(ModelModification.Remove,
+                    OnMessage(new ModificationRequest( 
+                                              latestData.Item2, new Modification(ModificationType.Remove,
                                               e.DeletedItem.AssertTypeOf<string>(),
                                               null,
                                               oldModel,
-                                              new AgentProducedEventsProperty(), 
-                                              latestData.Item2));
+                                              new AgentProducedEventsProperty())));
                     break;
                 default:
                     throw new InvalidOperationException($"Unknown deleted item {e.TargetProperty}");
@@ -110,20 +111,20 @@ namespace Agents.Net.Designer.ViewModel.Agents
             switch (e.PropertyName)
             {
                 case nameof(AgentViewModel.Name):
-                    OnMessage(new ModifyModel(ModelModification.Change,
+                    OnMessage(new ModificationRequest(
+                                              latestData.Item2, new Modification(ModificationType.Change,
                                               oldModel.Name,
                                               latestData.Item1.Name,
                                               oldModel,
-                                              new AgentNameProperty(),
-                                              latestData.Item2));
+                                              new AgentNameProperty())));
                     break;
                 case nameof(AgentViewModel.RelativeNamespace):
-                    OnMessage(new ModifyModel(ModelModification.Change,
+                    OnMessage(new ModificationRequest(
+                                              latestData.Item2, new Modification(ModificationType.Change,
                                               oldModel.Namespace,
                                               latestData.Item1.RelativeNamespace,
                                               oldModel,
-                                              new AgentNamespaceProperty(),
-                                              latestData.Item2));
+                                              new AgentNamespaceProperty())));
                     break;
                 case nameof(AgentViewModel.NewConsumingMessage):
                     AddConsumingMessage(oldModel);
@@ -169,8 +170,8 @@ namespace Agents.Net.Designer.ViewModel.Agents
                     throw new InvalidOperationException($"Agent type {latestData.Item1.AgentType} is not known.");
             }
 
-            OnMessage(new ModifyModel(ModelModification.Change, oldModel, newModel,
-                                      oldModel.ContainingPackage, new PackageAgentsProperty(), latestData.Item2));
+            OnMessage(new ModificationRequest( latestData.Item2, new Modification(ModificationType.Change, oldModel, newModel,
+                                      oldModel.ContainingPackage, new PackageAgentsProperty())));
         }
 
         private void AddEvent(string @event, PropertySpecifier propertySpecifier, AgentModel oldModel)
@@ -180,8 +181,8 @@ namespace Agents.Net.Designer.ViewModel.Agents
                 return;
             }
 
-            OnMessage(new ModifyModel(ModelModification.Add, null, @event,
-                                      oldModel, propertySpecifier, latestData.Item2));
+            OnMessage(new ModificationRequest( latestData.Item2, new Modification(ModificationType.Add, null, @event,
+                                      oldModel, propertySpecifier)));
         }
 
         private void AddProducedMessage(AgentModel oldModel)
@@ -192,9 +193,9 @@ namespace Agents.Net.Designer.ViewModel.Agents
             }
 
             MessageViewModel selectedProducingViewModel = latestData.Item1.NewProducingMessageObject as MessageViewModel;
-            OnMessage(new ModifyModel(ModelModification.Add, null, selectedProducingViewModel != null
+            OnMessage(new ModificationRequest( latestData.Item2, new Modification(ModificationType.Add, null, selectedProducingViewModel != null
                                                                        ? (object) selectedProducingViewModel.ModelId
-                                                                       : latestData.Item1.NewProducingMessage, oldModel, new AgentProducedMessagesProperty(), latestData.Item2));
+                                                                       : latestData.Item1.NewProducingMessage, oldModel, new AgentProducedMessagesProperty())));
             latestData.Item1.NewProducingMessage = string.Empty;
         }
 
@@ -206,9 +207,9 @@ namespace Agents.Net.Designer.ViewModel.Agents
             }
 
             MessageViewModel selectedConsumingViewModel = latestData.Item1.NewConsumingMessageObject as MessageViewModel;
-            OnMessage(new ModifyModel(ModelModification.Add, null, selectedConsumingViewModel != null
+            OnMessage(new ModificationRequest( latestData.Item2, new Modification(ModificationType.Add, null, selectedConsumingViewModel != null
                                                                        ? (object) selectedConsumingViewModel.ModelId
-                                                                       : latestData.Item1.NewConsumingMessage, oldModel, new AgentConsumingMessagesProperty(), latestData.Item2));
+                                                                       : latestData.Item1.NewConsumingMessage, oldModel, new AgentConsumingMessagesProperty())));
             latestData.Item1.NewConsumingMessage = string.Empty;
         }
 
@@ -221,10 +222,10 @@ namespace Agents.Net.Designer.ViewModel.Agents
             }
 
             MessageViewModel selectedInterceptingViewModel = latestData.Item1.NewInterceptingMessageObject as MessageViewModel;
-            OnMessage(new ModifyModel(ModelModification.Add, null, selectedInterceptingViewModel != null
+            OnMessage(new ModificationRequest( latestData.Item2, new Modification(ModificationType.Add, null, selectedInterceptingViewModel != null
                                                                        ? (object) selectedInterceptingViewModel.ModelId
                                                                        : latestData.Item1.NewInterceptingMessage, oldModel, 
-                                      new InterceptorAgentInterceptingMessagesProperty(), latestData.Item2));
+                                      new InterceptorAgentInterceptingMessagesProperty())));
             latestData.Item1.NewInterceptingMessage = string.Empty;
         }
 

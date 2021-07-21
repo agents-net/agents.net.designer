@@ -14,6 +14,12 @@ namespace Agents.Net.Designer.ViewModel
 
         internal bool BuildIn { get; set; }
 
+        internal bool IsGeneric { get; set; }
+        
+        internal int GenericParameterCount { get; set; }
+        
+        internal bool IsGenericInstance { get; set; }
+
         public MessageType MessageType
         {
             get => messageType;

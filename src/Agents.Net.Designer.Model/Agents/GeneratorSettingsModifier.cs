@@ -19,24 +19,24 @@ namespace Agents.Net.Designer.Model.Agents
         private void OnMessagesCollected(MessageCollection<ModifyModel, ModelVersionCreated> set)
         {
             set.MarkAsConsumed(set.Message1);
-            if (set.Message1.Target is not GeneratorSettings generatorSettings)
+            if (set.Message1.Modification.Target is not GeneratorSettings generatorSettings)
             {
                 return;
             }
             
             GeneratorSettings updatedModel;
-            switch (set.Message1.Property)
+            switch (set.Message1.Modification.Property)
             {
                 case GeneratorSettingsPackageNamespaceProperty _:
-                    updatedModel = new GeneratorSettings(set.Message1.NewValue.AssertTypeOf<string>(),
+                    updatedModel = new GeneratorSettings(set.Message1.Modification.NewValue.AssertTypeOf<string>(),
                                                          generatorSettings.GenerateAutofacModule);
                     break;
                 case GeneratorSettingsGenerateAutofacProperty _:
                     updatedModel = new GeneratorSettings(generatorSettings.PackageNamespace,
-                                                         set.Message1.NewValue.AssertTypeOf<bool>());
+                                                         set.Message1.Modification.NewValue.AssertTypeOf<bool>());
                     break;
                 default:
-                    throw new InvalidOperationException($"Property {set.Message1.Property} unknown for agent model.");
+                    throw new InvalidOperationException($"Property {set.Message1.Modification.Property} unknown for agent model.");
             }
 
             CommunityModel updatedCommunity = new(updatedModel,

@@ -53,7 +53,7 @@ namespace Agents.Net.Designer.CodeGenerator.Agents
 
             foreach (MessageModel modelMessage in set.Message2.Model.Messages)
             {
-                if (modelMessage.BuildIn)
+                if (modelMessage.BuildIn || modelMessage.IsGenericInstance)
                 {
                     continue;
                 }

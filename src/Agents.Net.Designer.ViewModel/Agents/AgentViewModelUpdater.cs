@@ -25,7 +25,7 @@ namespace Agents.Net.Designer.ViewModel.Agents
         private void OnMessagesCollected(MessageCollection<TreeViewModelCreated, ModifyModel> set)
         {
             set.MarkAsConsumed(set.Message2);
-            if (set.Message2.Target is not AgentModel oldModel)
+            if (set.Message2.Modification.Target is not AgentModel oldModel)
             {
                 return;
             }
@@ -33,16 +33,16 @@ namespace Agents.Net.Designer.ViewModel.Agents
             AgentViewModel changingViewModel = (AgentViewModel) set.Message1.ViewModel.Community.FindViewItemById(oldModel.Id);
             OnMessage(new ViewModelChangeApplying(() =>
             {
-                switch (set.Message2.Property)
+                switch (set.Message2.Modification.Property)
                 {
                     case AgentNameProperty _:
-                        changingViewModel.Name = set.Message2.NewValue.AssertTypeOf<string>();
-                        string fullNamespace = changingViewModel.FullName.Substring(0,changingViewModel.FullName.Length-set.Message2.OldValue.AssertTypeOf<string>().Length+1);
+                        changingViewModel.Name = set.Message2.Modification.NewValue.AssertTypeOf<string>();
+                        string fullNamespace = changingViewModel.FullName.Substring(0,changingViewModel.FullName.Length-set.Message2.Modification.OldValue.AssertTypeOf<string>().Length+1);
                         changingViewModel.FullName =  $"{fullNamespace}.{changingViewModel.Name}";
                         break;
                     case AgentNamespaceProperty _:
-                        changingViewModel.RelativeNamespace = set.Message2.NewValue.AssertTypeOf<string>();
-                        changingViewModel.FullName = $"{set.Message2.NewValue.AssertTypeOf<string>().ExtendNamespace(oldModel)}.{changingViewModel.Name}";
+                        changingViewModel.RelativeNamespace = set.Message2.Modification.NewValue.AssertTypeOf<string>();
+                        changingViewModel.FullName = $"{set.Message2.Modification.NewValue.AssertTypeOf<string>().ExtendNamespace(oldModel)}.{changingViewModel.Name}";
                         RestructureViewModel(changingViewModel, set.Message1.ViewModel);
                         break;
                     case AgentConsumingMessagesProperty _:
@@ -70,42 +70,42 @@ namespace Agents.Net.Designer.ViewModel.Agents
 
         private void ChangeEvents(ObservableCollection<string> events, ModifyModel modifyModel)
         {
-            switch (modifyModel.ModificationType)
+            switch (modifyModel.Modification.ModificationType)
             {
-                case ModelModification.Add:
-                    events.Add(modifyModel.NewValue.AssertTypeOf<string>());
+                case ModificationType.Add:
+                    events.Add(modifyModel.Modification.NewValue.AssertTypeOf<string>());
                     break;
-                case ModelModification.Remove:
-                    events.Remove(modifyModel.OldValue.AssertTypeOf<string>());
+                case ModificationType.Remove:
+                    events.Remove(modifyModel.Modification.OldValue.AssertTypeOf<string>());
                     break;
-                case ModelModification.Change:
-                    events.Remove(modifyModel.OldValue.AssertTypeOf<string>());
-                    events.Add(modifyModel.NewValue.AssertTypeOf<string>());
+                case ModificationType.Change:
+                    events.Remove(modifyModel.Modification.OldValue.AssertTypeOf<string>());
+                    events.Add(modifyModel.Modification.NewValue.AssertTypeOf<string>());
                     break;
             }
         }
 
         private void ChangeMessages(ObservableCollection<MessageViewModel> messages, ModifyModel modifyModel, ObservableCollection<MessageViewModel> availableMessages)
         {
-            switch (modifyModel.ModificationType)
+            switch (modifyModel.Modification.ModificationType)
             {
-                case ModelModification.Add:
+                case ModificationType.Add:
                 {
-                    MessageViewModel viewModel = GetViewModel(modifyModel.NewValue);
+                    MessageViewModel viewModel = GetViewModel(modifyModel.Modification.NewValue);
                     messages.Add(viewModel);
                     break;
                 }
-                case ModelModification.Remove:
+                case ModificationType.Remove:
                 {
-                    MessageViewModel viewModel = GetViewModel(modifyModel.OldValue);
+                    MessageViewModel viewModel = GetViewModel(modifyModel.Modification.OldValue);
                     messages.Remove(viewModel);
                     break;
                 }
-                case ModelModification.Change:
+                case ModificationType.Change:
                 {
-                    MessageViewModel addViewModel = GetViewModel(modifyModel.NewValue);
+                    MessageViewModel addViewModel = GetViewModel(modifyModel.Modification.NewValue);
                     messages.Add(addViewModel);
-                    MessageViewModel removeViewModel = GetViewModel(modifyModel.OldValue);
+                    MessageViewModel removeViewModel = GetViewModel(modifyModel.Modification.OldValue);
                     messages.Remove(removeViewModel);
                     break;
                 }

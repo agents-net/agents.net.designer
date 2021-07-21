@@ -25,14 +25,23 @@ namespace Agents.Net.Designer.ViewModel.Agents
             object modelObject = null;
             if (set.Message2.SelectedItem is AgentViewModel agent)
             {
-                modelObject = set.Message1.Model.Agents.First(a => a.Id == agent.ModelId);
+                modelObject = set.Message1.Model.Agents.FirstOrDefault(a => a.Id == agent.ModelId);
             }
             else if (set.Message2.SelectedItem is MessageViewModel message)
             {
-                modelObject = set.Message1.Model.Messages.First(a => a.Id == message.ModelId);
+                modelObject = set.Message1.Model.Messages.FirstOrDefault(a => a.Id == message.ModelId);
             }
-            
-            OnMessage(new SelectedModelObjectChanged(modelObject, set, SelectionSource.Tree));
+
+            if (modelObject != null)
+            {
+                OnMessage(new SelectedModelObjectChanged(modelObject, set, SelectionSource.Tree));
+            }
+            else
+            {
+                set.MarkAsConsumed(set.Message1);
+                collector.Push(set.Message2);
+                //basically waits for new model version created
+            }
         }
 
         protected override void ExecuteCore(Message messageData)

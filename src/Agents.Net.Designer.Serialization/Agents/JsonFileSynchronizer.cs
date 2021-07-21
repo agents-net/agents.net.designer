@@ -28,6 +28,7 @@ namespace Agents.Net.Designer.Serialization.Agents
             {
                 if (result.Result == MessageGateResultKind.Success)
                 {
+                    result.EndMessage.Data.SetLength(0);
                     using StreamWriter writer = new(result.EndMessage.Data, Encoding.UTF8);
                     writer.Write(set.Message2.Text);
                     OnMessage(new FileSynchronized(set.Message1.FileName, result.EndMessage));

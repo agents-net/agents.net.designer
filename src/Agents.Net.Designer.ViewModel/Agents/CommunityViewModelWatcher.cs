@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Threading;
@@ -48,20 +49,20 @@ namespace Agents.Net.Designer.ViewModel.Agents
             {
                 case nameof(CommunityViewModel.Name):
                     string newNamespace = latestData.Item1.Name == "<Root>" ? string.Empty : latestData.Item1.Name;
-                    OnMessage(new ModifyModel(ModelModification.Change,
+                    OnMessage(new ModificationRequest( 
+                                              latestData.Item2, new Modification(ModificationType.Change,
                                               oldModel.GeneratorSettings.PackageNamespace,
                                               newNamespace,
                                               oldModel.GeneratorSettings,
-                                              new GeneratorSettingsPackageNamespaceProperty(), 
-                                              latestData.Item2));
+                                              new GeneratorSettingsPackageNamespaceProperty())));
                     break;
                 case nameof(CommunityViewModel.GenerateAutofacModule):
-                    OnMessage(new ModifyModel(ModelModification.Change,
+                    OnMessage(new ModificationRequest( 
+                                              latestData.Item2, new Modification(ModificationType.Change,
                                               oldModel.GeneratorSettings.GenerateAutofacModule,
                                               latestData.Item1.GenerateAutofacModule,
                                               oldModel.GeneratorSettings,
-                                              new GeneratorSettingsGenerateAutofacProperty(), 
-                                              latestData.Item2));
+                                              new GeneratorSettingsGenerateAutofacProperty())));
                     break;
             }
         }

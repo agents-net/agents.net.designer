@@ -1,6 +1,6 @@
 ﻿namespace Agents.Net.Designer.Model.Messages
 {
-    public enum ModelModification
+    public enum ModificationType
     {
         Add,
         Remove,
