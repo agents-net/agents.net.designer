@@ -1,4 +1,9 @@
-﻿using System.IO;
+﻿#region Copyright
+//  Copyright (c) Tobias Wilker and contributors
+//  This file is licensed under MIT
+#endregion
+
+using System.IO;
 using Agents.Net.Designer.CodeGenerator.Templates.Messages;
 using Agents.Net.Designer.FileSystem.Messages;
 

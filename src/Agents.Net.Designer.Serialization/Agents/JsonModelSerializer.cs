@@ -1,3 +1,8 @@
+#region Copyright
+//  Copyright (c) Tobias Wilker and contributors
+//  This file is licensed under MIT
+#endregion
+
 using System.IO;
 using System.Text;
 using Agents.Net.Designer.Model.Messages;

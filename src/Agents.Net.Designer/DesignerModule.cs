@@ -1,3 +1,8 @@
+#region Copyright
+//  Copyright (c) Tobias Wilker and contributors
+//  This file is licensed under MIT
+#endregion
+
 using Agents.Net.Designer.CodeGenerator;
 using Agents.Net.Designer.CodeGenerator.Agents;
 using Agents.Net.Designer.CodeGenerator.Templates.Agents;
