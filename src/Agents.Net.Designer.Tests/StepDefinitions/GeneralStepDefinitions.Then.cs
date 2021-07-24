@@ -41,6 +41,17 @@ namespace Agents.Net.Designer.Tests.StepDefinitions
             string expectedContent = resourceContent.GetResourceContent();
             content.Should().Be(expectedContent);
         }
-        
+
+        [Then(@"the following files were created:")]
+        public void ThenTheFollowingFilesWereCreated(Table table)
+        {
+            scenarioContext.WaitForSilentPulse();
+            foreach (TableRow row in table.Rows)
+            {
+                string file = row.Values.First();
+                scenarioContext.Get<FileSystemSimulator>().FileExists(file)
+                               .Should().BeTrue($"the file {file} should have been created.");
+            }
+        }
     }
 }

@@ -15,5 +15,7 @@ namespace Agents.Net.Designer.Tests.Tools
         public const string FileUpdated = "FileUpdated";
         public const string Pulse = "Pulse";
         public const string TreeViewModelCreated = "TreeViewModel";
+        public const string GraphViewModelCreated = "GraphViewModel";
+        public const string SvgPath = "SvgPath";
     }
 }

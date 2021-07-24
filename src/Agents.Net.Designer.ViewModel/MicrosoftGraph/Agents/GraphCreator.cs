@@ -80,7 +80,7 @@ namespace Agents.Net.Designer.ViewModel.MicrosoftGraph.Agents
             Dictionary<string, List<Node>> subgraphCollection = new();
             List<Node> messages = AddMessages(model, graph, CheckSubgraph);
 
-            foreach (AgentModel agentModel in model.Agents)
+            foreach (AgentModel agentModel in model.Agents.OrderBy(a => a.FullName()))
             {
                 AddAgentNode(agentModel, graph, CheckSubgraph);
                 AddMessageEdges(agentModel.ConsumingMessages, messages, true,
@@ -195,7 +195,7 @@ namespace Agents.Net.Designer.ViewModel.MicrosoftGraph.Agents
         private void AddEventEdges(IEnumerable<string> events, bool addAsSource, Guid agentModelId,
                                    Graph graph, Action<Node, Guid> checkSubgraph)
         {
-            foreach (string @event in events)
+            foreach (string @event in events.OrderBy(e => e))
             {
                 if (string.IsNullOrEmpty(@event))
                 {
@@ -224,7 +224,7 @@ namespace Agents.Net.Designer.ViewModel.MicrosoftGraph.Agents
         private void AddMessageEdges(Guid[] messages, List<Node> messageNodes, bool addMessageAsSource,
                                      Guid agentModelId, Graph graph, bool isInterception = false)
         {
-            foreach (Guid message in messages)
+            foreach (Guid message in messages.OrderBy(i => i))
             {
                 Node messageNode = messageNodes.FirstOrDefault(n => n.Id == message.ToString("D"));
                 Edge edge;
@@ -269,7 +269,7 @@ namespace Agents.Net.Designer.ViewModel.MicrosoftGraph.Agents
         private static List<Node> AddMessages(CommunityModel model, Graph graph, Action<Node> checkSubgraph)
         {
             List<Node> messages = new();
-            foreach (MessageModel messageModel in model.Messages)
+            foreach (MessageModel messageModel in model.Messages.OrderBy(a => a.FullName()))
             {
                 Node messageNode = new(messageModel.Id.ToString("D"))
                 {
@@ -287,7 +287,7 @@ namespace Agents.Net.Designer.ViewModel.MicrosoftGraph.Agents
                 checkSubgraph(messageNode);
             }
 
-            foreach (MessageDecoratorModel decoratorModel in model.Messages.OfType<MessageDecoratorModel>())
+            foreach (MessageDecoratorModel decoratorModel in model.Messages.OfType<MessageDecoratorModel>().OrderBy(a => a.FullName()))
             {
                 Node messageNode = messages.First(n => n.Id == decoratorModel.Id.ToString("D"));
                 messageNode.Attr.FillColor = Color.LightGoldenrodYellow;

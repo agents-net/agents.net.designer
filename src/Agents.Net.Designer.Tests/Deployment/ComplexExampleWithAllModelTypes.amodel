@@ -1,0 +1,100 @@
+﻿{
+  "GeneratorSettings": {
+    "PackageNamespace": "SomeNamespace",
+    "GenerateAutofacModule": true
+  },
+  "Agents": [
+    {
+      "Id": "b78ce288-77c6-4810-bf05-7fca54dd6b19",
+      "Name": "SomeAgent",
+      "Namespace": ".Agents",
+      "ConsumingMessages": [
+        "db4cdf15-a5da-4cce-be87-c6ac5af180e8"
+      ],
+      "ProducedMessages": [
+        "f088e481-ce4d-4d04-8448-59013e2c3791"
+      ],
+      "IncomingEvents": [
+        "Random Event"
+      ],
+      "ProducedEvents": []
+    },
+    {
+      "$type": "Agents.Net.Designer.Model.InterceptorAgentModel, Agents.Net.Designer.Model",
+      "InterceptingMessages": [
+        "f088e481-ce4d-4d04-8448-59013e2c3791"
+      ],
+      "Id": "0e287a43-e215-4aac-a3c3-f9396c4dc353",
+      "Name": "SpecialDecoratorInterceptor",
+      "Namespace": ".SubNamespace.Agents",
+      "ConsumingMessages": [],
+      "ProducedMessages": [
+        "19d6a2f2-3b23-4ac0-8075-49faff6c4fc6"
+      ],
+      "IncomingEvents": [],
+      "ProducedEvents": []
+    },
+    {
+      "Id": "811c49e2-7bd3-4093-b07c-5a9dc231dccf",
+      "Name": "Finisher",
+      "Namespace": ".Agents",
+      "ConsumingMessages": [
+        "f088e481-ce4d-4d04-8448-59013e2c3791"
+      ],
+      "ProducedMessages": [],
+      "IncomingEvents": [],
+      "ProducedEvents": [
+        "Exits application"
+      ]
+    }
+  ],
+  "Messages": [
+    {
+      "Id": "db4cdf15-a5da-4cce-be87-c6ac5af180e8",
+      "Name": "InitializeMessage",
+      "Namespace": "Agents.Net",
+      "BuildIn": true,
+      "IsGeneric": false,
+      "GenericParameterCount": 0,
+      "IsGenericInstance": false
+    },
+    {
+      "Id": "78224802-f7be-405f-a443-0c509aa61a9c",
+      "Name": "ExceptionMessage",
+      "Namespace": "Agents.Net",
+      "BuildIn": true,
+      "IsGeneric": false,
+      "GenericParameterCount": 0,
+      "IsGenericInstance": false
+    },
+    {
+      "Id": "60a6a253-44fb-4ba7-89c9-74056c0661f9",
+      "Name": "MessagesAggregated",
+      "Namespace": "Agents.Net",
+      "BuildIn": true,
+      "IsGeneric": true,
+      "GenericParameterCount": 1,
+      "IsGenericInstance": false
+    },
+    {
+      "Id": "f088e481-ce4d-4d04-8448-59013e2c3791",
+      "Name": "SomeMessage",
+      "Namespace": ".Messages",
+      "BuildIn": false,
+      "IsGeneric": false,
+      "GenericParameterCount": 0,
+      "IsGenericInstance": false
+    },
+    {
+      "$type": "Agents.Net.Designer.Model.MessageDecoratorModel, Agents.Net.Designer.Model",
+      "DecoratedMessage": "f088e481-ce4d-4d04-8448-59013e2c3791",
+      "Id": "19d6a2f2-3b23-4ac0-8075-49faff6c4fc6",
+      "Name": "SpecialDecorator",
+      "Namespace": ".SubNamespace.Messages",
+      "BuildIn": false,
+      "IsGeneric": false,
+      "GenericParameterCount": 0,
+      "IsGenericInstance": false
+    }
+  ]
+}

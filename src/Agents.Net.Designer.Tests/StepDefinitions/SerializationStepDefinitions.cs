@@ -59,6 +59,5 @@ namespace Agents.Net.Designer.Tests.StepDefinitions
 
             return root.ToString(Formatting.Indented);
         }
-
     }
 }

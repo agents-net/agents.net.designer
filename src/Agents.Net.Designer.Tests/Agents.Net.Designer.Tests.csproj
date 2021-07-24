@@ -14,6 +14,8 @@
   <ItemGroup>
     <EmbeddedResource Include="Deployment\EmptyModel.amodel" />
     <EmbeddedResource Include="Deployment\SingleAgent.amodel" />
+    <None Remove="Deployment\ComplexExampleWithAllModelTypes.amodel" />
+    <EmbeddedResource Include="Deployment\ComplexExampleWithAllModelTypes.amodel" />
   </ItemGroup>
 
   <ItemGroup>
@@ -43,6 +45,24 @@
     <Compile Update="StepDefinitions\GeneralStepDefinitions.Then.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="StepDefinitions\GeneralStepDefinitions.When.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <EmbeddedResource Include="..\Agents.Net.Designer.CodeGenerator\Templates\AgentTemplate.cs">
+      <Link>Deployment\Templates\AgentTemplate.cs</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\Agents.Net.Designer.CodeGenerator\Templates\AutofacModuleTemplate.cs">
+      <Link>Deployment\Templates\AutofacModuleTemplate.cs</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\Agents.Net.Designer.CodeGenerator\Templates\InterceptorAgentTemplate.cs">
+      <Link>Deployment\Templates\InterceptorAgentTemplate.cs</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\Agents.Net.Designer.CodeGenerator\Templates\MessageDecoratorTemplate.cs">
+      <Link>Deployment\Templates\MessageDecoratorTemplate.cs</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\Agents.Net.Designer.CodeGenerator\Templates\MessageTemplate.cs">
+      <Link>Deployment\Templates\MessageTemplate.cs</Link>
+    </EmbeddedResource>
   </ItemGroup>
 
 </Project>

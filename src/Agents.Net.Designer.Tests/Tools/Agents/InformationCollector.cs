@@ -10,6 +10,7 @@ using TechTalk.SpecFlow;
 namespace Agents.Net.Designer.Tests.Tools.Agents
 {
     [Consumes(typeof(TreeViewModelCreated))]
+    [Consumes(typeof(GraphViewModelCreated))]
     public class InformationCollector : Agent
     {
         private readonly ScenarioContext scenarioContext;
@@ -21,8 +22,15 @@ namespace Agents.Net.Designer.Tests.Tools.Agents
 
         protected override void ExecuteCore(Message messageData)
         {
-            TreeViewModelCreated viewModelCreated = messageData.Get<TreeViewModelCreated>();
-            scenarioContext.Set(viewModelCreated.ViewModel, StringConstants.TreeViewModelCreated);
+            if (messageData.TryGet(out GraphViewModelCreated graphCreated))
+            {
+                scenarioContext.Set(graphCreated.ViewModel, StringConstants.GraphViewModelCreated);
+            }
+            else
+            {
+                TreeViewModelCreated viewModelCreated = messageData.Get<TreeViewModelCreated>();
+                scenarioContext.Set(viewModelCreated.ViewModel, StringConstants.TreeViewModelCreated);
+            }
         }
     }
 }

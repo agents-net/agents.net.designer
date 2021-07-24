@@ -33,5 +33,17 @@ namespace Agents.Net.Designer.Tests.StepDefinitions
         {
             scenarioContext.Get<IMessageBoard>().Publish(new AddMessageRequested(scenarioContext.Get<InitializeMessage>()));
         }
+
+        [When(@"I add an interceptor agent to the model")]
+        public void WhenIAddAnInterceptorAgentToTheModel()
+        {
+            scenarioContext.Get<IMessageBoard>().Publish(new AddInterceptorAgentRequested(scenarioContext.Get<InitializeMessage>()));
+        }
+
+        [When(@"I add a message decorator to the model")]
+        public void WhenIAddAMessageDecoratorToTheModel()
+        {
+            scenarioContext.Get<IMessageBoard>().Publish(new AddMessageDecoratorRequested(scenarioContext.Get<InitializeMessage>()));
+        }
     }
 }
