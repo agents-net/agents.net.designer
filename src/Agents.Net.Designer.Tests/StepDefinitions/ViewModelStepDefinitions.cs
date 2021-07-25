@@ -60,5 +60,17 @@ namespace Agents.Net.Designer.Tests.StepDefinitions
                      .Should().NotBeNull($"the message decorator should be in the view model:{Environment.NewLine}" +
                                          string.Join(Environment.NewLine, viewModel.Flatten()));
         }
+
+        [Then(@"the tree contains the message with the full name ""(.*)""")]
+        public void ThenTheTreeContainsTheMessageWithTheFullName(string fullName)
+        {
+            scenarioContext.WaitForSilentPulse();
+            
+            TreeViewModel viewModel = scenarioContext.Get<TreeViewModel>(StringConstants.TreeViewModelCreated);
+            viewModel.Flatten().OfType<MessageViewModel>()
+                     .FirstOrDefault(m => m.FullName == fullName && m.MessageType == MessageType.Message)
+                     .Should().NotBeNull($"the message should be in the view model:{Environment.NewLine}" +
+                                         string.Join(Environment.NewLine, viewModel.Flatten()));
+        }
     }
 }

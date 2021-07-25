@@ -82,5 +82,10 @@ namespace Agents.Net.Designer.ViewModel
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
+
+        public override string ToString()
+        {
+            return $"{nameof(Parent)}: {Parent?.Name??string.Empty}, {nameof(Name)}: {Name}, {nameof(Items)}: {Items.Count}";
+        }
     }
 }

@@ -8,6 +8,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Agents.Net.Designer.Model.Messages;
+using Agents.Net.Designer.Tests.Tools;
+using Agents.Net.Designer.ViewModel;
+using Agents.Net.Designer.ViewModel.Messages;
+using FluentAssertions;
 using TechTalk.SpecFlow;
 
 namespace Agents.Net.Designer.Tests.StepDefinitions
@@ -44,6 +48,33 @@ namespace Agents.Net.Designer.Tests.StepDefinitions
         public void WhenIAddAMessageDecoratorToTheModel()
         {
             scenarioContext.Get<IMessageBoard>().Publish(new AddMessageDecoratorRequested(scenarioContext.Get<InitializeMessage>()));
+        }
+
+        [When(@"I add the (consumed|produced|intercepted) message ""(.*)"" to the agent ""(.*)""")]
+        public void WhenIAddTheConsumedMessageToTheAgent(string type, string name, string agentName)
+        {
+            scenarioContext.WaitForSilentPulse();
+            
+            TreeViewModel viewModel = scenarioContext.Get<TreeViewModel>(StringConstants.TreeViewModelCreated);
+            AgentViewModel agentViewModel = viewModel.Flatten().OfType<AgentViewModel>()
+                                                     .FirstOrDefault(m => m.Name == agentName);
+            agentViewModel.Should().NotBeNull($"the message should be in the view model:{Environment.NewLine}" +
+                                              string.Join(Environment.NewLine, viewModel.Flatten()));
+            scenarioContext.Get<IMessageBoard>().Publish(new SelectedTreeViewItemChanged(agentViewModel,scenarioContext.Get<InitializeMessage>()));
+            scenarioContext.WaitForSilentPulse();
+            
+            switch (type)
+            {
+                case "consumed":
+                    agentViewModel.NewConsumingMessage = name;
+                    break;
+                case "produced":
+                    agentViewModel.NewProducingMessage = name;
+                    break;
+                case "intercepted":
+                    agentViewModel.NewInterceptingMessage = name;
+                    break;
+            }
         }
     }
 }

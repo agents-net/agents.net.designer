@@ -46,3 +46,11 @@ Expected is that the modification is than saved to the connected file.
     | SubNamespace/Messages/SpecialDecorator.cs          |
     | Messages/SomeMessage.cs                            |
     | SomeNamespaceModule.cs                             |
+
+Scenario: Automatically create messages if added to agents
+In this scenario an agent gets a new message. 
+Expected is that the message is created in the model.
+	Given I have started the designer
+    And I connected the file "ComplexExampleWithAllModelTypes.amodel"
+	When I add the consumed message "NewMessage" to the agent "SpecialDecoratorInterceptor"
+    Then the tree contains the message with the full name "SomeNamespace.SubNamespace.Messages.NewMessage"

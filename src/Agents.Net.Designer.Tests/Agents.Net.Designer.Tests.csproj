@@ -16,6 +16,7 @@
     <EmbeddedResource Include="Deployment\SingleAgent.amodel" />
     <None Remove="Deployment\ComplexExampleWithAllModelTypes.amodel" />
     <EmbeddedResource Include="Deployment\ComplexExampleWithAllModelTypes.amodel" />
+    <None Remove="Deployment\ComplexExamplePlusNewMessage.amodel" />
   </ItemGroup>
 
   <ItemGroup>
