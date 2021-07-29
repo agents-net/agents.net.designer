@@ -28,6 +28,7 @@ namespace Agents.Net.Designer.WpfView.Agents
                 set.Message2.Window.TreeView.DataContext = set.Message3.ViewModel;
                 set.Message2.Window.DetailsView.DataContext = set.Message4.ViewModel;
                 set.Message2.Window.SearchBox.DataContext = set.Message5.ViewModel;
+                set.Message2.Window.GraphView.DataContext = set.Message1.ViewModel;
             });
         }
 
