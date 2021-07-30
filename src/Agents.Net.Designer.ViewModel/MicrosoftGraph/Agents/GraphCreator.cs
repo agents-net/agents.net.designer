@@ -21,11 +21,16 @@ namespace Agents.Net.Designer.ViewModel.MicrosoftGraph.Agents
     [Consumes(typeof(ModificationResult))]
     [Consumes(typeof(ModifyModel))]
     [Consumes(typeof(ModelLoaded))]
+    [Consumes(typeof(GraphScopeChanged))]
     [Produces(typeof(GraphCreated))]
     [Produces(typeof(GraphCreationSkipped))]
     public class GraphCreator : Agent
     {
         private readonly MessageCollector<ModifyModel, ModificationResult> collector;
+        private GraphViewScope currentScope = default;
+        private readonly object scopeLock = new ();
+        private CommunityModel lastModel;
+        
         public GraphCreator(IMessageBoard messageBoard) : base(messageBoard)
         {
             collector = new MessageCollector<ModifyModel, ModificationResult>(OnMessagesCollected);
@@ -38,8 +43,11 @@ namespace Agents.Net.Designer.ViewModel.MicrosoftGraph.Agents
 
             if (set.Message1.IsLast)
             {
-                Graph graph = CreateGraph(set.Message2.Model);
-                OnMessage(new GraphCreated(graph, set.Message2));
+                lock (scopeLock)
+                {
+                    Graph graph = CreateGraph(set.Message2.Model, currentScope);
+                    OnMessage(new GraphCreated(graph, set.Message2));
+                }
             }
             else
             {
@@ -53,12 +61,31 @@ namespace Agents.Net.Designer.ViewModel.MicrosoftGraph.Agents
             {
                 return;
             }
-            Graph graph = CreateGraph(messageData.Get<ModelLoaded>().Model);
-            OnMessage(new GraphCreated(graph, messageData));
+            if(messageData.TryGet(out GraphScopeChanged scopeChanged))
+            {
+                lock (scopeLock)
+                {
+                    currentScope = scopeChanged.NewScope;
+                    Graph graph = CreateGraph(currentScope);
+                    OnMessage(new GraphCreated(graph, messageData));
+                }
+                return;
+            }
+            lock (scopeLock)
+            {
+                Graph graph = CreateGraph(messageData.Get<ModelLoaded>().Model, currentScope);
+                OnMessage(new GraphCreated(graph, messageData));
+            }
         }
 
-        private Graph CreateGraph(CommunityModel model)
+        private Graph CreateGraph(GraphViewScope scope)
         {
+            return CreateGraph(lastModel, scope);
+        }
+
+        private Graph CreateGraph(CommunityModel model, GraphViewScope scope)
+        {
+            lastModel = model;
             //Check uniqueness of nodes
             Graph graph = new()
             {
