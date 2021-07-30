@@ -60,11 +60,11 @@ namespace Agents.Net.Designer.Tests.StepDefinitions
                 string name = row["DisplayName"];
                 if (isVisible)
                 {
-                    viewModel.Graph.Nodes.Should().Contain(n => n.LabelText == name);
+                    viewModel.Graph.Nodes.Should().Contain(n => n.LabelText == name, $"a node with name {name} was expected");
                 }
                 else
                 {
-                    viewModel.Graph.Nodes.Should().NotContain(n => n.LabelText == name);
+                    viewModel.Graph.Nodes.Should().NotContain(n => n.LabelText == name, $"a node with name {name} was not expected");
                 }
             }
         }

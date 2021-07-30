@@ -14,12 +14,14 @@ using Microsoft.Msagl.Drawing;
 namespace Agents.Net.Designer.WpfView.Agents
 {
     [Consumes(typeof(MainWindowCreated))]
+    [Consumes(typeof(GraphViewModelUpdated))]
     [Consumes(typeof(SelectGraphObjectRequested))]
     [Consumes(typeof(SelectedModelObjectChanged), Implicitly = true)]
     [Produces(typeof(ViewModelChangeApplying))]
     public class GraphSelector : Agent
     {
         private readonly MessageCollector<MainWindowCreated, SelectedModelObjectChanged> collector;
+        private MessageCollection<MainWindowCreated, SelectedModelObjectChanged> lastSet;
         public GraphSelector(IMessageBoard messageBoard)
             : base(messageBoard)
         {
@@ -28,9 +30,13 @@ namespace Agents.Net.Designer.WpfView.Agents
 
         private void OnMessagesCollected(MessageCollection<MainWindowCreated, SelectedModelObjectChanged> set)
         {
-            set.MarkAsConsumed(set.Message2);
+            lastSet = set;
+            Select(set);
+        }
 
-            if (set.Message2.SelectedObject == null)
+        private void Select(MessageCollection<MainWindowCreated, SelectedModelObjectChanged> set)
+        {
+            if (set?.Message2.SelectedObject == null)
             {
                 return;
             }
@@ -43,15 +49,20 @@ namespace Agents.Net.Designer.WpfView.Agents
                 return;
             }
 
-            OnMessage(new ViewModelChangeApplying(() =>
-            {
-                set.Message1.Window.GraphViewer.NodeToCenterWithScale(node.Node, 1);
-            }, set));
+            OnMessage(new ViewModelChangeApplying(
+                          () => { set.Message1.Window.GraphViewer.NodeToCenterWithScale(node.Node, 1); }, set));
         }
 
         protected override void ExecuteCore(Message messageData)
         {
-            collector.Push(messageData);
+            if (messageData.Is<GraphViewModelUpdated>())
+            {
+                Select(lastSet);
+            }
+            else
+            {
+                collector.Push(messageData);
+            }
         }
     }
 }

@@ -5,8 +5,10 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Threading;
 using Agents.Net.Designer.Model;
 using Agents.Net.Designer.Model.Messages;
 using Agents.Net.Designer.ViewModel.MicrosoftGraph.Messages;
@@ -22,6 +24,7 @@ namespace Agents.Net.Designer.ViewModel.MicrosoftGraph.Agents
     [Consumes(typeof(ModifyModel))]
     [Consumes(typeof(ModelLoaded))]
     [Consumes(typeof(GraphScopeChanged))]
+    [Consumes(typeof(SelectedModelObjectChanged))]
     [Produces(typeof(GraphCreated))]
     [Produces(typeof(GraphCreationSkipped))]
     public class GraphCreator : Agent
@@ -30,6 +33,7 @@ namespace Agents.Net.Designer.ViewModel.MicrosoftGraph.Agents
         private GraphViewScope currentScope = default;
         private readonly object scopeLock = new ();
         private CommunityModel lastModel;
+        private object lastSelected;
         
         public GraphCreator(IMessageBoard messageBoard) : base(messageBoard)
         {
@@ -61,6 +65,21 @@ namespace Agents.Net.Designer.ViewModel.MicrosoftGraph.Agents
             {
                 return;
             }
+
+            if (messageData.TryGet(out SelectedModelObjectChanged selectedObjectChanged))
+            {
+                lock (scopeLock)
+                {
+                    object previous = lastSelected;
+                    lastSelected = selectedObjectChanged.SelectedObject;
+                    if (GraphNeedsUpdateOnSelectionChange(previous, lastSelected, currentScope))
+                    {
+                        Graph graph = CreateGraph(currentScope);
+                        OnMessage(new GraphCreated(graph, messageData));
+                    }
+                }
+                return;
+            }
             if(messageData.TryGet(out GraphScopeChanged scopeChanged))
             {
                 lock (scopeLock)
@@ -75,6 +94,25 @@ namespace Agents.Net.Designer.ViewModel.MicrosoftGraph.Agents
             {
                 Graph graph = CreateGraph(messageData.Get<ModelLoaded>().Model, currentScope);
                 OnMessage(new GraphCreated(graph, messageData));
+            }
+        }
+
+        private bool GraphNeedsUpdateOnSelectionChange(object oldSelected, object newSelected, GraphViewScope scope)
+        {
+            return scope switch
+            {
+                GraphViewScope.Solution => false,
+                GraphViewScope.Namespace => !AreNamespacesEqual(),
+                _ => throw new InvalidOperationException("Not implemented.")
+            };
+
+            bool AreNamespacesEqual()
+            {
+                string oldNamespace = (oldSelected as AgentModel)?.NamespaceWithoutExtension
+                                      ?? (oldSelected as MessageModel)?.NamespaceWithoutExtension;
+                string newNamespace = (newSelected as AgentModel)?.NamespaceWithoutExtension
+                                      ?? (newSelected as MessageModel)?.NamespaceWithoutExtension;
+                return oldNamespace == newNamespace;
             }
         }
 
@@ -105,9 +143,10 @@ namespace Agents.Net.Designer.ViewModel.MicrosoftGraph.Agents
                 }
             };
             Dictionary<string, List<Node>> subgraphCollection = new();
-            List<Node> messages = AddMessages(model, graph, CheckSubgraph);
+            string scopeNamespace = GetScopeNamespace();
+            List<Node> messages = AddMessages(GetScopeRelevantMessages(model, scope, lastSelected), graph, CheckSubgraph);
 
-            foreach (AgentModel agentModel in model.Agents.OrderBy(a => a.FullName()))
+            foreach (AgentModel agentModel in GetScopeRelevantAgents(model, scope, lastSelected).OrderBy(a => a.FullName()))
             {
                 AddAgentNode(agentModel, graph, CheckSubgraph);
                 AddMessageEdges(agentModel.ConsumingMessages, messages, true,
@@ -141,19 +180,31 @@ namespace Agents.Net.Designer.ViewModel.MicrosoftGraph.Agents
                 subgraphCollection[ns].Add(node);
             }
 
+            string GetScopeNamespace()
+            {
+                return scope switch
+                {
+                    GraphViewScope.Solution => string.Empty,
+                    GraphViewScope.Namespace => (lastSelected as AgentModel)?.NamespaceWithoutExtension
+                                                ?? (lastSelected as MessageModel)?.NamespaceWithoutExtension
+                                                ?? string.Empty,
+                    _ => throw new InvalidOperationException("Not implemented.")
+                };
+            }
+
             void CheckSubgraph(Node nodeToCheck)
             {
                 string ns;
                 if (nodeToCheck.UserData is AgentModel agent)
                 {
-                    ns = Regex.Replace(agent.Namespace, @"\.Agents$", string.Empty);
+                    ns = agent.NamespaceWithoutExtension;
                 }
                 else
                 {
-                    ns = Regex.Replace(((MessageModel) nodeToCheck.UserData).Namespace, @"\.Messages$", string.Empty);
+                    ns = ((MessageModel) nodeToCheck.UserData).NamespaceWithoutExtension;
                 }
 
-                if (!string.IsNullOrEmpty(ns))
+                if (ns != scopeNamespace)
                 {
                     AddNodeToSubgraph(nodeToCheck, ns);
                 }
@@ -162,13 +213,76 @@ namespace Agents.Net.Designer.ViewModel.MicrosoftGraph.Agents
             void CheckSubgraphForEvent(Node eventToCheck, Guid connectedAgentId)
             {
                 AgentModel agentModel = model.Agents.First(a => a.Id == connectedAgentId);
-                string ns = Regex.Replace(agentModel.Namespace, @"\.Agents$", string.Empty);
+                string ns = agentModel.NamespaceWithoutExtension;
 
-                if (!string.IsNullOrEmpty(ns))
+                if (ns != scopeNamespace)
                 {
                     AddNodeToSubgraph(eventToCheck, ns);
                 }
             }
+        }
+
+        private IReadOnlyCollection<AgentModel> GetScopeRelevantAgents(CommunityModel model, GraphViewScope scope, object selectedObject)
+        {
+            string selectedNamespace = (selectedObject as AgentModel)?.NamespaceWithoutExtension
+                                       ?? (selectedObject as MessageModel)?.NamespaceWithoutExtension
+                                       ?? string.Empty;
+            return scope switch
+            {
+                GraphViewScope.Solution => model.Agents,
+                GraphViewScope.Namespace => FilterAgentsByNamespace(model, selectedNamespace),
+                _ => throw new InvalidOperationException("Not implemented.")
+            };
+        }
+
+        private IReadOnlyCollection<MessageModel> GetScopeRelevantMessages(CommunityModel model, GraphViewScope scope, object selectedObject)
+        {
+            string selectedNamespace = (selectedObject as AgentModel)?.NamespaceWithoutExtension
+                                       ?? (selectedObject as MessageModel)?.NamespaceWithoutExtension
+                                       ?? string.Empty;
+            return scope switch
+            {
+                GraphViewScope.Solution => FilterIrrelevantBuiltInMessages(model),
+                GraphViewScope.Namespace => FilterMessagesByNamespace(model, selectedNamespace),
+                _ => throw new InvalidOperationException("Not implemented.")
+            };
+        }
+
+        private static IReadOnlyCollection<MessageModel> FilterIrrelevantBuiltInMessages(CommunityModel model)
+        {
+            return model.Messages.Where(m => !m.BuildIn ||
+                                             model.Agents.Any(a => a.AllConnectedMessages.Contains(m.Id)) ||
+                                             model.Messages.OfType<MessageDecoratorModel>().Any(d => d.DecoratedMessage == m.Id))
+                        .ToArray();
+        }
+
+        private IReadOnlyCollection<MessageModel> FilterMessagesByNamespace(CommunityModel model, string selectedNamespace)
+        {
+            AgentModel[] relevantAgents = model.Agents.Where(n => n.NamespaceWithoutExtension.Equals(selectedNamespace)).ToArray();
+            MessageModel[] relevantMessages =
+                model.Messages.Where(n => n.NamespaceWithoutExtension.Equals(selectedNamespace))
+                     .ToArray();
+            MessageDecoratorModel[] decorators = relevantMessages.OfType<MessageDecoratorModel>()
+                                                 .ToArray();
+            return relevantMessages.Concat(model.Messages.Where(
+                                               n => relevantAgents.Any(a => a.AllConnectedMessages.Contains(n.Id)) ||
+                                                    decorators.Any(d => d.DecoratedMessage == n.Id) ||
+                                                    (n is MessageDecoratorModel decorator &&
+                                                     relevantMessages.Any(r => r.Id == decorator.DecoratedMessage))))
+                                   .Distinct()
+                                   .ToArray();
+        }
+
+        private IReadOnlyCollection<AgentModel> FilterAgentsByNamespace(CommunityModel model, string selectedNamespace)
+        {
+            Guid[] relevantMessages =
+                model.Messages.Where(n => n.NamespaceWithoutExtension.Equals(selectedNamespace))
+                     .Select(m => m.Id)
+                     .ToArray();
+            return model.Agents.Where(a => a.NamespaceWithoutExtension.Equals(selectedNamespace) ||
+                                           a.AllConnectedMessages.Any(relevantMessages.Contains))
+                        .Distinct()
+                        .ToArray();
         }
 
         private void CreateSubGraphs(Graph graph, Dictionary<string,List<Node>> subgraphCollection)
@@ -265,7 +379,8 @@ namespace Agents.Net.Designer.ViewModel.MicrosoftGraph.Agents
                 }
                 else
                 {
-                    throw new InvalidOperationException($"Could not find message {message} in graph although it was expected.");
+                    Debug.Assert(currentScope != GraphViewScope.Solution, "Excepted message not found.");
+                    continue;
                 }
 
                 edge.Attr.Color = addMessageAsSource ? Color.Green : Color.Blue;
@@ -293,10 +408,10 @@ namespace Agents.Net.Designer.ViewModel.MicrosoftGraph.Agents
             checkSubgraph(agentNode);
         }
 
-        private static List<Node> AddMessages(CommunityModel model, Graph graph, Action<Node> checkSubgraph)
+        private static List<Node> AddMessages(IReadOnlyCollection<MessageModel> modelMessages, Graph graph, Action<Node> checkSubgraph)
         {
             List<Node> messages = new();
-            foreach (MessageModel messageModel in model.Messages.OrderBy(a => a.FullName()))
+            foreach (MessageModel messageModel in modelMessages.OrderBy(a => a.FullName()))
             {
                 Node messageNode = new(messageModel.Id.ToString("D"))
                 {
@@ -314,11 +429,11 @@ namespace Agents.Net.Designer.ViewModel.MicrosoftGraph.Agents
                 checkSubgraph(messageNode);
             }
 
-            foreach (MessageDecoratorModel decoratorModel in model.Messages.OfType<MessageDecoratorModel>().OrderBy(a => a.FullName()))
+            foreach (MessageDecoratorModel decoratorModel in modelMessages.OfType<MessageDecoratorModel>().OrderBy(a => a.FullName()))
             {
                 Node messageNode = messages.First(n => n.Id == decoratorModel.Id.ToString("D"));
                 messageNode.Attr.FillColor = Color.LightGoldenrodYellow;
-                if (decoratorModel.DecoratedMessage != default)
+                if (modelMessages.Any(m => m.Id == decoratorModel.DecoratedMessage))
                 {
                     Edge edge = graph.AddEdge(decoratorModel.Id.ToString("D"), "decorates",
                                               decoratorModel.DecoratedMessage.ToString("D"));

@@ -19,6 +19,8 @@ namespace Agents.Net.Designer.Serialization
         {
             return base.CreateProperties(type, memberSerialization)
                        .Where(p => p.PropertyType != typeof(CommunityModel))
+                       .Where(p => p.PropertyName != nameof(AgentModel.NamespaceWithoutExtension))
+                       .Where(p => p.PropertyName != nameof(AgentModel.AllConnectedMessages))
                        .ToList();
         }
     }

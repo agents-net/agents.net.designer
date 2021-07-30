@@ -5,6 +5,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace Agents.Net.Designer.Model
@@ -51,5 +52,8 @@ namespace Agents.Net.Designer.Model
         }
 
         public Guid[] InterceptingMessages { get; }
+
+        public override IEnumerable<Guid> AllConnectedMessages =>
+            base.AllConnectedMessages.Concat(InterceptingMessages);
     }
 }

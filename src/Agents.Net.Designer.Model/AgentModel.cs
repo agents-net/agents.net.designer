@@ -5,7 +5,9 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace Agents.Net.Designer.Model
 {
@@ -46,6 +48,11 @@ namespace Agents.Net.Designer.Model
         public string Name { get; }
 
         public string Namespace { get; }
+        
+        //Marker for ".Agents"
+        public string NamespaceWithoutExtension => Regex.Replace(Namespace, @"\.Agents$", string.Empty);
+
+        public virtual IEnumerable<Guid> AllConnectedMessages => ConsumingMessages.Concat(ProducedMessages); 
 
         public Guid[] ConsumingMessages { get; }
 
