@@ -17,6 +17,8 @@
     <None Remove="Deployment\ComplexExampleWithAllModelTypes.amodel" />
     <EmbeddedResource Include="Deployment\ComplexExampleWithAllModelTypes.amodel" />
     <None Remove="Deployment\ComplexExamplePlusNewMessage.amodel" />
+    <None Remove="Deployment\ComplexExampleWithMultipleNamespaces.amodel" />
+    <EmbeddedResource Include="Deployment\ComplexExampleWithMultipleNamespaces.amodel" />
   </ItemGroup>
 
   <ItemGroup>

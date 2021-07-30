@@ -16,6 +16,7 @@ namespace Agents.Net.Designer.ViewModel
     public class GraphViewModel : INotifyPropertyChanged
     {
         private Graph graph;
+        private GraphViewScope scope;
 
         public Graph Graph
         {
@@ -24,6 +25,17 @@ namespace Agents.Net.Designer.ViewModel
             {
                 if (Equals(value, graph)) return;
                 graph = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public GraphViewScope Scope
+        {
+            get => scope;
+            set
+            {
+                if (Equals(value, scope)) return;
+                scope = value;
                 OnPropertyChanged();
             }
         }

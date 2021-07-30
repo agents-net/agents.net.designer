@@ -1,0 +1,177 @@
+﻿{
+  "GeneratorSettings": {
+    "PackageNamespace": "SomeNamespace",
+    "GenerateAutofacModule": true
+  },
+  "Agents": [
+    {
+      "Id": "b78ce288-77c6-4810-bf05-7fca54dd6b19",
+      "Name": "SomeAgent",
+      "Namespace": ".Agents",
+      "ConsumingMessages": [
+        "db4cdf15-a5da-4cce-be87-c6ac5af180e8"
+      ],
+      "ProducedMessages": [
+        "f088e481-ce4d-4d04-8448-59013e2c3791",
+        "61681d03-eeb1-4a13-bd8f-0c811be8857a"
+      ],
+      "IncomingEvents": [
+        "Random Event"
+      ],
+      "ProducedEvents": []
+    },
+    {
+      "$type": "Agents.Net.Designer.Model.InterceptorAgentModel, Agents.Net.Designer.Model",
+      "InterceptingMessages": [
+        "f088e481-ce4d-4d04-8448-59013e2c3791"
+      ],
+      "Id": "0e287a43-e215-4aac-a3c3-f9396c4dc353",
+      "Name": "SpecialDecoratorInterceptor",
+      "Namespace": ".SubNamespace.Agents",
+      "ConsumingMessages": [
+        "1a5eb856-f61d-466d-9e24-87b7641792d2"
+      ],
+      "ProducedMessages": [
+        "19d6a2f2-3b23-4ac0-8075-49faff6c4fc6"
+      ],
+      "IncomingEvents": [],
+      "ProducedEvents": []
+    },
+    {
+      "Id": "811c49e2-7bd3-4093-b07c-5a9dc231dccf",
+      "Name": "Finisher",
+      "Namespace": ".Agents",
+      "ConsumingMessages": [
+        "f088e481-ce4d-4d04-8448-59013e2c3791",
+        "7b6c494e-be8f-4ec3-ae3b-2b9f416362d5"
+      ],
+      "ProducedMessages": [],
+      "IncomingEvents": [],
+      "ProducedEvents": [
+        "Exits application"
+      ]
+    },
+    {
+      "Id": "3c80c98e-dc0a-49d6-a69a-9d08011c3ce6",
+      "Name": "OtherAgentActor",
+      "Namespace": ".OtherNamespace.Agents",
+      "ConsumingMessages": [
+        "61681d03-eeb1-4a13-bd8f-0c811be8857a",
+        "e4cd0668-ef6e-45c4-a795-0e5e0ac65485"
+      ],
+      "ProducedMessages": [
+        "478f0d79-a766-41ea-833e-01335a8d559f",
+        "7b6c494e-be8f-4ec3-ae3b-2b9f416362d5"
+      ],
+      "IncomingEvents": [],
+      "ProducedEvents": []
+    },
+    {
+      "Id": "3dac3e65-9ec0-4ef3-88d5-1a54cd4084b2",
+      "Name": "SubRoutineFinisher",
+      "Namespace": ".OtherNamespace.Agents",
+      "ConsumingMessages": [
+        "478f0d79-a766-41ea-833e-01335a8d559f"
+      ],
+      "ProducedMessages": [
+        "e4cd0668-ef6e-45c4-a795-0e5e0ac65485"
+      ],
+      "IncomingEvents": [],
+      "ProducedEvents": []
+    }
+  ],
+  "Messages": [
+    {
+      "Id": "db4cdf15-a5da-4cce-be87-c6ac5af180e8",
+      "Name": "InitializeMessage",
+      "Namespace": "Agents.Net",
+      "BuildIn": true,
+      "IsGeneric": false,
+      "GenericParameterCount": 0,
+      "IsGenericInstance": false
+    },
+    {
+      "Id": "78224802-f7be-405f-a443-0c509aa61a9c",
+      "Name": "ExceptionMessage",
+      "Namespace": "Agents.Net",
+      "BuildIn": true,
+      "IsGeneric": false,
+      "GenericParameterCount": 0,
+      "IsGenericInstance": false
+    },
+    {
+      "Id": "60a6a253-44fb-4ba7-89c9-74056c0661f9",
+      "Name": "MessagesAggregated",
+      "Namespace": "Agents.Net",
+      "BuildIn": true,
+      "IsGeneric": true,
+      "GenericParameterCount": 1,
+      "IsGenericInstance": false
+    },
+    {
+      "Id": "f088e481-ce4d-4d04-8448-59013e2c3791",
+      "Name": "SomeMessage",
+      "Namespace": ".Messages",
+      "BuildIn": false,
+      "IsGeneric": false,
+      "GenericParameterCount": 0,
+      "IsGenericInstance": false
+    },
+    {
+      "$type": "Agents.Net.Designer.Model.MessageDecoratorModel, Agents.Net.Designer.Model",
+      "DecoratedMessage": "f088e481-ce4d-4d04-8448-59013e2c3791",
+      "Id": "19d6a2f2-3b23-4ac0-8075-49faff6c4fc6",
+      "Name": "SpecialDecorator",
+      "Namespace": ".SubNamespace.Messages",
+      "BuildIn": false,
+      "IsGeneric": false,
+      "GenericParameterCount": 0,
+      "IsGenericInstance": false
+    },
+    {
+      "Id": "1a5eb856-f61d-466d-9e24-87b7641792d2",
+      "Name": "InternalMessage",
+      "Namespace": ".SubNamespace.Messages",
+      "BuildIn": false,
+      "IsGeneric": false,
+      "GenericParameterCount": 0,
+      "IsGenericInstance": false
+    },
+    {
+      "Id": "61681d03-eeb1-4a13-bd8f-0c811be8857a",
+      "Name": "SomeOtherMessage",
+      "Namespace": ".Messages",
+      "BuildIn": false,
+      "IsGeneric": false,
+      "GenericParameterCount": 0,
+      "IsGenericInstance": false
+    },
+    {
+      "Id": "478f0d79-a766-41ea-833e-01335a8d559f",
+      "Name": "AnotherInternalMessage",
+      "Namespace": ".OtherNamespace.Messages",
+      "BuildIn": false,
+      "IsGeneric": false,
+      "GenericParameterCount": 0,
+      "IsGenericInstance": false
+    },
+    {
+      "Id": "7b6c494e-be8f-4ec3-ae3b-2b9f416362d5",
+      "Name": "OtherRoutineFinished",
+      "Namespace": ".Messages",
+      "BuildIn": false,
+      "IsGeneric": false,
+      "GenericParameterCount": 0,
+      "IsGenericInstance": false
+    },
+    {
+      "Id": "e4cd0668-ef6e-45c4-a795-0e5e0ac65485",
+      "Name": "RoutineFinished",
+      "Namespace": ".OtherNamespace.Messages",
+      "BuildIn": false,
+      "IsGeneric": false,
+      "GenericParameterCount": 0,
+      "IsGenericInstance": false
+    }
+  ]
+}

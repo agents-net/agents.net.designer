@@ -6,6 +6,9 @@
 using System;
 using System.ComponentModel;
 using Agents.Net.Designer.ViewModel.Messages;
+using Microsoft.Msagl.Core.Geometry;
+using Microsoft.Msagl.Core.Geometry.Curves;
+using Microsoft.Msagl.Drawing;
 
 namespace Agents.Net.Designer.Tests.Tools.Agents
 {
@@ -30,6 +33,10 @@ namespace Agents.Net.Designer.Tests.Tools.Agents
         {
             if (e.PropertyName == nameof(created.ViewModel.Graph))
             {
+                foreach (Node node in created.ViewModel.Graph.Nodes)
+                {
+                    node.GeometryNode = new Microsoft.Msagl.Core.Layout.Node(new RoundedRect(new Rectangle(0,0,1,1), 0,0));
+                }
                 OnMessage(new GraphViewModelUpdated(created.ViewModel.LastGraphCreatedMessage));
             }
         }

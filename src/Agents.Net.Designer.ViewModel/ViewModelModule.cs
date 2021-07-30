@@ -40,6 +40,7 @@ namespace Agents.Net.Designer.ViewModel
             builder.RegisterType<SearchViewModelCreator>().As<Agent>().InstancePerLifetimeScope();
             builder.RegisterType<SearchSourceUpdater>().As<Agent>().InstancePerLifetimeScope();
             builder.RegisterType<SearchViewModelObserver>().As<Agent>().InstancePerLifetimeScope();
+            builder.RegisterType<GraphViewModelWatcher>().As<Agent>().InstancePerLifetimeScope();
         }
     }
 }
