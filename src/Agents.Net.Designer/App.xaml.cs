@@ -21,6 +21,12 @@ namespace Agents.Net.Designer
     /// <summary>
     /// Interaction logic for App.xaml
     /// </summary>
+    /// TODO Next tasks
+    /// - Update agent framework after message domain visibility change
+    /// - Split Graph Creator
+    /// - Implement Assembly structure
+    /// - extend scopes
+    /// - Implement solution synchronization
     public partial class App : Application
     {
         private IContainer container;

@@ -29,6 +29,7 @@ namespace Agents.Net.Designer.Model
             builder.RegisterType<GenericsDetector>().As<Agent>().InstancePerLifetimeScope();
             builder.RegisterType<ModificationRequestExtender>().As<Agent>().InstancePerLifetimeScope();
             builder.RegisterType<ModificationRequestExtensionsCollector>().As<Agent>().InstancePerLifetimeScope();
+            builder.RegisterType<AutomaticMessageModelDisconnector>().As<Agent>().InstancePerLifetimeScope();
         }
     }
 }

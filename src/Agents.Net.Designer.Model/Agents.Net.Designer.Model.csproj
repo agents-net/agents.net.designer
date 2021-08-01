@@ -8,6 +8,7 @@
   <ItemGroup>
     <PackageReference Include="Agents.Net" Version="2022.0.0-prerelease-20210714141511" />
     <PackageReference Include="Autofac" Version="6.2.0" />
+    <PackageReference Include="ConcurrentHashSet" Version="1.2.0" />
   </ItemGroup>
 
 </Project>
