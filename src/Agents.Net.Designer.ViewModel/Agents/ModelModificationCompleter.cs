@@ -29,7 +29,11 @@ namespace Agents.Net.Designer.ViewModel.Agents
                 collector ??= new MessageCollector<ModificationResult, TreeViewModelUpdated, GraphViewModelUpdated>(OnMessagesCollected);
                 return;
             }
-            collector?.Push(messageData);
+
+            if (messageData.MessageDomain.Root.Is<ModifyModel>())
+            {
+                collector?.Push(messageData);
+            }
         }
 
         private void OnMessagesCollected(MessageCollection<ModificationResult, TreeViewModelUpdated, GraphViewModelUpdated> set)
